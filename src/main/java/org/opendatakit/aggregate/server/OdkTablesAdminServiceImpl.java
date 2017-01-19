@@ -16,24 +16,23 @@
 
 package org.opendatakit.aggregate.server;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.opendatakit.aggregate.ContextFactory;
+import org.opendatakit.aggregate.client.RegionalOffice;
 import org.opendatakit.aggregate.client.exception.RequestFailureException;
 import org.opendatakit.aggregate.client.preferences.OdkTablesAdmin;
 import org.opendatakit.aggregate.client.preferences.OdkTablesAdminService;
+import org.opendatakit.aggregate.client.table.OdkRegionalOfficeTable;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
 import org.opendatakit.aggregate.odktables.security.OdkTablesUserInfoTable;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissionsImpl;
 import org.opendatakit.common.persistence.CommonFieldsBase;
+import org.opendatakit.common.persistence.Datastore;
 import org.opendatakit.common.persistence.Query;
 import org.opendatakit.common.persistence.client.exception.DatastoreFailureException;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
+import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.security.client.UserSecurityInfo;
@@ -44,7 +43,10 @@ import org.opendatakit.common.security.spring.UserGrantedAuthority;
 import org.opendatakit.common.web.CallingContext;
 import org.springframework.security.core.GrantedAuthority;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class OdkTablesAdminServiceImpl extends RemoteServiceServlet implements
     OdkTablesAdminService {
@@ -115,6 +117,84 @@ public class OdkTablesAdminServiceImpl extends RemoteServiceServlet implements
       e.printStackTrace();
       throw new AccessDeniedException(e);
     }
+  }
+
+    /**
+     * Insert regional offices to database.
+     *
+     * @throws DatastoreFailureException
+     */
+    @Override
+  public void setOffice(ArrayList<RegionalOffice> regionalOffices) throws AccessDeniedException, DatastoreFailureException, RequestFailureException
+  {
+    try {
+        CallingContext cc = this.getCC();
+        Datastore ds = cc.getDatastore();
+        User user = cc.getCurrentUser();
+        ArrayList<RegionalOffice> offices = new ArrayList<RegionalOffice>();
+        offices.addAll(regionalOffices);
+
+        OdkRegionalOfficeTable prototype = OdkRegionalOfficeTable.assertRelation(cc);
+        OdkRegionalOfficeTable record = null;
+
+        //insert offices into database
+        for(RegionalOffice office : offices) {
+            if(office.isRemoved())
+            {
+                OdkRegionalOfficeTable recordToDelete = OdkRegionalOfficeTable.getRecordFromDatabase(office.getOfficeID(),cc);
+                if(recordToDelete != null)
+                    ds.deleteEntity(recordToDelete.getEntityKey(),user);
+            }
+            else {
+                try {
+                    //when office is already exists in database it is just edited
+                    record = ds.getEntity(prototype, office.getURI(), user);
+                    record.setRegionalOfficeId(office.getOfficeID());
+                    record.setRegionalOfficeName(office.getName());
+                } catch (ODKEntityNotFoundException e) {
+                    //when office is not exists we create a new record in database
+                    record = ds.createEntityUsingRelation(prototype, user);
+                    record.setRegionalOfficeId(office.getOfficeID());
+                    record.setRegionalOfficeName(office.getName());
+                }
+                record.persist(cc);
+            }
+        }
+    } catch (ODKDatastoreException e) {
+         e.printStackTrace();
+        throw new DatastoreFailureException(e);
+    }
+  }
+
+    /**
+     * Gets regional offices from database.
+     *
+     * @throws DatastoreFailureException
+     */
+    @Override
+  public ArrayList<RegionalOffice> getAllOffices() throws AccessDeniedException, DatastoreFailureException, RequestFailureException
+  {
+      CallingContext cc = this.getCC();
+      Datastore ds = cc.getDatastore();
+      ArrayList<RegionalOffice> regionalOffices = new ArrayList<RegionalOffice>();
+      try {
+          OdkRegionalOfficeTable regionalOfficeTable = OdkRegionalOfficeTable.assertRelation(cc);
+          Query q = ds.createQuery(regionalOfficeTable,
+                  "OdkRegionalOfficeTable.getAllOffices", cc.getCurrentUser());
+
+          List<? extends CommonFieldsBase> l = q.executeQuery();
+          
+          for (CommonFieldsBase cb : l) {
+              OdkRegionalOfficeTable t = (OdkRegionalOfficeTable) cb;
+              RegionalOffice i = new RegionalOffice(t.getUri(), t.getRegionalOfficeName(),t.getRegionalOfficeId());
+              regionalOffices.add(i);
+          }
+      } catch (ODKDatastoreException e) {
+          e.printStackTrace();
+          throw new DatastoreFailureException(e);
+      }
+
+      return regionalOffices;
   }
 
   /**

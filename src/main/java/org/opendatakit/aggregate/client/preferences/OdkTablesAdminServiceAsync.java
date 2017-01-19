@@ -16,11 +16,11 @@
 
 package org.opendatakit.aggregate.client.preferences;
 
-import java.util.ArrayList;
-
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.opendatakit.aggregate.client.RegionalOffice;
 import org.opendatakit.common.security.client.UserSecurityInfo;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
 
 public interface OdkTablesAdminServiceAsync {
 
@@ -32,4 +32,7 @@ public interface OdkTablesAdminServiceAsync {
 
   void setAdmins(ArrayList<UserSecurityInfo> admins, AsyncCallback<Boolean> callback);
 
+  void setOffice(ArrayList<RegionalOffice> regionalOffices, AsyncCallback<Void> callback);
+
+    void getAllOffices(AsyncCallback<ArrayList<RegionalOffice>> callback);
 }

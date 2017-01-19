@@ -46,6 +46,15 @@ list of users in the above table. Iteractive logins with Google accounts are no 
 <br/>
 <g:Button styleName="gwt-Button" ui:field="addNow" text="Add"/>
 <br/>
+    <c:CellTable ui:field="officeTable" />
+    <h3>Add Regional Office</h3>
+    <p>Enter the Regional Office ID to add to the
+        list of Regional Offices in the above table.</p>
+    <g:TextArea visibleLines="3" characterWidth="80" ui:field="addedOffices" />
+    <br/>
+    <g:Button styleName="gwt-Button" ui:field="addOfficeNow" text="Add"/>
+    <br/>
+    <g:Button  styleName="gwt-Button" ui:field="buttonOffice" text="Save Changes" />
 <hr/>
 <br/>
 </g:HTMLPanel>

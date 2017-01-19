@@ -16,15 +16,15 @@
 
 package org.opendatakit.aggregate.client.preferences;
 
-import java.util.ArrayList;
-
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.opendatakit.aggregate.client.RegionalOffice;
 import org.opendatakit.aggregate.client.exception.RequestFailureException;
 import org.opendatakit.common.persistence.client.exception.DatastoreFailureException;
 import org.opendatakit.common.security.client.UserSecurityInfo;
 import org.opendatakit.common.security.client.exception.AccessDeniedException;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import java.util.ArrayList;
 
 @RemoteServiceRelativePath("odktablesadmin")
 public interface OdkTablesAdminService extends RemoteService {
@@ -35,5 +35,9 @@ public interface OdkTablesAdminService extends RemoteService {
   Boolean updateAdmin(OdkTablesAdmin admin) throws AccessDeniedException, RequestFailureException, DatastoreFailureException;
 
   Boolean setAdmins(ArrayList<UserSecurityInfo> admins) throws AccessDeniedException, RequestFailureException, DatastoreFailureException;
+
+  void setOffice(ArrayList<RegionalOffice> regionalOffices) throws AccessDeniedException, DatastoreFailureException, RequestFailureException;
+
+  ArrayList<RegionalOffice> getAllOffices() throws AccessDeniedException, DatastoreFailureException, RequestFailureException;
 }
 

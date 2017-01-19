@@ -23,52 +23,58 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.user.cellview.client.Column;
+import org.opendatakit.aggregate.client.permissions.AccessConfigurationSheet;
 
 public abstract class UIEnabledValidatingTextInputColumn<T> extends Column<T, String> implements FieldUpdater<T, String> {
 
-	final UIEnabledPredicate<T> isEnabledPredicate;
+    final UIEnabledPredicate<T> isEnabledPredicate;
 
-	final Comparator<T> comparator;
+    final Comparator<T> comparator;
 
-	protected UIEnabledValidatingTextInputColumn(StringValidationPredicate<T> validationPredicate, 
-			UIVisiblePredicate<T> isVisiblePredicate,
-			Comparator<T> comparator) {
-		this(validationPredicate, isVisiblePredicate, null, comparator);
-	}
+    protected UIEnabledValidatingTextInputColumn(StringValidationPredicate<T> validationPredicate,
+                                                 UIVisiblePredicate<T> isVisiblePredicate,
+                                                 Comparator<T> comparator) {
+        this(validationPredicate, isVisiblePredicate, null, comparator);
+    }
 
-	protected UIEnabledValidatingTextInputColumn(StringValidationPredicate<T> validationPredicate, 
-			UIEnabledPredicate<T> isEnabledPredicate, 
-			Comparator<T> comparator) {
-		this(validationPredicate, null, isEnabledPredicate, comparator);
-	}
+    protected UIEnabledValidatingTextInputColumn(StringValidationPredicate<T> validationPredicate,
+                                                 UIEnabledPredicate<T> isEnabledPredicate,
+                                                 Comparator<T> comparator) {
+        this(validationPredicate, null, null, comparator);
+    }
 
-	protected UIEnabledValidatingTextInputColumn(StringValidationPredicate<T> validationPredicate, 
-										UIVisiblePredicate<T> isVisiblePredicate,
-										UIEnabledPredicate<T> isEnabledPredicate, 
-										Comparator<T> comparator) {
-			super(new UIEnabledValidatingTextInputCell<T>(validationPredicate, isVisiblePredicate, isEnabledPredicate));
-			this.isEnabledPredicate = isEnabledPredicate;
-			this.comparator = comparator;
-			setSortable(comparator != null);
-			setFieldUpdater(this);
-		}
 
-		@Override
-		public void onBrowserEvent(Context context, Element elem,
-				T object, NativeEvent event) {
-			if ( isEnabledPredicate == null || isEnabledPredicate.isEnabled(object) ) {
-				super.onBrowserEvent(context, elem, object, event);
-			}
-		}
+    protected UIEnabledValidatingTextInputColumn(StringValidationPredicate<T> validationPredicate,
+                                                 UIVisiblePredicate<T> isVisiblePredicate,
+                                                 UIEnabledPredicate<T> isEnabledPredicate,
+                                                 Comparator<T> comparator) {
+        super(new UIEnabledValidatingTextInputCell<T>(validationPredicate, isVisiblePredicate, isEnabledPredicate));
+        this.isEnabledPredicate = isEnabledPredicate;
+        this.comparator = comparator;
+        setSortable(comparator != null);
+        setFieldUpdater(this);
+    }
 
-		public Comparator<T> getComparator() {
-			return comparator;
-		}
-		
-		public abstract void setValue(T object, String value);
-		
-		@Override
-		public void update(int index, T object, String value) {
-			setValue(object, value);
-		}
+    protected UIEnabledValidatingTextInputColumn(StringValidationPredicate<T> validationPredicate,
+                                                 Comparator<T> comparator) {
+        this(validationPredicate, null, null, comparator);
+    }
+    @Override
+    public void onBrowserEvent(Context context, Element elem,
+                               T object, NativeEvent event) {
+        if ( isEnabledPredicate == null || isEnabledPredicate.isEnabled(object) ) {
+            super.onBrowserEvent(context, elem, object, event);
+        }
+    }
+
+    public Comparator<T> getComparator() {
+        return comparator;
+    }
+
+    public abstract void setValue(T object, String value);
+
+    @Override
+    public void update(int index, T object, String value) {
+        setValue(object, value);
+    }
 }

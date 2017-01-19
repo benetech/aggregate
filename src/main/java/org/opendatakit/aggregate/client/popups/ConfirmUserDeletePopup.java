@@ -35,6 +35,7 @@ public final class ConfirmUserDeletePopup extends AbstractPopupBase {
   private final UserSecurityInfo user;
   private final AccessConfigurationSheet accessSheet;
 
+
   public ConfirmUserDeletePopup(UserSecurityInfo userToDelete, AccessConfigurationSheet sheet) {
     super();
     this.user = userToDelete;
