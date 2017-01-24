@@ -52,6 +52,7 @@ public class UserSecurityInfo implements Comparable<UserSecurityInfo>, Serializa
 	String fullname; // tie-back to whatever the site admin wants to know.
 	String email; // null if username is non-null
 	UserType type;
+    String officeId;
 	TreeSet<GrantedAuthorityName> assignedUserGroups = new TreeSet<GrantedAuthorityName>();
 	TreeSet<GrantedAuthorityName> grantedAuthorities = new TreeSet<GrantedAuthorityName>();
 
@@ -67,6 +68,17 @@ public class UserSecurityInfo implements Comparable<UserSecurityInfo>, Serializa
 			throw new IllegalArgumentException("must have either just username or just email non-null");
 		}
 	}
+
+    public UserSecurityInfo(String username, String fullname, String email, UserType type, String officeId) {
+        this.username = username;
+        this.fullname = fullname;
+        this.email = email;
+        this.type = type;
+        this.officeId = officeId;
+        if ( (email != null && username != null) || (email == null && username == null) ) {
+            throw new IllegalArgumentException("must have either just username or just email non-null");
+        }
+    }
 
 	public UserType getType() {
 		return type;
@@ -99,6 +111,14 @@ public class UserSecurityInfo implements Comparable<UserSecurityInfo>, Serializa
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+    public String getOfficeId() {
+        return officeId;
+    }
+
+    public void setOfficeId(String officeId) {
+        this.officeId = officeId;
+    }
 
 	public String getCanonicalName() {
 		if ( username != null ) {

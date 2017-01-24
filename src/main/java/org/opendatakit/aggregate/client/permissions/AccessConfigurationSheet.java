@@ -13,41 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
 package org.opendatakit.aggregate.client.permissions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeSet;
-
-import org.opendatakit.aggregate.client.AggregateUI;
-import org.opendatakit.aggregate.client.PermissionsSubTab;
-import org.opendatakit.aggregate.client.SecureGWT;
-import org.opendatakit.aggregate.client.popups.ChangePasswordPopup;
-import org.opendatakit.aggregate.client.popups.ConfirmOfficeDeletePopup;
-import org.opendatakit.aggregate.client.popups.ConfirmUserDeletePopup;
-import org.opendatakit.aggregate.client.preferences.Preferences;
-import org.opendatakit.aggregate.client.widgets.UploadUsersAndPermsServletPopupButton;
-import org.opendatakit.aggregate.client.RegionalOffice;
-import org.opendatakit.aggregate.constants.common.UIConsts;
-import org.opendatakit.common.security.client.UserSecurityInfo;
-import org.opendatakit.common.security.client.UserSecurityInfo.UserType;
-import org.opendatakit.common.security.common.EmailParser;
-import org.opendatakit.common.security.common.EmailParser.Email;
-import org.opendatakit.common.security.common.GrantedAuthorityName;
-import org.opendatakit.common.web.client.BooleanValidationPredicate;
-import org.opendatakit.common.web.client.StringValidationPredicate;
-import org.opendatakit.common.web.client.UIEnabledActionCell;
-import org.opendatakit.common.web.client.UIEnabledActionColumn;
-import org.opendatakit.common.web.client.UIEnabledPredicate;
-import org.opendatakit.common.web.client.UIEnabledValidatingCheckboxColumn;
-import org.opendatakit.common.web.client.UIEnabledValidatingSelectionColumn;
-import org.opendatakit.common.web.client.UIEnabledValidatingTextInputColumn;
-import org.opendatakit.common.web.client.UIVisiblePredicate;
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -69,10 +37,45 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import org.opendatakit.aggregate.client.AggregateUI;
+import org.opendatakit.aggregate.client.PermissionsSubTab;
+import org.opendatakit.aggregate.client.RegionalOffice;
+import org.opendatakit.aggregate.client.SecureGWT;
+import org.opendatakit.aggregate.client.popups.ChangePasswordPopup;
+import org.opendatakit.aggregate.client.popups.ConfirmOfficeDeletePopup;
+import org.opendatakit.aggregate.client.popups.ConfirmUserDeletePopup;
+import org.opendatakit.aggregate.client.preferences.Preferences;
+import org.opendatakit.aggregate.client.widgets.UploadUsersAndPermsServletPopupButton;
+import org.opendatakit.aggregate.constants.common.UIConsts;
+import org.opendatakit.common.security.client.UserSecurityInfo;
+import org.opendatakit.common.security.client.UserSecurityInfo.UserType;
+import org.opendatakit.common.security.common.EmailParser;
+import org.opendatakit.common.security.common.EmailParser.Email;
+import org.opendatakit.common.security.common.GrantedAuthorityName;
+import org.opendatakit.common.web.client.BooleanValidationPredicate;
+import org.opendatakit.common.web.client.StringValidationPredicate;
+import org.opendatakit.common.web.client.UIEnabledActionCell;
+import org.opendatakit.common.web.client.UIEnabledActionColumn;
+import org.opendatakit.common.web.client.UIEnabledPredicate;
+import org.opendatakit.common.web.client.UIEnabledValidatingCheckboxColumn;
+import org.opendatakit.common.web.client.UIEnabledValidatingSelectionColumn;
+import org.opendatakit.common.web.client.UIEnabledValidatingTextInputColumn;
+import org.opendatakit.common.web.client.UIVisiblePredicate;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeSet;
 public class AccessConfigurationSheet extends Composite {
     private static final String NOT_VALID_EMAIL = "Username is not a valid Email address.\n\n"
             + "Usernames for Google accounts must be\n" + "Email addresses that Google can\n"
             + "authenticate (Google login is not supported at this time).";
+    private final ArrayList<String> OfficeIDsList = new ArrayList<String>();
+    AccountOfficeIDSelectionColumn usersOfficeID = new AccountOfficeIDSelectionColumn();
+    String removedOfficeId;
     private static final ArrayList<String> userType;
     private static final String ACCOUNT_TYPE_ODK = "ODK";
     private static final String ACCOUNT_TYPE_GOOGLE = "Google";
@@ -346,7 +349,14 @@ public class AccessConfigurationSheet extends Composite {
             addedOffices.setText("");
             officeProvider.getList().addAll(result);
             officeTable.setPageSize(Math.max(15, result.size()));
+            usersOfficeID.updateOffices();
             uiInSyncWithServer();
+            for(UserSecurityInfo u : dataProvider.getList())
+            {
+                if(u.getOfficeId().equals(removedOfficeId)) {
+                    u.setOfficeId(officeProvider.getList().get(0).getOfficeID());
+                }
+            }
         }
     };
     public void deleteUser(UserSecurityInfo user) {
@@ -355,6 +365,7 @@ public class AccessConfigurationSheet extends Composite {
     }
     public void deleteOffice(RegionalOffice office) {
         int index = officeProvider.getList().indexOf(office);
+        removedOfficeId = office.getOfficeID();
         officeProvider.getList().get(index).setRemoved(true);
         updateOfficesOnServer();
     }
@@ -422,6 +433,26 @@ public class AccessConfigurationSheet extends Composite {
             return (info.getType() != UserType.ANONYMOUS);
         }
     }
+    private static final class VisibleNotAnonymousOrSuperUserPredicate implements
+            UIVisiblePredicate<UserSecurityInfo> {
+        @Override
+        public boolean isVisible(UserSecurityInfo info) {
+            // enable only if it is not the anonymous user
+            if (info.getType() != UserType.REGISTERED)
+                return false;
+            // enable only if the user is not the superUser.
+            String email = info.getEmail();
+            String superUserEmail = AggregateUI.getUI().getRealmInfo().getSuperUserEmail();
+            String username = info.getUsername();
+            String usersOfficeID = info.getOfficeId();
+            String superUsername = AggregateUI.getUI().getRealmInfo().getSuperUsername();
+            if ( ( email != null && superUserEmail != null && superUserEmail.equals(email) ) ||
+                    ( username != null && usersOfficeID != null && superUsername != null && superUsername.equals(username) ) ) {
+                return false;
+            }
+            return true;
+        }
+    }
     private static final class EnableNotAnonymousOrSuperUserPredicate implements
             UIEnabledPredicate<UserSecurityInfo> {
         @Override
@@ -433,9 +464,10 @@ public class AccessConfigurationSheet extends Composite {
             String email = info.getEmail();
             String superUserEmail = AggregateUI.getUI().getRealmInfo().getSuperUserEmail();
             String username = info.getUsername();
+            String usersOfficeID = info.getOfficeId();
             String superUsername = AggregateUI.getUI().getRealmInfo().getSuperUsername();
             if ( ( email != null && superUserEmail != null && superUserEmail.equals(email) ) ||
-                    ( username != null && superUsername != null && superUsername.equals(username) ) ) {
+                    ( username != null && usersOfficeID != null && superUsername != null && superUsername.equals(username) ) ) {
                 return false;
             }
             return true;
@@ -737,6 +769,39 @@ public class AccessConfigurationSheet extends Composite {
             }
         }
     }
+    private class AccountOfficeIDSelectionColumn extends
+            UIEnabledValidatingSelectionColumn<UserSecurityInfo> {
+        protected AccountOfficeIDSelectionColumn() {
+            super(new ValidatingAccountTypePredicate(), new VisibleNotAnonymousOrSuperUserPredicate(),
+                    new EnableNotAnonymousOrSuperUserPredicate(), new AccountTypeComparator(), OfficeIDsList);
+        }
+
+        @Override
+        public String getValue(UserSecurityInfo object) {
+            return object.getOfficeId();
+        }
+
+        @Override
+        public void setValue(UserSecurityInfo object, String value) {
+            object.setOfficeId(value);
+            uiOutOfSyncWithServer();
+            userTable.redraw();
+        }
+
+        public void updateOffices()
+        {
+            int idx = userTable.getColumnIndex(usersOfficeID);
+            userTable.removeColumn(idx);
+            OfficeIDsList.clear();
+            for (RegionalOffice i : officeProvider.getList()) {
+                OfficeIDsList.add(i.getOfficeID());
+            }
+            usersOfficeID = new AccountOfficeIDSelectionColumn();
+            userTable.insertColumn(idx, usersOfficeID, "Regional Office");
+            uiOutOfSyncWithServer();
+            userTable.redraw();
+        }
+    }
     private final class DeleteActionCallback implements
             UIEnabledActionCell.Delegate<UserSecurityInfo> {
         @Override
@@ -781,14 +846,12 @@ public class AccessConfigurationSheet extends Composite {
         this.permissionsTab = permissionsTab;
         initWidget(uiBinder.createAndBindUi(this));
         sinkEvents(Event.ONCHANGE | Event.ONCLICK);
-
         downloadCsv.setHref(UIConsts.GET_USERS_AND_PERMS_CSV_SERVLET_ADDR);
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
         sb.appendHtmlConstant("<img src=\"images/red_x.png\" />");
         UIEnabledActionColumn<UserSecurityInfo> deleteMe = new UIEnabledActionColumn<UserSecurityInfo>(
                 sb.toSafeHtml(), null, new EnableNotAnonymousOrSuperUserPredicate(),
                 new DeleteActionCallback());
-
         userTable.addColumn(deleteMe, "");
         // Username
         UsernameTextColumn username = new UsernameTextColumn();
@@ -803,6 +866,7 @@ public class AccessConfigurationSheet extends Composite {
         // Type of User
         AccountTypeSelectionColumn type = new AccountTypeSelectionColumn();
         userTable.addColumn(type, "Account Type");
+        userTable.addColumn(usersOfficeID, "Regional Office");
         GroupMembershipColumn dc = new GroupMembershipColumn(GrantedAuthorityName.GROUP_DATA_COLLECTORS);
         userTable.addColumn(dc, GrantedAuthorityName.GROUP_DATA_COLLECTORS.getDisplayText());
         GroupMembershipColumn dv = new GroupMembershipColumn(GrantedAuthorityName.GROUP_DATA_VIEWERS);
@@ -823,6 +887,7 @@ public class AccessConfigurationSheet extends Composite {
         columnSortHandler.setComparator(type, type.getComparator());
         columnSortHandler.setComparator(dc, dc.getComparator());
         columnSortHandler.setComparator(dv, dv.getComparator());
+        columnSortHandler.setComparator(usersOfficeID, usersOfficeID.getComparator());
         columnSortHandler.setComparator(formsAdmin, formsAdmin.getComparator());
         synchronizeTables = new GroupMembershipColumn(GrantedAuthorityName.GROUP_SYNCHRONIZE_TABLES);
         if ( Preferences.getOdkTablesEnabled() ) {
@@ -909,7 +974,7 @@ public class AccessConfigurationSheet extends Composite {
     @UiField
     CheckBox anonymousAttachmentViewers;
     @UiField
-    Button button;
+    Button saveButton;
     @UiHandler("anonymousAttachmentViewers")
     void onAnonAttachmentViewerChange(ValueChangeEvent<Boolean> event) {
         anonymousAttachmentBoolean = event.getValue();
@@ -941,7 +1006,7 @@ public class AccessConfigurationSheet extends Composite {
                     .getEmail());
             if (u == null) {
                 u = new UserSecurityInfo(email.getUsername(), email.getFullName(), email.getEmail(),
-                        UserType.REGISTERED);
+                        UserType.REGISTERED, officeProvider.getList().get(0).getOfficeID());
                 list.add(u);
                 if (localUser) {
                     localUsers.put(u.getUsername(), u);
@@ -1003,16 +1068,14 @@ public class AccessConfigurationSheet extends Composite {
             }
             if (nAdded != 0) {
                 officeTable.setPageSize(Math.max(15, list.size()));
+                usersOfficeID.updateOffices();
                 uiOutOfSyncWithServer();
             }
         }
     }
-    @UiHandler("button")
-    void onUpdateClick(ClickEvent e) {
+    @UiHandler("saveButton")
+    void saveAllChanges(ClickEvent e) {
         updateUsersOnServer();
-    }
-    @UiHandler("buttonOffice")
-    void onUpdateOfficesClick(ClickEvent e) {
         updateOfficesOnServer();
     }
 }

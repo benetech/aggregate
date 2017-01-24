@@ -166,7 +166,7 @@ public class SecurityServiceUtil {
       for (CommonFieldsBase cb : l) {
         RegisteredUsersTable t = (RegisteredUsersTable) cb;
         UserSecurityInfo i = new UserSecurityInfo(t.getUsername(), t.getFullName(), t.getEmail(),
-            UserSecurityInfo.UserType.REGISTERED);
+            UserSecurityInfo.UserType.REGISTERED, t.getOfficeId());
         if (withAuthorities) {
           SecurityServiceUtil.setAuthenticationLists(i, t.getUri(), cc);
         }

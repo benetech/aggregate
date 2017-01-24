@@ -37,7 +37,6 @@
 <g:CheckBox ui:field="anonymousAttachmentViewers">Allow anonymous
 retrieval of images, audio and video data (needed for GoogleEarth balloon displays)</g:CheckBox>
 <p/>
-<g:Button  styleName="gwt-Button" ui:field="button" text="Save Changes" />
 <hr/>
 <h3>Add Users</h3>
 <p>Enter the usernames (for ODK accounts) or e-mail addresses (for Google Gmail accounts) to add to the
@@ -45,16 +44,20 @@ list of users in the above table. Iteractive logins with Google accounts are no 
 <g:TextArea visibleLines="3" characterWidth="80" ui:field="addedUsers" />
 <br/>
 <g:Button styleName="gwt-Button" ui:field="addNow" text="Add"/>
+<hr/>
+<h3>Edit Regional Offices</h3>
+<p>Change and delete Regional Offices.</p>
 <br/>
     <c:CellTable ui:field="officeTable" />
-    <h3>Add Regional Office</h3>
+    <h3>Add Regional Offices</h3>
     <p>Enter the Regional Office ID to add to the
         list of Regional Offices in the above table.</p>
     <g:TextArea visibleLines="3" characterWidth="80" ui:field="addedOffices" />
     <br/>
     <g:Button styleName="gwt-Button" ui:field="addOfficeNow" text="Add"/>
     <br/>
-    <g:Button  styleName="gwt-Button" ui:field="buttonOffice" text="Save Changes" />
+    <br/>
+    <g:Button  styleName="gwt-Button" ui:field="saveButton" text="Save Changes" />
 <hr/>
 <br/>
 </g:HTMLPanel>

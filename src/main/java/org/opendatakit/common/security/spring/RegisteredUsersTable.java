@@ -110,6 +110,9 @@ public final class RegisteredUsersTable extends CommonFieldsBase {
   private static final DataField IS_REMOVED = new DataField("IS_REMOVED",
       DataField.DataType.BOOLEAN, false);
 
+    private static final DataField OFFICE_ID = new DataField("OFFICE_ID",
+            DataField.DataType.STRING, true);
+
   /**
    * Construct a relation prototype. Only called via
    * {@link #assertRelation(Datastore, User)}
@@ -125,6 +128,7 @@ public final class RegisteredUsersTable extends CommonFieldsBase {
     fieldList.add(BASIC_AUTH_SALT);
     fieldList.add(DIGEST_AUTH_PASSWORD);
     fieldList.add(IS_REMOVED);
+    fieldList.add(OFFICE_ID);
   }
 
   /**
@@ -188,6 +192,16 @@ public final class RegisteredUsersTable extends CommonFieldsBase {
       throw new IllegalStateException("overflow nickname");
     }
   }
+
+    public String getOfficeId() {
+        return getStringField(OFFICE_ID);
+    }
+
+    public void setOfficeId(String value) {
+        if (!setStringField(OFFICE_ID, value)) {
+            throw new IllegalStateException("overflow officeId " + value);
+        }
+    }
 
   public String getDisplayName() {
     if (getEmail() == null) {
@@ -474,10 +488,12 @@ public final class RegisteredUsersTable extends CommonFieldsBase {
       r.setEmail(u.getEmail());
       r.setFullName(u.getFullName());
       r.setIsRemoved(false);
+      r.setOfficeId(u.getOfficeId());
       ds.putEntity(r, user);
       return r;
     } else {
       t.setFullName(u.getFullName());
+      t.setOfficeId(u.getOfficeId());
       ds.putEntity(t, user);
       return t;
     }
