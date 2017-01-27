@@ -36,6 +36,8 @@ import org.opendatakit.aggregate.odktables.TableManager.WebsafeTables;
 import org.opendatakit.aggregate.odktables.entity.UtilTransforms;
 import org.opendatakit.aggregate.odktables.exception.ETagMismatchException;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
+import org.opendatakit.aggregate.odktables.relation.DbTableDefinitions;
+import org.opendatakit.aggregate.odktables.rest.entity.TableDefinition;
 import org.opendatakit.aggregate.odktables.rest.entity.TableEntry;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissionsImpl;
@@ -79,6 +81,14 @@ public class ServerTableServiceImpl extends RemoteServiceServlet implements Serv
       for (TableEntry entry : result.tables) {
         clientEntries.add(UtilTransforms.transform(entry));
       }
+      for(TableEntryClient table : clientEntries)
+      {
+          DbTableDefinitions.DbTableDefinitionsEntity def = tm.getDbTableDefinition(table.getTableId());
+          if(def != null)
+          {
+              table.setOfficeId(def.getConnectedOfficeId());
+          }
+      }
       Collections.sort(clientEntries, new Comparator<TableEntryClient>() {
         @Override
         public int compare(TableEntryClient o1, TableEntryClient o2) {
@@ -93,6 +103,9 @@ public class ServerTableServiceImpl extends RemoteServiceServlet implements Serv
     } catch (ODKTaskLockException e) {
       e.printStackTrace();
       throw new RequestFailureException(e);
+    } catch (PermissionDeniedException e) {
+        e.printStackTrace();
+        throw new DatastoreFailureException(e);
     }
   }
 

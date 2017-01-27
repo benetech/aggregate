@@ -16,18 +16,19 @@
 
 package org.opendatakit.aggregate.client;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Widget;
 import org.opendatakit.aggregate.client.odktables.TableEntryClient;
 import org.opendatakit.aggregate.constants.common.SubTabs;
 import org.opendatakit.aggregate.constants.common.Tabs;
+import org.opendatakit.common.security.client.UserSecurityInfo;
 import org.opendatakit.common.security.client.exception.AccessDeniedException;
 import org.opendatakit.common.security.common.GrantedAuthorityName;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Widget;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 public class OdkTablesTabUI extends AggregateTabBase {
   
@@ -37,6 +38,7 @@ public class OdkTablesTabUI extends AggregateTabBase {
   
   private ArrayList<TableEntryClient> mTables = new ArrayList<TableEntryClient>();
   private HashSet<TablesChangeNotification> mChangeNotifications = new HashSet<TablesChangeNotification>();
+  private UserSecurityInfo currentUser =  AggregateUI.getUI().getUserInfo();
   
   public OdkTablesTabUI(AggregateUI baseUI) {
     super();
@@ -97,9 +99,15 @@ public class OdkTablesTabUI extends AggregateTabBase {
           @Override
           public void onSuccess(ArrayList<TableEntryClient> tables) {
             AggregateUI.getUI().clearError();
-            if ( mTables.size() != tables.size() || 
-                 !mTables.containsAll(tables) ) {
-              mTables = tables;
+              ArrayList<TableEntryClient> newTables  = new ArrayList<TableEntryClient>();
+              for(TableEntryClient table : tables) {
+                  if(checkIfAdmin() || table.getOfficeId().equals(currentUser.getOfficeId()))
+                      newTables.add(table);
+              }
+            if ( mTables.size() != newTables.size() ||
+                 !mTables.containsAll(newTables) ) {
+                mTables.clear();
+              mTables.addAll(newTables);
               notifyListener(true);
             } else {
               notifyListener(false);
@@ -109,6 +117,10 @@ public class OdkTablesTabUI extends AggregateTabBase {
       }
     }
   }
+
+    private boolean checkIfAdmin() {
+        return (currentUser.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN) && currentUser.getOfficeId() == null);
+    }
   
   private void notifyListener(boolean tableListChanged) {
     // make a copy...

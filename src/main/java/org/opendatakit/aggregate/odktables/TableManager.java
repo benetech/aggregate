@@ -16,9 +16,6 @@
 
 package org.opendatakit.aggregate.odktables;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.Validate;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
 import org.opendatakit.aggregate.odktables.exception.TableAlreadyExistsException;
@@ -64,6 +61,9 @@ import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.constants.BasicConsts;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Manages creating, deleting, and getting tables.
@@ -258,6 +258,32 @@ public class TableManager {
 
     return null;
   }
+
+    public  DbTableDefinitionsEntity getDbTableDefinition(String tableId) throws ODKDatastoreException,
+            PermissionDeniedException, ODKTaskLockException {
+        Validate.notEmpty(tableId);
+        TableEntry entry = null;
+        DbTableDefinitionsEntity definitionEntity = null;
+        OdkTablesLockTemplate propsLock = new OdkTablesLockTemplate(tableId, ODKTablesTaskLockType.TABLES_NON_PERMISSIONS_CHANGES, OdkTablesLockTemplate.DelayStrategy.SHORT, cc);
+        try {
+            propsLock.acquire();
+
+            entry = getTable(tableId);
+            if (entry == null) {
+                return null;
+            }
+            String schemaETag = entry.getSchemaETag();
+            if ( schemaETag == null ) {
+                return null;
+            }
+            definitionEntity = DbTableDefinitions.getDefinition(tableId, schemaETag, cc);
+        } finally {
+            propsLock.release();
+        }
+
+
+        return definitionEntity;
+    }
 
   /**
    * Retrieve the table entry for the given tableId.

@@ -437,17 +437,9 @@ public class AccessConfigurationSheet extends Composite {
             UIVisiblePredicate<UserSecurityInfo> {
         @Override
         public boolean isVisible(UserSecurityInfo info) {
-            // enable only if it is not the anonymous user
-            if (info.getType() != UserType.REGISTERED)
-                return false;
-            // enable only if the user is not the superUser.
-            String email = info.getEmail();
-            String superUserEmail = AggregateUI.getUI().getRealmInfo().getSuperUserEmail();
-            String username = info.getUsername();
-            String usersOfficeID = info.getOfficeId();
-            String superUsername = AggregateUI.getUI().getRealmInfo().getSuperUsername();
-            if ( ( email != null && superUserEmail != null && superUserEmail.equals(email) ) ||
-                    ( username != null && usersOfficeID != null && superUsername != null && superUsername.equals(username) ) ) {
+            // enable only if it is not the anonymous user or super user
+            if (info.getType() != UserType.REGISTERED || info.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN))
+            {
                 return false;
             }
             return true;

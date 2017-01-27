@@ -69,7 +69,7 @@ public class SecurityServiceImpl extends RemoteServiceServlet implements
         t = RegisteredUsersTable.getUserByUri(uriUser, ds, user);
         if (t != null) {
           info = new UserSecurityInfo(t.getUsername(), t.getFullName(), t.getEmail(),
-              UserSecurityInfo.UserType.REGISTERED);
+              UserSecurityInfo.UserType.REGISTERED, t.getOfficeId());
           SecurityServiceUtil.setAuthenticationLists(info, t.getUri(), cc);
         } else {
           throw new DatastoreFailureException("Unable to retrieve user record");

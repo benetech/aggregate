@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.opendatakit.aggregate.client.AggregateUI;
 import org.opendatakit.aggregate.odktables.Sequencer;
 import org.opendatakit.aggregate.odktables.exception.BadColumnNameException;
 import org.opendatakit.aggregate.odktables.relation.DbColumnDefinitions.DbColumnDefinitionsEntity;
@@ -38,6 +39,7 @@ import org.opendatakit.aggregate.odktables.rest.entity.TableRole;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
 import org.opendatakit.common.ermodel.Entity;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
+import org.opendatakit.common.security.spring.RegisteredUsersTable;
 import org.opendatakit.common.web.CallingContext;
 
 /**
@@ -167,9 +169,11 @@ public class EntityCreator {
     Validate.notEmpty(dbTableName);
     Validate.notNull(cc);
     DbTableDefinitionsEntity definition = DbTableDefinitions.createNewEntity(cc);
+      RegisteredUsersTable user = RegisteredUsersTable.getUserByUri(cc.getCurrentUser().getUriUser(), cc.getDatastore(), cc.getCurrentUser());
     definition.setTableId(tableId);
     definition.setSchemaETag(schemaETag);
     definition.setDbTableName(dbTableName);
+    definition.setConnectedOfficeId(user.getOfficeId());
     return definition;
   }
 
