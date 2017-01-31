@@ -54,6 +54,10 @@ public class UIConsts {
   public static final String UPLOAD_TABLE_FROM_CSV_SERVLET_ADDR =
       "uploadTableFromCSV";
 
+  // url pattern for creating a table from a ZIP archive
+  public static final String ADD_TABLE_FROM_ZIP_SERVLET_ADDR =
+          "addTableFromZIP";
+
   public static final String SUBMISSION_SERVLET_ADDR = "submission";
   public static final String ERROR_NO_FILTERS = "You need at least one filter to save a group.";
   public static final String ERROR_NO_NAME = "You need to provide a name for this filter group to continue";

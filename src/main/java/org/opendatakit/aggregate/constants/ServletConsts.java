@@ -18,6 +18,10 @@
 package org.opendatakit.aggregate.constants;
 
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Constant values used in ODK aggregate to aid with servlet management
  *
@@ -152,5 +156,49 @@ public final class ServletConsts {
   public static final String UPLOAD_NAVIGATION_STYLE_RESOURCE = "stylesheets/navigation.css";
 
   public static final String AGGREGATE_STYLE = "AggregateUI.css";
+
+  public static final Map<String,String> MIME_TYPES;
+  static {
+    Map<String, String> m = new HashMap<String, String>();
+    m.put("jpeg", "image/jpeg");
+    m.put("jpg", "image/jpeg");
+    m.put("png", "image/png");
+    m.put("gif", "image/gif");
+    m.put("pbm", "image/x-portable-bitmap");
+    m.put("ico", "image/x-icon");
+    m.put("bmp", "image/bmp");
+    m.put("tiff", "image/tiff");
+
+    m.put("mp2", "audio/mpeg");
+    m.put("mp3", "audio/mpeg");
+    m.put("wav", "audio/x-wav");
+
+    m.put("asf", "video/x-ms-asf");
+    m.put("avi", "video/x-msvideo");
+    m.put("mov", "video/quicktime");
+    m.put("mpa", "video/mpeg");
+    m.put("mpeg", "video/mpeg");
+    m.put("mpg", "video/mpeg");
+    m.put("mp4", "video/mp4");
+    m.put("qt", "video/quicktime");
+    m.put("3gp", "video/3gp");
+
+    m.put("css", "text/css");
+    m.put("htm", "text/html");
+    m.put("html", "text/html");
+    m.put("csv", "text/csv");
+    m.put("txt", "text/plain");
+    m.put("log", "text/plain");
+    m.put("rtf", "application/rtf");
+    m.put("pdf", "application/pdf");
+    m.put("zip", "application/zip");
+    m.put("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    m.put("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+    m.put("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
+    m.put("xml", "application/xml");
+    m.put("js", "application/x-javascript");
+    m.put("json", "application/json");
+    MIME_TYPES = Collections.unmodifiableMap(m);
+  }
 
 }

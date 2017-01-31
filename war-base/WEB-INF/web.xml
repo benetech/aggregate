@@ -334,6 +334,15 @@
 	    <url-pattern> /uploadTableFromCSV</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>addTableFromZIP</servlet-name>
+		<servlet-class>org.opendatakit.aggregate.servlet.OdkTablesAddTableServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>addTableFromZIP</servlet-name>
+		<url-pattern> /addTableFromZIP</url-pattern>
+	</servlet-mapping>
+
 
 
 	<servlet>

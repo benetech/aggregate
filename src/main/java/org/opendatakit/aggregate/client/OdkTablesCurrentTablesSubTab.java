@@ -19,6 +19,8 @@ package org.opendatakit.aggregate.client;
 import org.opendatakit.aggregate.client.OdkTablesTabUI.TablesChangeNotification;
 import org.opendatakit.aggregate.client.table.OdkTablesTableList;
 import org.opendatakit.aggregate.client.widgets.ServletPopupButton;
+import org.opendatakit.aggregate.constants.common.UIConsts;
+import org.opendatakit.common.security.common.GrantedAuthorityName;
 
 /**
  * This is the subtab that will house the display of the current ODK Tables
@@ -30,10 +32,10 @@ import org.opendatakit.aggregate.client.widgets.ServletPopupButton;
  */
 public class OdkTablesCurrentTablesSubTab extends AggregateSubTabBase implements TablesChangeNotification {
 
-  private static final String IMPORT_TABLE_TXT = "Import table from CSV";
-  private static final String IMPORT_TABLE_TOOLTIP_TEXT = "Create a new  table by importing a CSV";
-  private static final String IMPORT_TABLE_BALLOON_TXT = "Create a new table by importing from a CSV";
-  private static final String IMPORT_TABLE_BUTTON_TXT = "<img src =\"images/yellow_plus.png\" />Import Table From CSV";
+  private static final String IMPORT_TABLE_TXT = "Import table";
+  private static final String IMPORT_TABLE_TOOLTIP_TEXT = "Create a new  table by importing a ZIP archive";
+  private static final String IMPORT_TABLE_BALLOON_TXT = "Create a new table by importing from a ZIP archive";
+  private static final String IMPORT_TABLE_BUTTON_TXT = "<img src =\"images/yellow_plus.png\" /> Import Table";
 
   private OdkTablesTabUI parent;
   
@@ -55,11 +57,14 @@ public class OdkTablesCurrentTablesSubTab extends AggregateSubTabBase implements
 
     // addButton = new OdkTablesAddTableButton();
 
-    // importTableButton = new ServletPopupButton(IMPORT_TABLE_BUTTON_TXT,
-    // IMPORT_TABLE_TXT, UIConsts.UPLOAD_TABLE_FROM_CSV_SERVLET_ADDR, this,
-    // IMPORT_TABLE_TOOLTIP_TEXT, IMPORT_TABLE_BALLOON_TXT);
-    //
-    // add(importTableButton);
+    importTableButton = new ServletPopupButton(IMPORT_TABLE_BUTTON_TXT,
+      IMPORT_TABLE_TXT, UIConsts.ADD_TABLE_FROM_ZIP_SERVLET_ADDR, this, IMPORT_TABLE_TOOLTIP_TEXT, IMPORT_TABLE_BALLOON_TXT);
+
+    if (!AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
+            importTableButton.setEnabled(false);
+    }
+
+    add(importTableButton);
     add(tableList);
 
   }

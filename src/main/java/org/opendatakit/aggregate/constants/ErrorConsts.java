@@ -102,4 +102,7 @@ public final class ErrorConsts {
 
   public static final String JAVA_ROSA_PARSING_PROBLEM = "Problem with JavaRosa Parsing Form:";
   public static final String ERROR_OBTAINING_FUSION_TABLE_ID = "ERROR CREATING FUSION TABLE - DID NOT GET A TABLE NUMBER";
+
+  public static final String NO_ZIP_FILE = "Invalid file provided, ZIP file required";
+  public static final String NO_DEFINITION_FILE = "Invalid file provided, definition.csv file required";
 }
