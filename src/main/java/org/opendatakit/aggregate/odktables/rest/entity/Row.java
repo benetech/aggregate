@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.google.gson.annotations.Expose;
 
 public class Row {
 
@@ -35,6 +36,7 @@ public class Row {
    */
   @JacksonXmlProperty(localName = "id")
   @JsonProperty(value = "id", required = false)
+  @Expose
   private String rowId;
 
   /**
@@ -43,6 +45,7 @@ public class Row {
    * (creation is a revision from 'undefined').
    */
   @JsonProperty(required = false)
+  @Expose
   private String rowETag;
 
   /**
@@ -53,12 +56,14 @@ public class Row {
    * and prior/next changes.
    */
   @JsonProperty(required = false)
+  @Expose
   private String dataETagAtModification;
 
   /**
    * deletion is itself a revision.
    */
   @JsonProperty(required = false)
+  @Expose
   private boolean deleted;
 
   /**
@@ -66,6 +71,7 @@ public class Row {
    * archive/recovery tools.
    */
   @JsonProperty(required = false)
+  @Expose
   private String createUser;
 
   /**
@@ -73,6 +79,7 @@ public class Row {
    * archive/recovery tools
    */
   @JsonProperty(required = false)
+  @Expose
   private String lastUpdateUser;
 
   /**
@@ -90,6 +97,7 @@ public class Row {
    * this other formId.
    */
   @JsonProperty(required = false)
+  @Expose
   private String formId;
 
   /**
@@ -99,6 +107,7 @@ public class Row {
    * that last revised this row.
    */
   @JsonProperty(required = false)
+  @Expose
   private String locale;
 
   /**
@@ -112,6 +121,7 @@ public class Row {
    * values.
    */
   @JsonProperty(required = false)
+  @Expose
   private String savepointType;
 
   /**
@@ -128,6 +138,7 @@ public class Row {
    * reading in this row.
    */
   @JsonProperty(required = false)
+  @Expose
   private String savepointTimestamp;
 
   /**
@@ -144,6 +155,7 @@ public class Row {
    * created the row.
    */
  @JsonProperty(required = false)
+ @Expose
   private String savepointCreator;
 
   /**
@@ -160,6 +172,7 @@ public class Row {
    */
   @JacksonXmlProperty(localName = "filterScope")
   @JsonProperty(value = "filterScope", required = false)
+  @Expose
   private RowFilterScope rowFilterScope;
 
   /**
@@ -170,6 +183,7 @@ public class Row {
   @JsonProperty(required = false)
   @JacksonXmlElementWrapper(localName="orderedColumns")
   @JacksonXmlProperty(localName="value")
+  @Expose
   private ArrayList<DataKeyValue> orderedColumns;
 
   /**

@@ -35,7 +35,7 @@ public class RFC4180CsvWriter {
 
   private final char lf = 10;
 
-  private final char separator = ',';
+  private final char separator = '\t';
 
   private final char quotechar = '"';
 

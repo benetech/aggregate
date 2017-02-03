@@ -158,6 +158,12 @@
 		<intercept-url pattern="/uploadTableFromCSV/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />
 		<intercept-url pattern="/addTableFromZIP/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />
 
+		<!-- odk tables export table content to JSON -->
+		<intercept-url pattern="/exportTableContentToJSON/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />
+
+		<!-- odk tables export table content to CSV -->
+		<intercept-url pattern="/exportTableContentToCSV/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />
+
 		<!-- in case we forgot to mention something... -->
 		<intercept-url pattern="/**" access="isAnonymous()" />
 	</filter-security-metadata-source>

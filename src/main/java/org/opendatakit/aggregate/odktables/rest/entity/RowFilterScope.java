@@ -16,6 +16,7 @@
 
 package org.opendatakit.aggregate.odktables.rest.entity;
 
+import com.google.gson.annotations.Expose;
 import org.apache.commons.lang3.Validate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,9 +33,11 @@ public class RowFilterScope implements Comparable<RowFilterScope> {
   }
 
   @JsonProperty(required = false)
+  @Expose
   private Type type;
 
   @JsonProperty(required = false)
+  @Expose
   private String value;
 
 

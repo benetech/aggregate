@@ -2,6 +2,7 @@ package org.opendatakit.aggregate.odktables.rest.entity;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+import com.google.gson.annotations.Expose;
 
 /**
  * Serialization:
@@ -13,9 +14,11 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 public class DataKeyValue {
 
   @JacksonXmlProperty(isAttribute=true)
+  @Expose
   public String column;
 
   @JacksonXmlText
+  @Expose
   public String value;
 
   public DataKeyValue() {

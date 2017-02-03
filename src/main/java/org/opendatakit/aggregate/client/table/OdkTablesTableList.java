@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import org.opendatakit.aggregate.client.AggregateUI;
 import org.opendatakit.aggregate.client.odktables.TableEntryClient;
 import org.opendatakit.aggregate.client.widgets.OdkTablesDeleteTableButton;
+import org.opendatakit.aggregate.client.widgets.OdkTablesExportTableButton;
 import org.opendatakit.aggregate.client.widgets.OdkTablesShowTableButton;
 import org.opendatakit.aggregate.client.widgets.OdkTablesShowTableFilesButton;
 import org.opendatakit.common.security.common.GrantedAuthorityName;
@@ -51,6 +52,9 @@ public class OdkTablesTableList extends FlexTable {
 
   private static final int TABLE_FILES_BUTTON_COLUMN = 3;
   private static final String TABLE_FILE_BUTTON_HEADING = "View Data Files";
+
+  private static final int EXPORT_BUTTON_COLUMN = 4;
+  private static final String EXPORT_BUTTON_HEADING = "Export Data";
 
   public OdkTablesTableList() {
     // add styling
@@ -90,6 +94,7 @@ public class OdkTablesTableList extends FlexTable {
       setText(0, VIEW_TABLE_BUTTON_COLUMN, VIEW_TABLE_BUTTON_HEADING);
       setText(0, TABLE_FILES_BUTTON_COLUMN, TABLE_FILE_BUTTON_HEADING);
       setText(0, TABLE_ID_COLUMN, TABLE_ID_HEADING);
+      setText(0, EXPORT_BUTTON_COLUMN, EXPORT_BUTTON_HEADING);
 
       for (int i = 0; i < tables.size(); i++) {
         TableEntryClient table = tables.get(i);
@@ -108,6 +113,8 @@ public class OdkTablesTableList extends FlexTable {
             new OdkTablesShowTableButton(this, table.getTableId()));
         setWidget(j, TABLE_FILES_BUTTON_COLUMN,
             new OdkTablesShowTableFilesButton(this, table.getTableId()));
+        OdkTablesExportTableButton exportTableButton = new OdkTablesExportTableButton(this, table.getTableId());
+        setWidget(j, EXPORT_BUTTON_COLUMN, exportTableButton);
 
         if (j % 2 == 0) {
           getRowFormatter().addStyleName(j, "evenTableRow");

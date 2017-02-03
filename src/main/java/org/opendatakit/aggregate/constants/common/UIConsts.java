@@ -53,6 +53,12 @@ public class UIConsts {
   // url pattern for uploading a table from a CSV file
   public static final String UPLOAD_TABLE_FROM_CSV_SERVLET_ADDR =
       "uploadTableFromCSV";
+  // url pattern for exporting table content to JSON file
+  public static final String EXPORT_TABLE_CONTENT_TO_JSON_SERVLET_ADDR =
+      "exportTableContentToJSON";
+  // url pattern for exporting table content to CSV file
+  public static final String EXPORT_TABLE_CONTENT_TO_CSV_SERVLET_ADDR =
+          "exportTableContentToCSV";
 
   // url pattern for creating a table from a ZIP archive
   public static final String ADD_TABLE_FROM_ZIP_SERVLET_ADDR =

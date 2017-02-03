@@ -30,6 +30,7 @@ import org.opendatakit.aggregate.client.odktables.TableEntryClient;
 import org.opendatakit.aggregate.client.widgets.OdkTablesAdvanceRowsButton;
 import org.opendatakit.aggregate.client.widgets.OdkTablesDeleteRowButton;
 import org.opendatakit.aggregate.constants.common.SubTabs;
+import org.opendatakit.aggregate.constants.common.ODKDefaultColumnNames;
 import org.opendatakit.common.security.common.GrantedAuthorityName;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -56,23 +57,6 @@ public class OdkTablesViewTable extends FlexTable {
   private String refreshCursor;
   private String resumeCursor;
   private boolean hasMore;
-
-  // this is the heading for the delete row button.
-  private static final String DELETE_ROW_HEADING = "Delete";
-
-  // these are far right
-  private static final String SAVEPOINT_TYPE = "Savepoint Type";
-  private static final String FORM_ID = "Form Id";
-  private static final String LOCALE = "Locale";
-  private static final String SAVEPOINT_TIMESTAMP = "Savepoint Timestamp";
-  private static final String SAVEPOINT_CREATOR = "Savepoint Creator";
-  private static final String ROW_ID = "Row ID";
-  private static final String ROW_ETAG = "Row ETag";
-  private static final String FILTER_TYPE = "Filter Type";
-  private static final String FILTER_VALUE = "Filter Value";
-  private static final String DATA_ETAG_AT_MODIFICATION = "Changeset Data ETag";
-  private static final String LAST_UPDATE_USER = "Last Update By Verified User";
-  private static final String CREATED_BY_USER = "Created By Verified User";
 
   private AggregateSubTabBase tableSubTab;
 
@@ -269,7 +253,7 @@ public class OdkTablesViewTable extends FlexTable {
       setText(0, 0, NO_DATA_MESSAGE);
     } else {
       // set the delete column
-      setText(0, 0, DELETE_ROW_HEADING);
+      setText(0, 0, ODKDefaultColumnNames.DELETE_ROW_HEADING);
       int i = 1;
       // make the headings
       for (String name : this.columnNames) {
@@ -278,18 +262,18 @@ public class OdkTablesViewTable extends FlexTable {
         setText(0, i, name);
         i++;
       }
-      setText(0, i++, SAVEPOINT_TYPE);
-      setText(0, i++, FORM_ID);
-      setText(0, i++, LOCALE);
-      setText(0, i++, SAVEPOINT_TIMESTAMP);
-      setText(0, i++, SAVEPOINT_CREATOR);
-      setText(0, i++, ROW_ID);
-      setText(0, i++, ROW_ETAG);
-      setText(0, i++, FILTER_TYPE);
-      setText(0, i++, FILTER_VALUE);
-      setText(0, i++, LAST_UPDATE_USER);
-      setText(0, i++, CREATED_BY_USER);
-      setText(0, i++, DATA_ETAG_AT_MODIFICATION);
+      setText(0, i++, ODKDefaultColumnNames.SAVEPOINT_TYPE);
+      setText(0, i++, ODKDefaultColumnNames.FORM_ID);
+      setText(0, i++, ODKDefaultColumnNames.LOCALE);
+      setText(0, i++, ODKDefaultColumnNames.SAVEPOINT_TIMESTAMP);
+      setText(0, i++, ODKDefaultColumnNames.SAVEPOINT_CREATOR);
+      setText(0, i++, ODKDefaultColumnNames.ROW_ID);
+      setText(0, i++, ODKDefaultColumnNames.ROW_ETAG);
+      setText(0, i++, ODKDefaultColumnNames.FILTER_TYPE);
+      setText(0, i++, ODKDefaultColumnNames.FILTER_VALUE);
+      setText(0, i++, ODKDefaultColumnNames.LAST_UPDATE_USER);
+      setText(0, i++, ODKDefaultColumnNames.CREATED_BY_USER);
+      setText(0, i++, ODKDefaultColumnNames.DATA_ETAG_AT_MODIFICATION);
 
 
       getRowFormatter().addStyleName(0, "titleBar");

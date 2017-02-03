@@ -24,6 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.Expose;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -79,13 +82,21 @@ public class DataManager {
   private static final Log logger = LogFactory.getLog(DataManager.class);
 
   public static class WebsafeRows {
+    @JsonProperty
+    @Expose
     public final List<Row> rows;
 
+    @Expose
     public final String dataETag;
+    @JsonIgnore
     public final String websafeRefetchCursor;
+    @JsonIgnore
     public final String websafeBackwardCursor;
+    @JsonIgnore
     public final String websafeResumeCursor;
+    @JsonIgnore
     public final boolean hasMore;
+    @JsonIgnore
     public final boolean hasPrior;
 
     public WebsafeRows(List<Row> rows, String dataETag, 
