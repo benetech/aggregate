@@ -46,6 +46,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.opendatakit.aggregate.client.odktables.TableResourceClient;
 import org.opendatakit.aggregate.odktables.ConfigFileChangeDetail;
 import org.opendatakit.aggregate.odktables.FileContentInfo;
 import org.opendatakit.aggregate.odktables.FileManager;
@@ -55,12 +56,14 @@ import org.opendatakit.aggregate.odktables.api.OdkTables;
 import org.opendatakit.aggregate.odktables.api.RealizedTableService;
 import org.opendatakit.aggregate.odktables.api.TableAclService;
 import org.opendatakit.aggregate.odktables.api.TableService;
+import org.opendatakit.aggregate.odktables.entity.UtilTransforms;
 import org.opendatakit.aggregate.odktables.exception.AppNameMismatchException;
 import org.opendatakit.aggregate.odktables.exception.FileNotFoundException;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
 import org.opendatakit.aggregate.odktables.exception.SchemaETagMismatchException;
 import org.opendatakit.aggregate.odktables.exception.TableAlreadyExistsException;
 import org.opendatakit.aggregate.odktables.exception.TableNotFoundException;
+import org.opendatakit.aggregate.odktables.relation.DbTableDefinitions;
 import org.opendatakit.aggregate.odktables.rest.ApiConstants;
 import org.opendatakit.aggregate.odktables.rest.RFC4180CsvReader;
 import org.opendatakit.aggregate.odktables.rest.RFC4180CsvWriter;
@@ -193,7 +196,11 @@ public class TableServiceImpl implements TableService {
       // cruft)
       throw new TableNotFoundException(ERROR_TABLE_NOT_FOUND + "\n" + tableId);
     }
-    TableResource resource = getResource(info, appId, entry);
+    TableResource tableResource = getResource(info, appId, entry);
+
+    TableResourceClient resource = UtilTransforms.transform(tableResource);
+    DbTableDefinitions.DbTableDefinitionsEntity definition = tm.getDbTableDefinition(tableId);
+    resource.setOfficeId(definition.getConnectedOfficeId());
 
     // set the table-level manifest ETag if known...
     try {

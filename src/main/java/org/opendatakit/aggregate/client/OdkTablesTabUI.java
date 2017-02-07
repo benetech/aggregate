@@ -104,9 +104,8 @@ public class OdkTablesTabUI extends AggregateTabBase {
                   if(checkIfAdmin() || table.getOfficeId().equals(currentUser.getOfficeId()))
                       newTables.add(table);
               }
-            if ( mTables.size() != newTables.size() ||
-                 !mTables.containsAll(newTables) ) {
-                mTables.clear();
+            if ( mTables.size() != newTables.size()) {
+              mTables.clear();
               mTables.addAll(newTables);
               notifyListener(true);
             } else {

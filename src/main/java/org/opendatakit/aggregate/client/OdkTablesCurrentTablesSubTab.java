@@ -20,6 +20,7 @@ import org.opendatakit.aggregate.client.OdkTablesTabUI.TablesChangeNotification;
 import org.opendatakit.aggregate.client.table.OdkTablesTableList;
 import org.opendatakit.aggregate.client.widgets.ServletPopupButton;
 import org.opendatakit.aggregate.constants.common.UIConsts;
+import org.opendatakit.common.security.client.UserSecurityInfo;
 import org.opendatakit.common.security.common.GrantedAuthorityName;
 
 /**
@@ -60,8 +61,8 @@ public class OdkTablesCurrentTablesSubTab extends AggregateSubTabBase implements
     importTableButton = new ServletPopupButton(IMPORT_TABLE_BUTTON_TXT,
       IMPORT_TABLE_TXT, UIConsts.ADD_TABLE_FROM_ZIP_SERVLET_ADDR, this, IMPORT_TABLE_TOOLTIP_TEXT, IMPORT_TABLE_BALLOON_TXT);
 
-    if (!AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
-            importTableButton.setEnabled(false);
+    if (AggregateUI.getUI().getUserInfo().getType() == UserSecurityInfo.UserType.ANONYMOUS) {
+            importTableButton.setVisible(false);
     }
 
     add(importTableButton);

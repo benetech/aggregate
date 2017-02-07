@@ -50,14 +50,6 @@ public class TableEntryClient implements Serializable {
     this.schemaETag = schemaETag;
   }
 
-  public TableEntryClient(final String tableId, final String dataETag,
-                          final String schemaETag, final String officeId) {
-    this.tableId = tableId;
-    this.dataETag = dataETag;
-    this.schemaETag = schemaETag;
-    this.officeId = officeId;
-  }
-
   public String getTableId() {
     return this.tableId;
   }

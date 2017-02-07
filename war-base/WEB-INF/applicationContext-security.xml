@@ -156,7 +156,7 @@
 		<intercept-url pattern="/tableKeyValueManifest/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES') or hasRole('ROLE_ADMINISTER_TABLES')" />
 		<!-- odk tables upload file from CSV -->
 		<intercept-url pattern="/uploadTableFromCSV/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />
-		<intercept-url pattern="/addTableFromZIP/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />
+		<intercept-url pattern="/addTableFromZIP/**" access="!isAnonymous()" />
 
 		<!-- odk tables export table content to JSON -->
 		<intercept-url pattern="/exportTableContentToJSON/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />
