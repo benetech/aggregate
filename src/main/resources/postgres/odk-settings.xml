@@ -29,7 +29,7 @@
 		<property name="maxTotal" value="100"/>
 		<property name="maxConnLifetimeMillis" value="590000"/>
 		<property name="maxWaitMillis" value="30000"/>
-		<property name="validationQuery" value="select schema_name from information_schema.schemata limit 1"/>
+		<property name="validationQuery" value="select 1"/>
 		<property name="validationQueryTimeout" value="1"/>
 		<property name="testOnBorrow" value="true"/>
 	</bean>
