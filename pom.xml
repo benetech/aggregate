@@ -88,33 +88,12 @@
         <!-- aggregate-postgresql-specific -->
         <module>postgres-unit-tests</module>
 
-        <!--
-        <module>odk-gae-settings</module>
-        <module>odk-gae-it-settings</module>
-        <module>odk-gae-unit-settings</module>
-        -->
-        <!-- aggregate-gae-specific -->
-        <!--
-        <module>aggregate-gae-default</module>
-        <module>aggregate-gae-n-background</module>
-        <module>aggregate-gae</module>
-        -->
-        <!-- aggregate-gae-specific -->
-        <!--
-        <module>gae-unit-tests</module>
-        -->
-
-        
         <module>odk-mysql-settings</module>
         <module>odk-mysql-it-settings</module>
         <module>odk-mysql-unit-settings</module>
-        
         <!-- aggregate-mysql-specific -->
-        
         <module>aggregate-mysql</module>
-        
         <!-- aggregate-mysql-specific -->
-        
         <module>mysql-unit-tests</module>
         
         <!-- odk tables client libraries -->
