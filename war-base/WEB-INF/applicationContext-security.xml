@@ -164,6 +164,9 @@
 		<!-- odk tables export table content to CSV -->
 		<intercept-url pattern="/exportTableContentToCSV/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />
 
+		<!-- odk tables export files to ZIP -->
+		<intercept-url pattern="/zipFileDownload/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />
+
 		<!-- in case we forgot to mention something... -->
 		<intercept-url pattern="/**" access="isAnonymous()" />
 	</filter-security-metadata-source>

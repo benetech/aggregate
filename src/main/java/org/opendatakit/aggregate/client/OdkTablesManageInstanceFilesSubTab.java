@@ -16,20 +16,20 @@
 
 package org.opendatakit.aggregate.client;
 
-import java.util.ArrayList;
-
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
 import org.opendatakit.aggregate.client.OdkTablesTabUI.TablesChangeNotification;
 import org.opendatakit.aggregate.client.odktables.TableEntryClient;
 import org.opendatakit.aggregate.client.table.OdkTablesViewInstanceFileInfo;
 import org.opendatakit.aggregate.client.widgets.OdkTablesTableIdServletPopupButton.OdkTablesData;
 import org.opendatakit.aggregate.constants.common.UIConsts;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
+import java.util.ArrayList;
 
 /**
  * This class builds the subtab that allows for viewing and managing the files
@@ -202,6 +202,8 @@ public class OdkTablesManageInstanceFilesSubTab extends AggregateSubTabBase
       selectTablePanel.setHTML(2, 0, "<h2 id=\"table_displayed\"> Displaying: </h2>");
       selectTablePanel.setHTML(2, 1, "<h2 id=\table_name\"> " + currentTable.getTableId()
           + " </h2>");
+      Anchor exportZIP = new Anchor("Download all in ZIP file", "zipFileDownload?tableId=" + currentTable.getTableId());
+      selectTablePanel.setWidget(3, 0, exportZIP);
       add(tableFileData);
     }
   }

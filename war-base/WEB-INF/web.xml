@@ -363,6 +363,15 @@
 		<url-pattern> /exportTableContentToJSON</url-pattern>
 	</servlet-mapping>
 
+	<!--  servlet for exporting table files to zip file -->
+	<servlet>
+		<servlet-name>zipFileDownload</servlet-name>
+		<servlet-class>org.opendatakit.aggregate.servlet.ODKTableZipFileDownloadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>zipFileDownload</servlet-name>
+		<url-pattern>/zipFileDownload</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>upload</servlet-name>

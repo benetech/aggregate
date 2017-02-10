@@ -58,11 +58,10 @@ public class UIConsts {
       "exportTableContentToJSON";
   // url pattern for exporting table content to CSV file
   public static final String EXPORT_TABLE_CONTENT_TO_CSV_SERVLET_ADDR =
-          "exportTableContentToCSV";
-
+      "exportTableContentToCSV";
   // url pattern for creating a table from a ZIP archive
   public static final String ADD_TABLE_FROM_ZIP_SERVLET_ADDR =
-          "addTableFromZIP";
+      "addTableFromZIP";
 
   public static final String SUBMISSION_SERVLET_ADDR = "submission";
   public static final String ERROR_NO_FILTERS = "You need at least one filter to save a group.";
