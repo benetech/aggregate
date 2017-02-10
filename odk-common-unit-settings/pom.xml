@@ -8,7 +8,6 @@
     <version>1.0.1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <groupId>org.opendatakit</groupId>
   <artifactId>odk-common-unit-settings</artifactId>
   <name>Common unit test configuration settings</name>
 </project>

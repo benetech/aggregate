@@ -33,6 +33,7 @@
 		</testResource>
 	</testResources>
 	<testSourceDirectory>${toplevel.directory}/src/test/java</testSourceDirectory>
+	<pluginManagement>
 	<plugins>
 		<plugin>
 			<groupId>org.codehaus.mojo</groupId>
@@ -101,6 +102,7 @@
 			  <test.forms.dir>${itFormsDirectory}</test.forms.dir>
 			  <test.submissions.dir>${itSubmissionsDirectory}</test.submissions.dir>
 			  <test.server.port>${test.server.port}</test.server.port>
+			  <test.server.secure.port>${test.server.secure.port}</test.server.secure.port>
 			  <test.server.hostname>${test.server.hostname}</test.server.hostname>
 			  <test.server.baseUrl>${test.server.baseUrl}</test.server.baseUrl>
 			</systemPropertyVariables>
@@ -111,6 +113,7 @@
 		  </configuration>
 		</plugin>
 	</plugins>
+	</pluginManagement>
   </build>
 	<reporting>
 		<plugins>

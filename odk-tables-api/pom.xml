@@ -7,9 +7,7 @@
     <version>1.0.1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <groupId>org.opendatakit</groupId>
   <artifactId>odk-tables-api</artifactId>
-  <version>1.0.1</version>
   <packaging>jar</packaging>
   <name>API Jar for ODK Tables</name>
   <!--
