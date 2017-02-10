@@ -18,7 +18,6 @@ package org.opendatakit.aggregate.client;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -229,10 +228,7 @@ public class OdkTablesManageTableFilesSubTab extends AggregateSubTabBase impleme
       tableFileData.updateDisplay(currentTable);
 
       selectTablePanel.setHTML(2, 0, "<h2 id=\"table_displayed\"> Displaying: </h2>");
-      selectTablePanel.setHTML(2, 1, "<h2 id=\"table_name\"> " + currentTable.getTableId()
-          + " </h2>");//zipFileDownload exportTableContentToCSV?tableId
-      Anchor exportZIP = new Anchor("Download all in ZIP file", "zipFileDownload?tableId=" + currentTable.getTableId());
-      selectTablePanel.setWidget(3, 0, exportZIP);
+      selectTablePanel.setHTML(2, 1, "<h2 id=\"table_name\"> " + currentTable.getTableId() + " </h2>");
       add(tableFileData);
     }
   }

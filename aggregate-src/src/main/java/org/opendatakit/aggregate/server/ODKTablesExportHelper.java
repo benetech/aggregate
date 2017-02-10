@@ -1,11 +1,19 @@
 package org.opendatakit.aggregate.server;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.apache.commons.lang3.CharEncoding;
+import org.opendatakit.aggregate.constants.ServletConsts;
+import org.opendatakit.aggregate.constants.common.ODKDefaultColumnNames;
 import org.opendatakit.aggregate.odktables.DataManager;
 import org.opendatakit.aggregate.odktables.TableManager;
 import org.opendatakit.aggregate.odktables.exception.BadColumnNameException;
 import org.opendatakit.aggregate.odktables.exception.InconsistentStateException;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
 import org.opendatakit.aggregate.odktables.relation.DbColumnDefinitions;
+import org.opendatakit.aggregate.odktables.rest.RFC4180CsvWriter;
+import org.opendatakit.aggregate.odktables.rest.entity.DataKeyValue;
+import org.opendatakit.aggregate.odktables.rest.entity.Row;
 import org.opendatakit.aggregate.odktables.rest.entity.TableEntry;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissionsImpl;
@@ -15,6 +23,10 @@ import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 import org.opendatakit.common.web.CallingContext;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 /**
@@ -101,6 +113,135 @@ public class ODKTablesExportHelper {
      */
     public DataManager.WebsafeRows getWebsafeRows() {
         return this.websafeRows;
+    }
+
+    public byte[] exportData(String fileFormat){
+        try {
+            loadWebsafeRows();
+            if(fileFormat.equals(ServletConsts.CSV)){
+                loadUserDefinedColumnNames();
+            }
+        } catch (ODKDatastoreException e) {
+            e.printStackTrace();
+        } catch (PermissionDeniedException e) {
+            e.printStackTrace();
+        } catch (ODKTaskLockException e) {
+            e.printStackTrace();
+        } catch (InconsistentStateException e) {
+            e.printStackTrace();
+        } catch (BadColumnNameException e) {
+            e.printStackTrace();
+        }
+        if(fileFormat.equals(ServletConsts.CSV))
+            return prepareCSV();
+        else if(fileFormat.equals(ServletConsts.JSON))
+            return prepareJSON();
+        else
+            return new byte[0];
+
+    }
+
+    private byte[] prepareCSV(){
+        // Begin creation of the CSV file
+        StringWriter buffer = new StringWriter();
+
+        // Writes one row at a time with data separated with tab key
+        RFC4180CsvWriter writer = new RFC4180CsvWriter(buffer);
+
+        // Write column headings
+        ArrayList<String> columnHeadings = new ArrayList<String>();
+        columnHeadings.add(ODKDefaultColumnNames.DELETE_ROW_HEADING);
+        for ( String columnName : userDefindedColumnNames) {
+            columnHeadings.add(columnName);
+        }
+        columnHeadings.add(ODKDefaultColumnNames.SAVEPOINT_TYPE);
+        columnHeadings.add(ODKDefaultColumnNames.FORM_ID);
+        columnHeadings.add(ODKDefaultColumnNames.LOCALE);
+        columnHeadings.add(ODKDefaultColumnNames.SAVEPOINT_TIMESTAMP);
+        columnHeadings.add(ODKDefaultColumnNames.SAVEPOINT_CREATOR);
+        columnHeadings.add(ODKDefaultColumnNames.ROW_ID);
+        columnHeadings.add(ODKDefaultColumnNames.ROW_ETAG);
+        columnHeadings.add(ODKDefaultColumnNames.FILTER_TYPE);
+        columnHeadings.add(ODKDefaultColumnNames.FILTER_VALUE);
+        columnHeadings.add(ODKDefaultColumnNames.LAST_UPDATE_USER);
+        columnHeadings.add(ODKDefaultColumnNames.CREATED_BY_USER);
+        columnHeadings.add(ODKDefaultColumnNames.DATA_ETAG_AT_MODIFICATION);
+
+        try {
+            writer.writeNext(columnHeadings.toArray(new String[0]));
+
+            //Write all the data to the specific columns
+            ArrayList<String> dataRow = new ArrayList<String>();
+            for (Row row: websafeRows.rows) {
+                // Is row deleted
+                dataRow.add(String.valueOf(row.isDeleted()));
+
+                // User defined column values
+                for (DataKeyValue keyValue : row.getValues()) {
+                    dataRow.add(keyValue.value);
+                }
+
+                // Default columns
+                dataRow.add(row.getSavepointType());
+                dataRow.add(row.getFormId());
+                dataRow.add(row.getLocale());
+                dataRow.add(row.getSavepointTimestamp());
+                dataRow.add(row.getSavepointCreator());
+                dataRow.add(row.getRowId());
+                dataRow.add(row.getRowETag());
+                dataRow.add(row.getRowFilterScope().getType().name());
+                dataRow.add(row.getRowFilterScope().getValue());
+                dataRow.add(row.getLastUpdateUser());
+                dataRow.add(row.getCreateUser());
+                dataRow.add(row.getDataETagAtModification());
+
+                writer.writeNext(dataRow.toArray(new String[0]));
+                dataRow.clear();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Prepare response with a generated .csv file
+        try {
+            return buffer.getBuffer().toString().getBytes(CharEncoding.UTF_8);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return new byte[0];
+    }
+
+    private byte[] prepareJSON(){
+        // Convert the data from rows to .json
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.excludeFieldsWithoutExposeAnnotation().create();
+        String parsedJson = gson.toJson(websafeRows);
+
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(tableId + ".json", false);
+            writer.write(parsedJson);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            return parsedJson.getBytes(CharEncoding.UTF_8);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return new byte[0];
     }
 
 

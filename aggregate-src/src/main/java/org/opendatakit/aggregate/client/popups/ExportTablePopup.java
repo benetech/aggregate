@@ -28,7 +28,7 @@ public class ExportTablePopup extends AbstractPopupBase {
 
     private static final String CREATE_BUTTON_TXT = "<img src=\"images/green_right_arrow.png\" /> Download file";
     private static final String CREATE_BUTTON_TOOLTIP = "Create Export File";
-    private static final String CREATE_BUTTON_HELP_BALLOON = "This creates either a CSV or JSON file of your data.";
+    private static final String CREATE_BUTTON_HELP_BALLOON = "This creates a ZIP file containing either a CSV or JSON file of your data and all instance related files.";
 
 
     // this will be the standard header across the top
@@ -92,7 +92,7 @@ public class ExportTablePopup extends AbstractPopupBase {
                 hasMore = tcc.hasMore;
                 rows = tcc.rows;
 
-                String linkHref = UIConsts.EXPORT_TABLE_CONTENT_TO_CSV_SERVLET_ADDR + "?tableId=" + tableId;
+                String linkHref = UIConsts.EXPORT_TABLE_CONTENT_SERVLET_ADDR + "?tableId=" + tableId + "&fileType=CSV";
                 Window.Location.replace(linkHref);
             }
         };
@@ -111,7 +111,7 @@ public class ExportTablePopup extends AbstractPopupBase {
             hasMore = tcc.hasMore;
             rows = tcc.rows;
 
-            String linkHref = UIConsts.EXPORT_TABLE_CONTENT_TO_JSON_SERVLET_ADDR + "?tableId=" + tableId;
+            String linkHref = UIConsts.EXPORT_TABLE_CONTENT_SERVLET_ADDR + "?tableId=" + tableId+ "&fileType=JSON";
             Window.Location.replace(linkHref);
         }
     };

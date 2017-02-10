@@ -343,24 +343,14 @@
 		<url-pattern> /addTableFromZIP</url-pattern>
 	</servlet-mapping>
 
-	<!--  servlet for exporting table content to CSV -->
+	<!--  servlet for exporting table content -->
 	<servlet>
-		<servlet-name>exportTableContentToCSV</servlet-name>
-		<servlet-class>org.opendatakit.aggregate.servlet.OdkTablesExportTableContentToCSVServlet</servlet-class>
+		<servlet-name>exportTableContent</servlet-name>
+		<servlet-class>org.opendatakit.aggregate.servlet.OdkTablesExportTableContentServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>exportTableContentToCSV</servlet-name>
-		<url-pattern> /exportTableContentToCSV</url-pattern>
-	</servlet-mapping>
-
-	<!--  servlet for exporting table content to JSON -->
-	<servlet>
-		<servlet-name>exportTableContentToJSON</servlet-name>
-		<servlet-class>org.opendatakit.aggregate.servlet.OdkTablesExportTableContentToJSONServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>exportTableContentToJSON</servlet-name>
-		<url-pattern> /exportTableContentToJSON</url-pattern>
+		<servlet-name>exportTableContent</servlet-name>
+		<url-pattern> /exportTableContent</url-pattern>
 	</servlet-mapping>
 
 	<!--  servlet for exporting table files to zip file -->

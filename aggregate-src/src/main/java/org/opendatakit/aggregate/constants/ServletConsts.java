@@ -75,6 +75,7 @@ public final class ServletConsts {
   public static final String TABLE_ID = "tableId";
   public static final String RESUME_CURSOR = "resumeCursor";
   public static final String ODK_TABLES_SERVLET_BASE_PATH = "odktables";
+  public static final String EXPORTED_FILE_FORMAT = "fileFormat";
 
   /**
    * For PersistentResults and MiscTasks generator gae servlets.
@@ -157,6 +158,10 @@ public final class ServletConsts {
   public static final String UPLOAD_NAVIGATION_STYLE_RESOURCE = "stylesheets/navigation.css";
 
   public static final String AGGREGATE_STYLE = "AggregateUI.css";
+
+  public static final String FILE_TYPE = "fileType";
+  public static final String CSV = "CSV";
+  public static final String JSON = "JSON";
 
   public static final Map<String,String> MIME_TYPES;
   static {
