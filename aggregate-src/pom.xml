@@ -9,7 +9,6 @@
   </parent>
   <artifactId>aggregate-src</artifactId>
   <packaging>jar</packaging>
-  <version>latest</version>
   <name>Common non-test source files</name>
   <build>
 	<sourceDirectory>${toplevel.directory}/src/main/java</sourceDirectory>

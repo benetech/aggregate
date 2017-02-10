@@ -9,13 +9,17 @@
   </parent>
   <artifactId>postgres-unit-tests</artifactId>
   <packaging>jar</packaging>
-  <version>latest</version>
   <name>Unit tests against postgres database</name>
   <dependencies>
+  	<dependency>
+		<groupId>org.opendatakit</groupId>
+		<artifactId>odk-common-unit-settings</artifactId>
+		<version>${project.version}</version>
+	</dependency>
 	<dependency>
 		<groupId>org.opendatakit</groupId>
 		<artifactId>odk-postgres-unit-settings</artifactId>
-		<version>latest</version>
+		<version>${project.version}</version>
 	</dependency>
   </dependencies>
   <build>

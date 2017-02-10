@@ -17,12 +17,32 @@
     <dependency>
       <groupId>org.opendatakit</groupId>
       <artifactId>aggregate-src</artifactId>
-      <version>latest</version>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendatakit</groupId>
+      <artifactId>odk-common-settings</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendatakit</groupId>
+      <artifactId>odk-postgres-settings</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- TODO: See that the integration test run with cargo uses these settings. -->
+    <dependency>
+      <groupId>org.opendatakit</groupId>
+      <artifactId>odk-common-unit-settings</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.opendatakit</groupId>
       <artifactId>odk-postgres-it-settings</artifactId>
-      <version>latest</version>
+      <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>org.apache.wink</groupId>

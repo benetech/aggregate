@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0   http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendatakit</groupId>
@@ -79,6 +79,8 @@
     </properties>
     <modules>
         <module>aggregate-src</module>
+        <module>odk-common-settings</module>
+        <module>odk-common-unit-settings</module>
 
         <module>odk-postgres-settings</module>
         <module>odk-postgres-it-settings</module>
@@ -98,8 +100,7 @@
         
         <!-- odk tables client libraries -->
         <module>odk-tables-api</module>
-
-    </modules>
+  </modules>
     <repositories>
         <!-- main repository -->
         <repository>
@@ -892,11 +893,11 @@
                                 <delete dir="${project.basedir}/src/main/webapp"/>
                                 <copy todir="${project.basedir}/src/main/webapp">
                                     <fileset dir="${war.directory}">
-                                        <exclude name="aggregateui/**" />
-                                        <exclude name="WEB-INF/appengine-generated/**" />
-                                        <exclude name="WEB-INF/classes/**" />
-                                        <exclude name="WEB-INF/deploy/**" />
-                                        <exclude name="WEB-INF/lib/**" />
+                                        <exclude name="aggregateui/**"/>
+                                        <exclude name="WEB-INF/appengine-generated/**"/>
+                                        <exclude name="WEB-INF/classes/**"/>
+                                        <exclude name="WEB-INF/deploy/**"/>
+                                        <exclude name="WEB-INF/lib/**"/>
                                     </fileset>
                                 </copy>
                               </target>
@@ -914,7 +915,7 @@
                                 <delete dir="${project.basedir}/src/main/application"/>
                                 <copy todir="${project.basedir}/src/main/application">
                                     <fileset dir="${gae.ear.earcontent.directory}">
-                                        <exclude name="META-INF/application.xml" />
+                                        <exclude name="META-INF/application.xml"/>
                                     </fileset>
                                 </copy>
                               </target>
@@ -932,21 +933,21 @@
                                 <delete dir="${project.basedir}/src/main/webapp"/>
                                 <copy todir="${project.basedir}/src/main/webapp">
                                     <fileset dir="${war.directory}">
-                                        <exclude name="aggregateui/**" />
-                                        <exclude name="WEB-INF/appengine-generated/**" />
-                                        <exclude name="WEB-INF/classes/**" />
-                                        <exclude name="WEB-INF/deploy/**" />
-                                        <exclude name="WEB-INF/lib/**" />
+                                        <exclude name="aggregateui/**"/>
+                                        <exclude name="WEB-INF/appengine-generated/**"/>
+                                        <exclude name="WEB-INF/classes/**"/>
+                                        <exclude name="WEB-INF/deploy/**"/>
+                                        <exclude name="WEB-INF/lib/**"/>
                                     </fileset>
                                 </copy>
                                 <!-- copies the /WebContent tree from the eclipse-default project into src/main/webapp -->
                                 <copy todir="${project.basedir}/src/main/webapp">
                                     <fileset dir="${gae.default.webcontent.directory}">
-                                        <exclude name="aggregateui/**" />
-                                        <exclude name="WEB-INF/appengine-generated/**" />
-                                        <exclude name="WEB-INF/classes/**" />
-                                        <exclude name="WEB-INF/deploy/**" />
-                                        <exclude name="WEB-INF/lib/**" />
+                                        <exclude name="aggregateui/**"/>
+                                        <exclude name="WEB-INF/appengine-generated/**"/>
+                                        <exclude name="WEB-INF/classes/**"/>
+                                        <exclude name="WEB-INF/deploy/**"/>
+                                        <exclude name="WEB-INF/lib/**"/>
                                     </fileset>
                                 </copy>
                               </target>
@@ -964,21 +965,21 @@
                                 <delete dir="${project.basedir}/src/main/webapp"/>
                                 <copy todir="${project.basedir}/src/main/webapp">
                                     <fileset dir="${war.directory}">
-                                        <exclude name="aggregateui/**" />
-                                        <exclude name="WEB-INF/appengine-generated/**" />
-                                        <exclude name="WEB-INF/classes/**" />
-                                        <exclude name="WEB-INF/deploy/**" />
-                                        <exclude name="WEB-INF/lib/**" />
+                                        <exclude name="aggregateui/**"/>
+                                        <exclude name="WEB-INF/appengine-generated/**"/>
+                                        <exclude name="WEB-INF/classes/**"/>
+                                        <exclude name="WEB-INF/deploy/**"/>
+                                        <exclude name="WEB-INF/lib/**"/>
                                     </fileset>
                                 </copy>
                                 <!-- copies the /WebContent tree from the eclipse-n-background project into src/main/webapp -->
                                 <copy todir="${project.basedir}/src/main/webapp">
                                     <fileset dir="${gae.background.webcontent.directory}">
-                                        <exclude name="aggregateui/**" />
-                                        <exclude name="WEB-INF/appengine-generated/**" />
-                                        <exclude name="WEB-INF/classes/**" />
-                                        <exclude name="WEB-INF/deploy/**" />
-                                        <exclude name="WEB-INF/lib/**" />
+                                        <exclude name="aggregateui/**"/>
+                                        <exclude name="WEB-INF/appengine-generated/**"/>
+                                        <exclude name="WEB-INF/classes/**"/>
+                                        <exclude name="WEB-INF/deploy/**"/>
+                                        <exclude name="WEB-INF/lib/**"/>
                                     </fileset>
                                 </copy>
                               </target>
@@ -1365,7 +1366,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <execute />
+                                        <execute/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -1382,7 +1383,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>

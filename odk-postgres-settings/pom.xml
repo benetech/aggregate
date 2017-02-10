@@ -8,25 +8,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>odk-postgres-settings</artifactId>
-  <version>latest</version>
   <packaging>jar</packaging>
   <name>Configuration for PostgreSQL</name>
-  <build>
-	<resources>
-		<resource>
-			<filtering>false</filtering>
-			<directory>${toplevel.directory}/src/main/resources/common/</directory>
-			<includes>
-			  <include>**/*</include>
-			</includes>
-		</resource>
-		<resource>
-			<filtering>false</filtering>
-			<directory>${toplevel.directory}/src/main/resources/postgres/</directory>
-			<includes>
-			  <include>**/*</include>
-			</includes>
-		</resource>
-	</resources>
-  </build>
+
 </project>
