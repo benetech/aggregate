@@ -16,20 +16,19 @@
 
 package org.opendatakit.aggregate.client;
 
-import java.util.ArrayList;
-
-import org.opendatakit.aggregate.client.OdkTablesTabUI.TablesChangeNotification;
-import org.opendatakit.aggregate.client.odktables.TableEntryClient;
-import org.opendatakit.aggregate.client.table.OdkTablesViewInstanceFileInfo;
-import org.opendatakit.aggregate.client.widgets.OdkTablesTableIdServletPopupButton.OdkTablesData;
-import org.opendatakit.aggregate.constants.common.UIConsts;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import org.opendatakit.aggregate.client.OdkTablesTabUI.TablesChangeNotification;
+import org.opendatakit.aggregate.client.odktables.TableEntryClient;
+import org.opendatakit.aggregate.client.table.OdkTablesViewInstanceFileInfo;
+import org.opendatakit.aggregate.client.widgets.OdkTablesTableIdServletPopupButton.OdkTablesData;
+import org.opendatakit.aggregate.constants.common.UIConsts;
+
+import java.util.ArrayList;
 
 /**
  * This class builds the subtab that allows for viewing and managing the files
@@ -200,8 +199,7 @@ public class OdkTablesManageInstanceFilesSubTab extends AggregateSubTabBase
       tableFileData.updateDisplay(currentTable);
 
       selectTablePanel.setHTML(2, 0, "<h2 id=\"table_displayed\"> Displaying: </h2>");
-      selectTablePanel.setHTML(2, 1, "<h2 id=\table_name\"> " + currentTable.getTableId()
-          + " </h2>");
+      selectTablePanel.setHTML(2, 1, "<h2 id=\table_name\"> " + currentTable.getTableId() + " </h2>");
       add(tableFileData);
     }
   }
