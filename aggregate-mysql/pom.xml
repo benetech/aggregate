@@ -40,7 +40,7 @@
     </dependency>
     <dependency>
       <groupId>org.opendatakit</groupId>
-      <artifactId>odk-mysql-it-settings</artifactId>
+      <artifactId>odk-mysql-unit-settings</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>

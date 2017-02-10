@@ -83,7 +83,6 @@
         <module>odk-common-unit-settings</module>
 
         <module>odk-postgres-settings</module>
-        <module>odk-postgres-it-settings</module>
         <module>odk-postgres-unit-settings</module>
         <!-- aggregate-postgresql-specific -->
         <module>aggregate-postgres</module>
@@ -91,7 +90,6 @@
         <module>postgres-unit-tests</module>
 
         <module>odk-mysql-settings</module>
-        <module>odk-mysql-it-settings</module>
         <module>odk-mysql-unit-settings</module>
         <!-- aggregate-mysql-specific -->
         <module>aggregate-mysql</module>

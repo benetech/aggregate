@@ -40,7 +40,7 @@
     </dependency>
     <dependency>
       <groupId>org.opendatakit</groupId>
-      <artifactId>odk-postgres-it-settings</artifactId>
+      <artifactId>odk-postgres-unit-settings</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
