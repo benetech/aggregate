@@ -8,10 +8,9 @@
 		<artifactId>aggregate</artifactId>
 		<version>1.0.1</version>
 	</parent>
-	<groupId>org.opendatakit</groupId>
 	<artifactId>aggregate-integration</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<name>aggregate-integration</name>
+	<name>ODK Aggregate Integration Tests</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
 		<dependency>

@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.opendatakit</groupId>
-    <artifactId>aggregate-mysql-specific</artifactId>
+    <artifactId>aggregate</artifactId>
     <version>1.0.1</version>
     <relativePath>../mysql-pom.xml</relativePath>
   </parent>

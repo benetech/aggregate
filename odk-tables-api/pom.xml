@@ -10,45 +10,8 @@
   <artifactId>odk-tables-api</artifactId>
   <packaging>jar</packaging>
   <name>API Jar for ODK Tables</name>
-  <!--
-  <dependencies>
-    <dependency>
-      <groupId>org.opendatakit</groupId>
-      <artifactId>aggregate-src</artifactId>
-      <version>latest</version>
-    </dependency>
-  </dependencies>
-  -->
   <build>
-      <sourceDirectory>../src/main/java</sourceDirectory>
-      <plugins>
-
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <configuration>
-            <includes>
-                <include>**/odktables/rest/**</include>
-            </includes>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <executions>
-            <execution>
-              <phase>package</phase>
-              <goals>
-                <goal>jar</goal>
-              </goals>
-              <configuration>
-                  <sourcepath>../src/main/java</sourcepath>
-                  <subpackages>org.opendatakit.aggregate.odktables.rest</subpackages>
-                  <failOnError>false</failOnError>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-
+	<plugins>
         <plugin>
           <artifactId>maven-dependency-plugin</artifactId>
           <executions>
