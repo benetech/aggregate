@@ -40,7 +40,7 @@ import org.opendatakit.common.web.TestContextFactory;
 @RunWith(org.junit.runners.JUnit4.class)
 public class QueryResultTest {
 
-	static int SET_SIZE = 2000;
+	static int SET_SIZE = 100;
 	
 	@BeforeClass
 	public static void oneTimeSetUp() throws Exception {

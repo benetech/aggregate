@@ -11,6 +11,7 @@
 	<packaging>pom</packaging>
 	<name>ODK Aggregate PostgreSQL Specific</name>
 	<modules>
+		<module>aggregate-src</module>
 		<module>aggregate-postgresql</module>
 		<module>postgresql-unit-tests</module>
 	</modules>

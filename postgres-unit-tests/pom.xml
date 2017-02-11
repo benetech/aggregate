@@ -10,7 +10,12 @@
   <artifactId>postgres-unit-tests</artifactId>
   <packaging>jar</packaging>
   <name>Unit tests against postgres database</name>
-  <dependencies>
+    <dependencies>
+  	<dependency>
+		<groupId>org.opendatakit</groupId>
+		<artifactId>aggregate-src</artifactId>
+		<version>${project.version}</version>
+	</dependency>
   	<dependency>
 		<groupId>org.opendatakit</groupId>
 		<artifactId>odk-common-unit-settings</artifactId>
@@ -49,7 +54,6 @@
 				  </goals>
 				  <configuration>
 					<sources>
-					  <source>${toplevel.directory}/src/main/java</source>
 					  <source>${toplevel.directory}/src/test/java</source>
 					</sources>
 				  </configuration>

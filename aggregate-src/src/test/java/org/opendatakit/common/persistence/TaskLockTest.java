@@ -62,15 +62,6 @@ public class TaskLockTest {
 
     @Override
     public void run() {
-      try {
-        Object o = cc.getBean("testing");
-        if ( o != null ) {
-          ICommonTestSetup i = (ICommonTestSetup) o;
-          i.setup();
-        }
-      } catch ( Exception ex ) {
-        System.out.println("GAE setup exception " + ex.toString());
-      }
 
       try {
         launchBarrier.await();

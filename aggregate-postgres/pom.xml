@@ -3,9 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.opendatakit</groupId>
-    <artifactId>aggregate-postgresql-specific</artifactId>
+    <artifactId>aggregate</artifactId>
     <version>1.0.1</version>
-    <relativePath>../postgresql-pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>aggregate-postgres</artifactId>
   <packaging>war</packaging>

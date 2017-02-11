@@ -1,25 +1,278 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.opendatakit</groupId>
-    <artifactId>aggregate</artifactId>
-    <version>1.0.1</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
-  <artifactId>aggregate-src</artifactId>
-  <packaging>jar</packaging>
-  <name>Common non-test source files</name>
-      <repositories>
-  <repository>
-    <id>In-project repo for otherwise unavailable libraries</id>
-    <url>${project.baseUri}..${file.separator}local-repository</url>
-  </repository>
-
-    </repositories>
-  <dependencies>
-    <!-- Apache -->
-  	 <dependency>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.opendatakit</groupId>
+        <artifactId>aggregate</artifactId>
+        <version>1.0.1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>aggregate-src</artifactId>
+    <packaging>jar</packaging>
+    <name>Common non-test source files</name>
+    <profiles>
+        <profile>
+            <id>postgres</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-antrun-plugin</artifactId>
+                            <version>${maven.antrun.plugin.version}</version>
+                            <executions>
+                                <execution>
+                                    <!-- Makes sure we start with a clean 
+                                        postgres (no pre-existing database that we want to create) -->
+                                    <id>postgresql-teardown-clean</id>
+                                    <phase>pre-clean</phase>
+                                    <goals>
+                                        <goal>run</goal>
+                                    </goals>
+                                    <configuration>
+                                        <target>
+                                            <exec
+                                                executable="${postgres.client.executable}"
+                                                failonerror="false">
+                                                <env key="PGPASSWORD"
+                                                    value="${postgres.root.password}" />
+                                                <arg
+                                                    line="-U postgres -a -n -w -f &quot;${scriptSourceDirectory}/postgres_teardown.sql&quot;" />
+                                            </exec>
+                                        </target>
+                                    </configuration>
+                                </execution>
+                                <execution>
+                                    <!-- Makes sure we start with a clean 
+                                        postgres (no pre-existing database that we want to create) -->
+                                    <id>pre-postgresql-teardown</id>
+                                    <phase>pre-integration-test</phase>
+                                    <goals>
+                                        <goal>run</goal>
+                                    </goals>
+                                    <configuration>
+                                        <target>
+                                            <exec
+                                                executable="${postgres.client.executable}"
+                                                failonerror="false">
+                                                <env key="PGPASSWORD"
+                                                    value="${postgres.root.password}" />
+                                                <arg
+                                                    line="-U postgres -a -n -w -f &quot;${scriptSourceDirectory}/postgres_teardown.sql&quot;" />
+                                            </exec>
+                                        </target>
+                                    </configuration>
+                                </execution>
+                                <execution>
+                                    <!-- Sets up the postgres database for 
+                                        use in integration testing -->
+                                    <id>postgresql-setup</id>
+                                    <phase>pre-integration-test</phase>
+                                    <goals>
+                                        <goal>run</goal>
+                                    </goals>
+                                    <configuration>
+                                        <target>
+                                            <exec
+                                                executable="${postgres.client.executable}"
+                                                failonerror="true">
+                                                <env key="PGPASSWORD"
+                                                    value="${postgres.root.password}" />
+                                                <arg
+                                                    line="-U postgres -a -n -w -f &quot;${scriptSourceDirectory}/postgres_setup.sql&quot;" />
+                                            </exec>
+                                        </target>
+                                    </configuration>
+                                </execution>
+                                <execution>
+                                    <!-- Tears down whatever we set up in 
+                                        the postgres-setup execution -->
+                                    <id>postgresql-teardown</id>
+                                    <phase>verify</phase>
+                                    <goals>
+                                        <goal>run</goal>
+                                    </goals>
+                                    <configuration>
+                                        <target>
+                                            <exec
+                                                executable="${postgres.client.executable}"
+                                                failonerror="true">
+                                                <env key="PGPASSWORD"
+                                                    value="${postgres.root.password}" />
+                                                <arg
+                                                    line="-U postgres -a -n -w -f &quot;${scriptSourceDirectory}/postgres_teardown.sql&quot;" />
+                                            </exec>
+                                        </target>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>9.4.1211.jre7</version>
+                    <!-- <type>jar</type> -->
+                    <!-- <scope>compile</scope> -->
+                </dependency>
+                <dependency>
+                    <groupId>org.opendatakit</groupId>
+                    <artifactId>odk-postgres-settings</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.opendatakit</groupId>
+                    <artifactId>odk-postgres-unit-settings</artifactId>
+                    <version>${project.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>mysql</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-antrun-plugin</artifactId>
+                            <version>${maven.antrun.plugin.version}</version>
+                            <executions>
+                                <execution>
+                                    <!-- Makes sure we start with a clean 
+                                        mysql (no pre-existing database that we want to create) -->
+                                    <id>mysql-teardown-clean</id>
+                                    <phase>pre-clean</phase>
+                                    <goals>
+                                        <goal>run</goal>
+                                    </goals>
+                                    <configuration>
+                                        <target>
+                                            <exec
+                                                executable="${mysql.client.executable}"
+                                                failonerror="false">
+                                                <arg
+                                                    line="-u root --force -p${mysql.root.password}" />
+                                                <redirector
+                                                    input="${scriptSourceDirectory}/mysql_teardown.sql" />
+                                            </exec>
+                                        </target>
+                                    </configuration>
+                                </execution>
+                                <execution>
+                                    <!-- Makes sure we start with a clean 
+                                        mysql (no pre-existing database that we want to create) -->
+                                    <id>pre-mysql-teardown</id>
+                                    <phase>pre-integration-test</phase>
+                                    <goals>
+                                        <goal>run</goal>
+                                    </goals>
+                                    <configuration>
+                                        <target>
+                                            <exec
+                                                executable="${mysql.client.executable}"
+                                                failonerror="false">
+                                                <arg
+                                                    line="-u root --force -p${mysql.root.password}" />
+                                                <redirector
+                                                    input="${scriptSourceDirectory}/mysql_teardown.sql" />
+                                            </exec>
+                                        </target>
+                                    </configuration>
+                                </execution>
+                                <execution>
+                                    <!-- Sets up the mysql database for use 
+                                        in integration testing -->
+                                    <id>mysql-setup</id>
+                                    <phase>pre-integration-test</phase>
+                                    <goals>
+                                        <goal>run</goal>
+                                    </goals>
+                                    <configuration>
+                                        <target>
+                                            <exec
+                                                executable="${mysql.client.executable}"
+                                                failonerror="true">
+                                                <arg
+                                                    line="-u root -p${mysql.root.password}" />
+                                                <redirector
+                                                    input="${scriptSourceDirectory}/mysql_setup.sql" />
+                                            </exec>
+                                        </target>
+                                    </configuration>
+                                </execution>
+                                <execution>
+                                    <!-- Tears down whatever we set up in 
+                                        the mysql-setup execution -->
+                                    <id>mysql-teardown</id>
+                                    <phase>verify</phase>
+                                    <goals>
+                                        <goal>run</goal>
+                                    </goals>
+                                    <configuration>
+                                        <target>
+                                            <exec
+                                                executable="${mysql.client.executable}"
+                                                failonerror="true">
+                                                <arg
+                                                    line="-u root -p${mysql.root.password}" />
+                                                <redirector
+                                                    input="${scriptSourceDirectory}/mysql_teardown.sql" />
+                                            </exec>
+                                        </target>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>5.1.40</version>
+                        <scope>test</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.opendatakit</groupId>
+                        <artifactId>odk-mysql-settings</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.opendatakit</groupId>
+                        <artifactId>odk-mysql-unit-settings</artifactId>
+                        <version>${project.version}</version>
+                        <scope>test</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+    </profiles>
+    <dependencies>
+        <!-- OpenDataKit Siblings -->
+        <dependency>
+            <groupId>org.opendatakit</groupId>
+            <artifactId>odk-common-settings</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendatakit</groupId>
+            <artifactId>odk-common-unit-settings</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Apache -->
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
             <version>2.4.2</version>
@@ -30,39 +283,39 @@
             <version>2.1.1</version>
         </dependency>
         <dependency> <!-- required by spring-security -->
-          <groupId>commons-codec</groupId>
-          <artifactId>commons-codec</artifactId>
-          <version>1.10</version> <!-- note: java 1.6 -->
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version> <!-- note: java 1.6 -->
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>commons-fileupload</groupId>
-          <artifactId>commons-fileupload</artifactId>
-          <version>1.3.2</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.3.2</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>commons-io</groupId>
-          <artifactId>commons-io</artifactId>
-          <version>2.5</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-lang3</artifactId>
-          <version>3.5</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.5</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-          <version>1.2</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+            <scope>compile</scope>
             <exclusions>
                 <exclusion>
                     <groupId>log4j</groupId>
@@ -85,7 +338,7 @@
             <artifactId>geronimo-jaxrs_1.1_spec</artifactId>
             <version>1.0</version>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <version>${apache.httpcore.version}</version>
@@ -97,54 +350,54 @@
         </dependency>
         <!-- Jackson -->
         <dependency>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-annotations</artifactId>
-          <version>${com.fasterxml.jackson.base.version}</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${com.fasterxml.jackson.base.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-core</artifactId>
-          <version>${com.fasterxml.jackson.core.version}</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${com.fasterxml.jackson.core.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-databind</artifactId>
-          <version>${com.fasterxml.jackson.version}</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${com.fasterxml.jackson.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>com.fasterxml.jackson.dataformat</groupId>
-          <artifactId>jackson-dataformat-xml</artifactId>
-          <version>${com.fasterxml.jackson.base.version}</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>${com.fasterxml.jackson.base.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>com.fasterxml.jackson.jaxrs</groupId>
-          <artifactId>jackson-jaxrs-json-provider</artifactId>
-          <version>${com.fasterxml.jackson.base.version}</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>${com.fasterxml.jackson.base.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>com.fasterxml.jackson.jaxrs</groupId>
-          <artifactId>jackson-jaxrs-xml-provider</artifactId>
-          <version>${com.fasterxml.jackson.base.version}</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-xml-provider</artifactId>
+            <version>${com.fasterxml.jackson.base.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <!-- Spring -->
         <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-aop</artifactId>
-          <version>${org.springframework.version}</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${org.springframework.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -152,42 +405,42 @@
             <version>${org.springframework.version}</version>
         </dependency>
         <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-beans</artifactId>
-          <version>${org.springframework.version}</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${org.springframework.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-context</artifactId>
-          <version>${org.springframework.version}</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${org.springframework.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-context-support</artifactId>
-          <version>${org.springframework.version}</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${org.springframework.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-core</artifactId>
-          <version>${org.springframework.version}</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${org.springframework.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-expression</artifactId>
-          <version>${org.springframework.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>${org.springframework.version}</version>
         </dependency>
         <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-instrument</artifactId>
-          <version>${org.springframework.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-instrument</artifactId>
+            <version>${org.springframework.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -204,9 +457,9 @@
             </exclusions>
         </dependency>
         <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-instrument-tomcat</artifactId>
-          <version>${org.springframework.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-instrument-tomcat</artifactId>
+            <version>${org.springframework.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -223,23 +476,23 @@
             </exclusions>
         </dependency>
         <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-jdbc</artifactId>
-          <version>${org.springframework.version}</version>
-          <type>jar</type>
-          <scope>compile</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${org.springframework.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-tx</artifactId>
-          <version>${org.springframework.version}</version>
-          <scope>compile</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-web</artifactId>
-          <version>${org.springframework.version}</version>
-          <scope>compile</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -274,46 +527,7 @@
         </dependency>
 
 
-        <!-- Provided by OpenDataKit Team -->
 
-       <dependency>
-            <groupId>org.opendatakit</groupId>
-            <artifactId>odk-tomcatutil</artifactId> <!-- see src/main/libs/readme.txt -->
-            <version>1.0.1</version>
-            <scope>compile</scope>
-        </dependency>
-                <dependency>
-          <groupId>org.opendatakit</groupId>
-          <artifactId>odk-httpclient-gae</artifactId> <!-- see src/main/libs/readme.txt -->
-          <version>4.5.2-1</version>
-          <scope>compile</scope>
-        </dependency>
-                <dependency>
-          <groupId>com.googlecode.gwt-google-maps-v3</groupId>
-          <artifactId>gwt-google-maps-v3</artifactId> <!-- see src/main/libs/readme.txt -->
-          <version>1.0.1</version>
-          <type>jar</type>
-          <scope>compile</scope>
-        </dependency>
-        <dependency>
-          <groupId>com.google.gwt.google-apis</groupId>
-          <artifactId>gwt-visualization</artifactId> <!-- see src/main/libs/readme.txt -->
-          <version>1.1.2</version>
-          <type>jar</type>
-          <scope>compile</scope>
-        </dependency>
-              <dependency>
-          <groupId>org.javarosa</groupId>
-          <artifactId>javarosa-libraries</artifactId> <!-- see src/main/libs/readme.txt -->
-          <version>2016-04-21</version>
-          <type>jar</type>
-          <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jai-imageio</groupId>
-            <artifactId>jai-imageio-core</artifactId>
-            <version>1.3.0</version>
-        </dependency>
 
         <dependency>
             <groupId>joda-time</groupId>
@@ -323,37 +537,37 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-  <build>
-    <plugins>
+    <build>
+        <plugins>
 
-		<plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>gwt-maven-plugin</artifactId>
-			<version>${gwt.maven.plugin.version}</version>
-			<dependencies>
-				<dependency>	
-					<groupId>com.google.gwt</groupId>
-					<artifactId>gwt-user</artifactId>
-					<version>${google.gwt.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>com.google.gwt</groupId>
-					<artifactId>gwt-dev</artifactId>
-					<version>${google.gwt.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>javax.validation</groupId>
-					<artifactId>validation-api</artifactId>
-					<version>1.0.0.GA</version>
-				</dependency>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>${gwt.maven.plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-user</artifactId>
+                        <version>${google.gwt.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-dev</artifactId>
+                        <version>${google.gwt.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.validation</groupId>
+                        <artifactId>validation-api</artifactId>
+                        <version>1.0.0.GA</version>
+                    </dependency>
 
-			</dependencies>
-			<executions>
-			  <execution>
-				<id>gwt-javascript</id>
-			  </execution>
-			</executions>
-		</plugin>
-	</plugins>
-  </build>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>gwt-javascript</id>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

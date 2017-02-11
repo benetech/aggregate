@@ -278,10 +278,7 @@ public class RelationTest {
     if (ds instanceof org.opendatakit.common.persistence.engine.mysql.DatastoreImpl) {
       // MySQL does not support NaN, Infinity, -Infinity
       return;
-    } else if (ds instanceof org.opendatakit.common.persistence.engine.sqlserver.DatastoreImpl) {
-      // SqlServer does not support NaN, Infinity, -Infinity
-      return;
-    }
+    } 
     MyRelation rel = new MyRelation(cc);
     rel = new MyRelation(cc);
     Entity e = rel.newEntity(cc);
