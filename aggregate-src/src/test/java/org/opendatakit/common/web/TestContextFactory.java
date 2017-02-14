@@ -108,7 +108,7 @@ public class TestContextFactory {
 	    	}
 
 			@Override
-	    	public boolean getAsDeamon() {
+	    	public boolean getAsDaemon() {
 	    		return asDaemon;
 	    	}
 

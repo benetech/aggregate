@@ -134,7 +134,7 @@ public class WatchdogImpl implements Watchdog, InitializingBean {
      }
 
      @Override
-     public boolean getAsDeamon() {
+     public boolean getAsDaemon() {
         return asDaemon;
      }
 

@@ -161,7 +161,7 @@ public class RoleHierarchyImpl implements RoleHierarchy, InitializingBean {
 			}
 
 			@Override
-			public boolean getAsDeamon() {
+			public boolean getAsDaemon() {
 				return true;
 			}
 

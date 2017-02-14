@@ -179,7 +179,7 @@ public class FormDefinition {
 		}
 
 		// always look at SubmissionAssociationTable to retrieve the proper variant
-		boolean asDaemon = cc.getAsDeamon();
+		boolean asDaemon = cc.getAsDaemon();
 		try {
 			cc.setAsDaemon(true);
 			List<? extends CommonFieldsBase> fdmList = null;
@@ -518,7 +518,7 @@ public class FormDefinition {
 	}
 
 	public static void deleteAbnormalModel(String formId, CallingContext cc) {
-		boolean asDaemon = cc.getAsDeamon();
+		boolean asDaemon = cc.getAsDaemon();
 		try {
 			cc.setAsDaemon(true);
 			List<? extends CommonFieldsBase> fdmList = null;

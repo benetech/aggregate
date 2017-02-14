@@ -160,7 +160,7 @@ public class WatchdogImpl implements Watchdog, SmartLifecycle, InitializingBean,
     }
 
     @Override
-    public boolean getAsDeamon() {
+    public boolean getAsDaemon() {
       return asDaemon;
     }
 

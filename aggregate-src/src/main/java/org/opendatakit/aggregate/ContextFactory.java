@@ -143,7 +143,7 @@ public class ContextFactory {
       this.ctxt = context.getServletContext();
       this.datastore = context.getDatastore();
       this.userService = context.getUserService();
-      this.asDaemon = context.getAsDeamon();
+      this.asDaemon = context.getAsDaemon();
     }
 
     @Override
@@ -192,7 +192,7 @@ public class ContextFactory {
     }
 
     @Override
-    public boolean getAsDeamon() {
+    public boolean getAsDaemon() {
       return asDaemon;
     }
 

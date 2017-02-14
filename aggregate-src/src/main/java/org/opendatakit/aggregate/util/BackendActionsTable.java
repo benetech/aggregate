@@ -182,7 +182,7 @@ public class BackendActionsTable extends CommonFieldsBase {
 
   public static final synchronized boolean mayHaveRecentPublisherRevision(String uriFsc, CallingContext cc)
         throws ODKDatastoreException {
-    boolean wasDaemon = cc.getAsDeamon();
+    boolean wasDaemon = cc.getAsDaemon();
     cc.setAsDaemon(true);
     try {
       Datastore ds = cc.getDatastore();
@@ -208,7 +208,7 @@ public class BackendActionsTable extends CommonFieldsBase {
   }
 
   public static final synchronized boolean triggerPublisher(String uriFsc, CallingContext cc) {
-    boolean wasDaemon = cc.getAsDeamon();
+    boolean wasDaemon = cc.getAsDaemon();
     cc.setAsDaemon(true);
     try {
       Datastore ds = cc.getDatastore();
@@ -262,7 +262,7 @@ public class BackendActionsTable extends CommonFieldsBase {
    * @return true if the watchdog should be culled (not rescheduled)
    */
   public static final synchronized boolean updateWatchdogStart(Watchdog wd, CallingContext cc) {
-    boolean wasDaemon = cc.getAsDeamon();
+    boolean wasDaemon = cc.getAsDaemon();
 
     try {
       cc.setAsDaemon(true);
@@ -391,7 +391,7 @@ public class BackendActionsTable extends CommonFieldsBase {
    */
   private static final synchronized void scheduleFutureWatchdog(Watchdog wd,
       long futureMilliseconds, CallingContext cc) {
-    boolean wasDaemon = cc.getAsDeamon();
+    boolean wasDaemon = cc.getAsDaemon();
 
     long now = System.currentTimeMillis();
     logValues(INCOMING, now, futureMilliseconds, -1L);

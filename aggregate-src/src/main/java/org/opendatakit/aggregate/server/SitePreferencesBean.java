@@ -59,7 +59,7 @@ public class SitePreferencesBean {
     }
 
     @Override
-    public boolean getAsDeamon() {
+    public boolean getAsDaemon() {
       return true;
     }
 

@@ -8,7 +8,6 @@
     <version>1.0.1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <groupId>org.opendatakit</groupId>
   <artifactId>odk-common-settings</artifactId>
   <name>Common configuration settings</name>
 </project>

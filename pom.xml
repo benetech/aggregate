@@ -21,31 +21,15 @@
     <name>ODK Aggregate</name>
     <properties>
         <toplevel.directory>${project.basedir}/../</toplevel.directory>
-        <!-- must match the gae version below and the build/build.xml ant 
-            script defn -->
-        <gooogle.appengine.sdk.version>1.9.48</gooogle.appengine.sdk.version>
-        <gae.home>${project.basedir}/../build/appengine-java-sdk-${gooogle.appengine.sdk.version}/appengine-java-sdk-${gooogle.appengine.sdk.version}</gae.home>
-        <!-- selenium 3.0.x is built using Java 8. We need to stay at Java 
-            7 for AppEngine compatibility -->
-        <!-- must match the seleniumhq version below and the build/build.xml 
-            ant script defn -->
-        <org.seleniumhq.version>2.53.1</org.seleniumhq.version>
-        <selenium.home>${project.basedir}/../build/selenium-java-${org.seleniumhq.version}/selenium-${org.seleniumhq.version}</selenium.home>
-        <selenium.libs>${project.basedir}/../build/selenium-java-${org.seleniumhq.version}/selenium-${org.seleniumhq.version}/libs</selenium.libs>
-        <!-- must match the seleniumhq version below and the build/build.xml 
-            ant script defn -->
-        <!-- change the webdriver.chrome.drivername in .m2/settings.xml when 
-            running on a MacOSX or Linux system -->
-        <webdriver.chrome.driver>${project.basedir}/../build/${webdriver.chrome.drivername}-2.26/chromedriver${webdriver.chrome.driverext}</webdriver.chrome.driver>
         <war.directory>${project.basedir}/../war-base</war.directory>
-        <gae.ear.earcontent.directory>${project.basedir}/../eclipse-ear/EarContent</gae.ear.earcontent.directory>
-        <gae.default.webcontent.directory>${project.basedir}/../eclipse-default/WebContent</gae.default.webcontent.directory>
-        <gae.background.webcontent.directory>${project.basedir}/../eclipse-n-background/WebContent</gae.background.webcontent.directory>
-        <scriptSourceDirectory>${project.basedir}/../src/it/scripts</scriptSourceDirectory>
+        <gooogle.appengine.sdk.version>1.9.48</gooogle.appengine.sdk.version>
+
+        <mySqlScriptSourceDirectory>${project.basedir}/../odk-mysql-unit-settings/src/main/resources/sql-scripts/</mySqlScriptSourceDirectory>
+        <postgresScriptSourceDirectory>${project.basedir}/../odk-postgres-unit-settings/src/main/resources/sql-scripts/</postgresScriptSourceDirectory>
+
         <itFormsDirectory>${project.basedir}/../src/it/testfiles/forms</itFormsDirectory>
         <itSubmissionsDirectory>${project.basedir}/../src/it/testfiles/submissions</itSubmissionsDirectory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gae.version>${gooogle.appengine.sdk.version}</gae.version>
         <apache.httpclient.version>4.5.2</apache.httpclient.version>
         <apache.httpcore.version>4.4.5</apache.httpcore.version>
         <apache.httpmime.version>4.5.2</apache.httpmime.version>
@@ -54,14 +38,13 @@
         <google.api-services-sheets.version>v4-rev38-1.22.0</google.api-services-sheets.version>
         <google.api-services-drive.version>v3-rev52-1.22.0</google.api-services-drive.version>
         <google.gwt.version>2.7.0</google.gwt.version>
+
         <org.apache.wink.version>1.4</org.apache.wink.version>
         <jacoco.maven.plugin.version>0.7.6.201602180812</jacoco.maven.plugin.version>
         <maven.surefire.report.plugin.version>2.19.1</maven.surefire.report.plugin.version>
         <maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
         <surefire.argLine>-Xms300m -Xmx3048m -XX:+UseParallelGC
             -XX:+UseParallelOldGC</surefire.argLine> <!-- need a huge JVM size for GAE datastore -->
-        <maven.failsafe.plugin.version>2.19.1</maven.failsafe.plugin.version>
-        <cargo.maven2.plugin.version>1.6.0</cargo.maven2.plugin.version>
         <build.helper.maven.plugin.version>1.10</build.helper.maven.plugin.version>
         <gwt.maven.plugin.version>2.7.0</gwt.maven.plugin.version>
         <maven.gae.plugin.version>0.9.6</maven.gae.plugin.version>
@@ -82,35 +65,61 @@
         <!-- keystore.propertyfile - define this in your settings.xml - the 
             location of the properties file for the keystore -->
     </properties>
+    <profiles>
+        <profile>
+            <id>postgres</id>
+            <activation>
+                <property>
+                    <name>env.DB_PROFILE</name>
+                    <value>!mysql</value>
+                </property>
+            </activation>
+            <modules>
+                <module>aggregate-postgres</module>
+            </modules>
+            <build>
+                <pluginManagement>
+                    <plugins>
+
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>mysql</id>
+            <activation>
+                <property>
+                    <name>env.DB_PROFILE</name>
+                    <value>mysql</value>
+                </property>
+            </activation>
+            <modules>
+                <module>aggregate-mysql</module>
+            </modules>
+            <build>
+                <pluginManagement>
+                    <plugins>
+
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
+
     <modules>
         <module>aggregate-src</module>
         <module>odk-common-settings</module>
         <module>odk-common-unit-settings</module>
 
-        <module>odk-postgres-settings</module>
-        <module>odk-postgres-unit-settings</module>
-        <!-- aggregate-postgresql-specific -->
-        <module>aggregate-postgres</module>
-
-
-        <module>odk-mysql-settings</module>
-        <module>odk-mysql-unit-settings</module>
-        <!-- aggregate-mysql-specific -->
-        <module>aggregate-mysql</module>
-
-
         <!-- odk tables client libraries -->
         <module>odk-tables-api</module>
-        <module>aggregate-integration</module>
     </modules>
     <repositories>
-
+        <!-- Provided by OpenDataKit Team -->
         <repository>
             <id>In-project repo for otherwise unavailable libraries</id>
-            <url>${project.baseUri}local-repository</url>
+            <url>${toplevel.directory}local-repository</url>
         </repository>
-
-
         <!-- main repository -->
         <repository>
             <id>central</id>
@@ -144,36 +153,35 @@
     </pluginRepositories>
     <dependencies>
         <!-- Provided by OpenDataKit Team -->
-
         <dependency>
             <groupId>org.opendatakit</groupId>
-            <artifactId>odk-tomcatutil</artifactId> <!-- see src/main/libs/readme.txt -->
+            <artifactId>odk-tomcatutil</artifactId>
             <version>1.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.opendatakit</groupId>
-            <artifactId>odk-httpclient-gae</artifactId> <!-- see src/main/libs/readme.txt -->
+            <artifactId>odk-httpclient-gae</artifactId>
             <version>4.5.2-1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.googlecode.gwt-google-maps-v3</groupId>
-            <artifactId>gwt-google-maps-v3</artifactId> <!-- see src/main/libs/readme.txt -->
+            <artifactId>gwt-google-maps-v3</artifactId>
             <version>1.0.1</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.google.gwt.google-apis</groupId>
-            <artifactId>gwt-visualization</artifactId> <!-- see src/main/libs/readme.txt -->
+            <artifactId>gwt-visualization</artifactId>
             <version>1.1.2</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.javarosa</groupId>
-            <artifactId>javarosa-libraries</artifactId> <!-- see src/main/libs/readme.txt -->
+            <artifactId>javarosa-libraries</artifactId>
             <version>2016-04-21</version>
             <type>jar</type>
             <scope>compile</scope>
@@ -183,7 +191,22 @@
             <artifactId>jai-imageio-core</artifactId>
             <version>1.3.0</version>
         </dependency>
-<!-- Apache -->
+
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${org.springframework.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Apache -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
@@ -234,6 +257,12 @@
                     <artifactId>log4j</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wink</groupId>
+            <artifactId>wink-client</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.wink</groupId>
@@ -304,7 +333,8 @@
             <scope>compile</scope>
         </dependency>
 
-<!-- Google -->
+        <!-- Google -->
+
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
@@ -312,21 +342,11 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-labs</artifactId>
-            <version>${gooogle.appengine.sdk.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-jsr107cache</artifactId>
-            <version>${gooogle.appengine.sdk.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-
+        <!-- <dependency> <groupId>com.google.appengine</groupId> <artifactId>appengine-api-labs</artifactId> 
+            <version>${gooogle.appengine.sdk.version}</version> <type>jar</type> <scope>compile</scope> 
+            </dependency> <dependency> <groupId>com.google.appengine</groupId> <artifactId>appengine-jsr107cache</artifactId> 
+            <version>${gooogle.appengine.sdk.version}</version> <type>jar</type> <scope>compile</scope> 
+            </dependency> -->
 
         <dependency>
             <groupId>com.google.api-client</groupId>
@@ -511,19 +531,10 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-stubs</artifactId>
-            <version>${gooogle.appengine.sdk.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-testing</artifactId>
-            <version>${gooogle.appengine.sdk.version}</version>
-            <scope>test</scope>
-        </dependency>
-
+        <!-- <dependency> <groupId>com.google.appengine</groupId> <artifactId>appengine-api-stubs</artifactId> 
+            <version>${gooogle.appengine.sdk.version}</version> <scope>test</scope> </dependency> 
+            <dependency> <groupId>com.google.appengine</groupId> <artifactId>appengine-testing</artifactId> 
+            <version>${gooogle.appengine.sdk.version}</version> <scope>test</scope> </dependency> -->
 
 
     </dependencies>
@@ -610,7 +621,7 @@
                             </goals>
                             <configuration>
                                 <sources>
-                                    <source>${toplevel.directory}/src/main/java</source>
+                                    <source>${toplevel.directory}/aggregate-src/src/main/java</source>
                                 </sources>
                             </configuration>
                         </execution>
@@ -704,8 +715,7 @@
                             <!-- used in aggregate-postgres, aggregate-mysql -->
                             <configuration>
                                 <target>
-                                    <!-- copies the /war tree from the eclipse 
-                                        gae project to src/main/webapp -->
+                                    <!-- copies the /war tree to src/main/webapp -->
                                     <delete
                                         dir="${project.basedir}/src/main/webapp" />
                                     <copy
@@ -738,26 +748,6 @@
                                         need another copy of gwt classes -->
                                     <delete
                                         dir="${project.basedir}/target/classes" />
-                                </target>
-                            </configuration>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>war-remove-classes-except-stub</id>
-                            <!-- used in aggregate-gae -->
-                            <configuration>
-                                <target>
-                                    <mkdir
-                                        dir="${project.basedir}/target/classes" />
-                                    <!-- deletes the /classes tree. Leaves 
-                                        a placeholder class. We don't need another copy of gwt classes -->
-                                    <delete includeemptydirs="true">
-                                        <fileset
-                                            dir="${project.basedir}/target/classes">
-                                        </fileset>
-                                    </delete>
                                 </target>
                             </configuration>
                             <goals>
@@ -958,7 +948,6 @@
                         </execution>
                     </executions>
                 </plugin>
-
                 <!--This plugin's configuration is used to store Eclipse 
                     m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>

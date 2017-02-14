@@ -6,4 +6,6 @@ alter database "odk_unit" owner to "odk_unit";
 \c "odk_unit";
 create schema "odk_unit";
 grant all privileges on schema "odk_unit" to "odk_unit";
+GRANT SELECT ON ALL TABLES IN SCHEMA PUBLIC TO "odk_unit";
+
 

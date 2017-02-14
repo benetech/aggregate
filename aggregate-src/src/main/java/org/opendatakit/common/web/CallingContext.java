@@ -61,7 +61,7 @@ public interface CallingContext {
    /**
     * @return whether or not we are acting as the daemon user.
     */
-   public boolean getAsDeamon();
+   public boolean getAsDaemon();
    
    /**
     * @return the logged-in user, anonymous user, or the daemon user.
