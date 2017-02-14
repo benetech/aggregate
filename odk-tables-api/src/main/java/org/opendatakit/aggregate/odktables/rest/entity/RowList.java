@@ -48,6 +48,9 @@ public class RowList {
   @JsonProperty(required = false)
   private String dataETag;
 
+  @JsonProperty(required = false)
+  private String deviceId;
+
   /**
    * Constructor used by Jackson
    */
@@ -85,7 +88,15 @@ public class RowList {
     this.dataETag = dataETag;
   }
 
-  @Override
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;

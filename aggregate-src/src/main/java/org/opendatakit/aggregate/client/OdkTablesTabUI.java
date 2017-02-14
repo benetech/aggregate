@@ -101,7 +101,7 @@ public class OdkTablesTabUI extends AggregateTabBase {
             AggregateUI.getUI().clearError();
               ArrayList<TableEntryClient> newTables  = new ArrayList<TableEntryClient>();
               for(TableEntryClient table : tables) {
-                  if(checkIfAdmin() || table.getOfficeId().equals(currentUser.getOfficeId()))
+                  if(checkIfAdmin() || checkUser(table))
                       newTables.add(table);
               }
             if ( mTables.size() != newTables.size()) {
@@ -120,6 +120,10 @@ public class OdkTablesTabUI extends AggregateTabBase {
     private boolean checkIfAdmin() {
         return (currentUser.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN) && currentUser.getOfficeId() == null);
     }
+
+  private boolean checkUser(TableEntryClient table ) {
+     return (currentUser.getType() != UserSecurityInfo.UserType.ANONYMOUS && table.getOfficeId().equals(currentUser.getOfficeId()));
+  }
   
   private void notifyListener(boolean tableListChanged) {
     // make a copy...

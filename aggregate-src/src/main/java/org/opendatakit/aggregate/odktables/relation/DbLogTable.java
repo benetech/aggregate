@@ -16,10 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.relation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.opendatakit.aggregate.odktables.relation.DbColumnDefinitions.DbColumnDefinitionsEntity;
 import org.opendatakit.aggregate.odktables.relation.DbTableDefinitions.DbTableDefinitionsEntity;
 import org.opendatakit.aggregate.odktables.rest.TableConstants;
@@ -30,6 +26,10 @@ import org.opendatakit.common.persistence.DataField.DataType;
 import org.opendatakit.common.persistence.DataField.IndexType;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class DbLogTable extends Relation {
 
@@ -90,6 +90,8 @@ public class DbLogTable extends Relation {
   // the creator of this row, as reported by the device (may be a remote SMS user)
   public static final DataField SAVEPOINT_CREATOR = new DataField(
       TableConstants.SAVEPOINT_CREATOR.toUpperCase(), DataType.STRING, true);
+  public static final DataField DEVICE_ID = new DataField(
+          "DEVICE_ID", DataType.STRING, true);
 
   private static final List<DataField> dataFields;
   static {
@@ -112,6 +114,7 @@ public class DbLogTable extends Relation {
     dataFields.add(SAVEPOINT_TYPE);
     dataFields.add(SAVEPOINT_TIMESTAMP);
     dataFields.add(SAVEPOINT_CREATOR);
+    dataFields.add(DEVICE_ID);
   }
 
   private static final EntityConverter converter = new EntityConverter();

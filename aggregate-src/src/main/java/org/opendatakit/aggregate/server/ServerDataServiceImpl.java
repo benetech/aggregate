@@ -98,7 +98,7 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
       TablesUserPermissions userPermissions = new TablesUserPermissionsImpl(cc);
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
       DataManager dm = new DataManager(appId, tableId, userPermissions, cc);
-      return dm.getRows(resumePoint, 100);
+      return dm.getRows(resumePoint, 100, null);
     } catch (ODKEntityNotFoundException e) {
       e.printStackTrace();
       throw new EntityNotFoundExceptionClient(e);
