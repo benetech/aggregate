@@ -9,6 +9,8 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.ContextFactory;
+import org.opendatakit.aggregate.client.RegionalOffice;
+import org.opendatakit.aggregate.client.table.OdkRegionalOfficeTable;
 import org.opendatakit.aggregate.constants.ErrorConsts;
 import org.opendatakit.aggregate.constants.ServletConsts;
 import org.opendatakit.aggregate.constants.common.UIConsts;
@@ -21,6 +23,9 @@ import org.opendatakit.aggregate.odktables.exception.TableAlreadyExistsException
 import org.opendatakit.aggregate.odktables.impl.api.ServiceUtils;
 import org.opendatakit.aggregate.odktables.rest.entity.Column;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
+import org.opendatakit.common.persistence.CommonFieldsBase;
+import org.opendatakit.common.persistence.Datastore;
+import org.opendatakit.common.persistence.Query;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
@@ -66,14 +71,21 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
                     + "<![endif] -->"
                     + "<form id=\"ie_backward_compatible_form\""
                     + " accept-charset=\"UTF-8\" method=\"POST\" encoding=\"multipart/form-data\" enctype=\"multipart/form-data\""
-                    + " action=\"";// emit the ADDR
+                    + " action=\"";// emit the ADDR variable
 
     private static final String UPLOAD_PAGE_BODY_MIDDLE = "\">"
             + "	  <table id=\"uploadTable\">"
             + "	  	<tr>"
-            + "	  		<td><label for=\"form_zip\">Form files (ZIP file):</label></td>"
+            + "	  		<td><label for=\"form_zip\">Form files (ZIP file): </label></td>"
             + "	  		<td><input id=\"form_zip\" type=\"file\" size=\"80\" class=\"gwt-Button\""
             + "	  			name=\"form_zip\" /></td>"
+            + "	  	</tr>\n"
+            + "	  	<tr>"
+            + "	  		<td><label for=\"offices\">Select Regional Office: </label></td>"
+            + "	  		<td><select name=\"" + ServletConsts.OFFICE_ID + "\" id=\"offices\" required>";
+            // here goes dynamically loaded list of options for Regional Offices
+
+    private static final String UPLOAD_PAGE_BODY_END = "</select></td>"
             + "	  	</tr>\n"
             + "	  	<tr>"
             + "	  		<td><input id=\"upload_form\" type=\"submit\" name=\"button\" class=\"gwt-Button\" value=\"Upload Form\" /></td>"
@@ -119,6 +131,8 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
         out.write(UPLOAD_PAGE_BODY_START);
         out.write(cc.getWebApplicationURL(ADDR));
         out.write(UPLOAD_PAGE_BODY_MIDDLE);
+        out.write(setOfficesSelectValues(cc));
+        out.write(UPLOAD_PAGE_BODY_END);
         finishBasicHtmlResponse(resp);
     }
 
@@ -151,13 +165,21 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
             String appId = ContextFactory.getOdkTablesAppId(cc);
             TablesUserPermissions userPermissions = ContextFactory.getTablesUserPermissions(cc);
             List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);
-            Map<String,byte[]> files = new HashMap<>();
+            Map<String, byte[]> files = new HashMap<>();
             String definition = null;
             String tableId = null;
+            String regionalOfficeId = null;
 
             // unzipping files
 
             for (FileItem item : items) {
+
+                // Retrieve Regional Office ID
+                if (item.getFieldName().equals(ServletConsts.OFFICE_ID)) {
+                    regionalOfficeId = item.getString();
+                    logger.info("Form definition would be assigned to office with ID: " + regionalOfficeId);
+                }
+
                 String fieldName = item.getFieldName();
                 String fileName = FilenameUtils.getName(item.getName());
 
@@ -179,10 +201,10 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
                     while ((zipEntry = zipStream.getNextEntry()) != null) {
                         if (!(zipEntry.isDirectory())) {
                             tempBAOS = new ByteArrayOutputStream();
-                            while ((c = zipStream.read(buffer,0,2048)) > -1) {
+                            while ((c = zipStream.read(buffer, 0, 2048)) > -1) {
                                 tempBAOS.write(buffer, 0, c);
                             }
-                            files.put("tables" + BasicConsts.FORWARDSLASH + zipEntry.getName(),tempBAOS.toByteArray());
+                            files.put("tables" + BasicConsts.FORWARDSLASH + zipEntry.getName(), tempBAOS.toByteArray());
                             if (zipEntry.getName().endsWith("definition.csv")) {
                                 tableId = FileManager.getTableIdForFilePath("tables" + BasicConsts.FORWARDSLASH + zipEntry.getName());
                                 definition = new String(tempBAOS.toByteArray());
@@ -192,7 +214,7 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
                 }
             }
 
-            if (definition == null || tableId == null) {
+            if (definition == null || tableId == null || regionalOfficeId == null) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, ErrorConsts.NO_DEFINITION_FILE);
                 return;
             }
@@ -202,14 +224,13 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
 
             //adding table
             List<Column> columns = parseColumnsFromCsv(definition);
-            TableManager tm = new TableManager(appId,userPermissions,cc);
-            tm.createTable(tableId,columns);
-
+            TableManager tm = new TableManager(appId, userPermissions, cc);
+            tm.createTable(tableId, columns, regionalOfficeId);
 
             //uploading files
-            for (Map.Entry<String,byte[]> entry : files.entrySet()) {
+            for (Map.Entry<String, byte[]> entry : files.entrySet()) {
 
-                String contentType = ServletConsts.MIME_TYPES.get(entry.getKey().substring(entry.getKey().lastIndexOf(".")+1));
+                String contentType = ServletConsts.MIME_TYPES.get(entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1));
                 if (contentType == null) {
                     contentType = "application/octet-stream";
                 }
@@ -293,12 +314,37 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
             if (column.startsWith("_")) {
                 continue;
             }
-            String fields[] = column.split(",",4);
-            temp = new Column(fields[0],fields[1],fields[2],fields[3].replaceAll("\"\"","\"").replaceAll("\\]\"","\\]").replaceAll("\"\\[","\\["));
+            String fields[] = column.split(",", 4);
+            temp = new Column(fields[0], fields[1], fields[2], fields[3].replaceAll("\"\"","\"").replaceAll("\\]\"","\\]").replaceAll("\"\\[","\\["));
             outcome.add(temp);
         }
 
         return outcome;
+    }
+
+    private String setOfficesSelectValues (CallingContext callingContext) {
+
+        Datastore datastore = callingContext.getDatastore();
+        String selectValues = null;
+        try {
+            OdkRegionalOfficeTable regionalOfficeTable = OdkRegionalOfficeTable.assertRelation(callingContext);
+            Query q = datastore.createQuery(regionalOfficeTable,
+                    "OdkRegionalOfficeTable.getAllOffices", callingContext.getCurrentUser());
+
+            List<? extends CommonFieldsBase> l = q.executeQuery();
+
+            for (CommonFieldsBase cb : l) {
+                OdkRegionalOfficeTable t = (OdkRegionalOfficeTable) cb;
+                RegionalOffice office = new RegionalOffice(t.getUri(), t.getRegionalOfficeName(), t.getRegionalOfficeId());
+                selectValues += "<option value=\""+ office.getOfficeID() +"\">" + office.getName() + "</option>";
+            }
+        } catch (ODKDatastoreException e) {
+            e.printStackTrace();
+        }
+
+        logger.error(selectValues);
+
+        return selectValues;
     }
 
 }

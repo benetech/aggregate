@@ -157,11 +157,13 @@ public class EntityCreator {
    * @param dbTableName
    *          cannot be null
    * @param cc
+   * @param regionalOfficeId
+   *          optional parameter - unique ID of the Regional Office to which a form table is going to be assigned to
    * @return
    * @throws ODKDatastoreException
    */
   public DbTableDefinitionsEntity newTableDefinitionEntity(String tableId, String schemaETag,
-      String dbTableName, CallingContext cc) throws ODKDatastoreException {
+      String dbTableName, CallingContext cc, String... regionalOfficeId) throws ODKDatastoreException {
     // Validate those parameters defined as non-null in the ODK Tables Schema
     // Google doc.
     Validate.notEmpty(tableId);

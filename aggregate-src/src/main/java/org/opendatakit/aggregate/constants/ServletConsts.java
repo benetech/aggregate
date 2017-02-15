@@ -76,7 +76,7 @@ public final class ServletConsts {
   public static final String RESUME_CURSOR = "resumeCursor";
   public static final String ODK_TABLES_SERVLET_BASE_PATH = "odktables";
   public static final String EXPORTED_FILE_FORMAT = "fileFormat";
-
+  public static final String OFFICE_ID = "officeId";
   /**
    * For PersistentResults and MiscTasks generator gae servlets.
    * the key holding the Uri of the persistent result or misc task record.

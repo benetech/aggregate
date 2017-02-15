@@ -61,7 +61,7 @@ public class OdkTablesCurrentTablesSubTab extends AggregateSubTabBase implements
     importTableButton = new ServletPopupButton(IMPORT_TABLE_BUTTON_TXT,
       IMPORT_TABLE_TXT, UIConsts.ADD_TABLE_FROM_ZIP_SERVLET_ADDR, this, IMPORT_TABLE_TOOLTIP_TEXT, IMPORT_TABLE_BALLOON_TXT);
 
-    if (AggregateUI.getUI().getUserInfo().getType() == UserSecurityInfo.UserType.ANONYMOUS) {
+    if (!AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
             importTableButton.setVisible(false);
     }
 

@@ -297,6 +297,8 @@ public class TableManager {
    *          the unique identifier for the table
    * @param columns
    *          the columns the table should have
+   * @param regionalOfficeId
+   *          optional parameter - unique ID of the Regional Office to which a new table is going to be assigned to
    * @return a table entry representing the newly created table
    * @throws TableAlreadyExistsException
    *           if a table with the given table id already exists
@@ -305,7 +307,7 @@ public class TableManager {
    * @throws PermissionDeniedException
    * @throws ODKTaskLockException
    */
-  public TableEntry createTable(String tableId, List<Column> columns)
+  public TableEntry createTable(String tableId, List<Column> columns, String... regionalOfficeId)
       throws ODKEntityPersistException, ODKDatastoreException,
       TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException {
     Validate.notNull(tableId);
@@ -436,7 +438,7 @@ public class TableManager {
        * Write out the table definition
        */
       DbTableDefinitionsEntity tableDefinition = creator.newTableDefinitionEntity(tableId,
-          pendingSchemaETag, tableName, cc);
+          pendingSchemaETag, tableName, cc, regionalOfficeId);
       tableDefinition.put(cc);
 
       /**

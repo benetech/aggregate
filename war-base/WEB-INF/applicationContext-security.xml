@@ -159,7 +159,7 @@
 		<intercept-url pattern="/addTableFromZIP/**" access="!isAnonymous()" />
 
 		<!-- odk tables export table content -->
-		<intercept-url pattern="/exportTableContent/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />
+		<intercept-url pattern="/exportTableContent/**" access="hasRole('ROLE_ADMINISTER_TABLES') or hasRole('ROLE_SUPER_USER_TABLES')" />
 
 		<!-- odk tables export files to ZIP -->
 		<intercept-url pattern="/zipFileDownload/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />
