@@ -61,7 +61,7 @@ public class ServerTableServiceImpl extends RemoteServiceServlet implements Serv
   private static final Log logger = LogFactory.getLog(ServerTableServiceImpl.class);
 
   @Override
-  public ArrayList<TableEntryClient> getTables() throws AccessDeniedException, RequestFailureException,
+  public ArrayList<TableEntryClient> getTables(String officeId) throws AccessDeniedException, RequestFailureException,
       DatastoreFailureException, PermissionDeniedExceptionClient {
     HttpServletRequest req = this.getThreadLocalRequest();
     CallingContext cc = ContextFactory.getCallingContext(this, req);
@@ -76,24 +76,18 @@ public class ServerTableServiceImpl extends RemoteServiceServlet implements Serv
       }
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
       TableManager tm = new TableManager(appId, userPermissions, cc);
-      WebsafeTables result = tm.getTables(null, 2000);
-      for (TableEntry entry : result.tables) {
-        clientEntries.add(UtilTransforms.transform(entry));
-      }
-      for(TableEntryClient table : clientEntries)
-      {
-          DbTableDefinitions.DbTableDefinitionsEntity def = tm.getDbTableDefinition(table.getTableId());
-          if(def != null)
-          {
-              table.setOfficeId(def.getConnectedOfficeId());
-          }
-      }
-      Collections.sort(clientEntries, new Comparator<TableEntryClient>() {
-        @Override
-        public int compare(TableEntryClient o1, TableEntryClient o2) {
-          return o1.getTableId().compareToIgnoreCase(o2.getTableId());
+      WebsafeTables result = tm.getTables(null, 2000, officeId);
+      if(!user.isAnonymous()) {
+        for (TableEntry entry : result.tables) {
+          clientEntries.add(UtilTransforms.transform(entry));
         }
-      });
+        Collections.sort(clientEntries, new Comparator<TableEntryClient>() {
+          @Override
+          public int compare(TableEntryClient o1, TableEntryClient o2) {
+            return o1.getTableId().compareToIgnoreCase(o2.getTableId());
+          }
+        });
+      }
 
       return clientEntries;
     } catch (ODKDatastoreException e) {
@@ -102,9 +96,6 @@ public class ServerTableServiceImpl extends RemoteServiceServlet implements Serv
     } catch (ODKTaskLockException e) {
       e.printStackTrace();
       throw new RequestFailureException(e);
-    } catch (PermissionDeniedException e) {
-        e.printStackTrace();
-        throw new DatastoreFailureException(e);
     }
   }
 

@@ -1,5 +1,14 @@
 package org.opendatakit.aggregate.odktables.api;
 
+import org.opendatakit.aggregate.odktables.exception.AppNameMismatchException;
+import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
+import org.opendatakit.aggregate.odktables.impl.api.FileManifestServiceImpl;
+import org.opendatakit.aggregate.odktables.impl.api.FileServiceImpl;
+import org.opendatakit.aggregate.odktables.impl.api.TableServiceImpl;
+import org.opendatakit.aggregate.odktables.rest.ApiConstants;
+import org.opendatakit.common.persistence.exception.ODKDatastoreException;
+import org.opendatakit.common.persistence.exception.ODKTaskLockException;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -13,19 +22,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.opendatakit.aggregate.odktables.exception.AppNameMismatchException;
-import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
-import org.opendatakit.aggregate.odktables.impl.api.FileManifestServiceImpl;
-import org.opendatakit.aggregate.odktables.impl.api.FileServiceImpl;
-import org.opendatakit.aggregate.odktables.impl.api.TableServiceImpl;
-import org.opendatakit.aggregate.odktables.rest.ApiConstants;
-import org.opendatakit.common.persistence.exception.ODKDatastoreException;
-import org.opendatakit.common.persistence.exception.ODKTaskLockException;
-
 public interface OdkTables {
 
   public static final String CURSOR_PARAMETER = "cursor";
   public static final String FETCH_LIMIT = "fetchLimit";
+  public static final String OFFICE_ID = "officeId";
   
   /**
    * Return the JSON serialized list of appNames that this server supports.
@@ -62,7 +63,7 @@ public interface OdkTables {
   @Path("{appId}/tables")
   @Produces({MediaType.APPLICATION_JSON, ApiConstants.MEDIA_TEXT_XML_UTF8, ApiConstants.MEDIA_APPLICATION_XML_UTF8})
   public Response /*TableResourceList*/ getTables(@Context ServletContext sc, @Context HttpServletRequest req, @Context HttpHeaders httpHeaders,
-      @Context UriInfo info, @PathParam("appId") String appId, @QueryParam(CURSOR_PARAMETER) String cursor, @QueryParam(FETCH_LIMIT) String fetchLimit) throws AppNameMismatchException,
+      @Context UriInfo info, @PathParam("appId") String appId, @QueryParam(CURSOR_PARAMETER) String cursor, @QueryParam(FETCH_LIMIT) String fetchLimit, @QueryParam(OFFICE_ID) String officeId) throws AppNameMismatchException,
       PermissionDeniedException, ODKDatastoreException, ODKTaskLockException;
 
   @Path("{appId}/tables/{tableId}")

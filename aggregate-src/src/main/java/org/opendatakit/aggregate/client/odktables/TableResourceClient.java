@@ -39,7 +39,6 @@ public class TableResourceClient extends TableEntryClient implements Serializabl
   private String instanceFilesUri;
   private String diffUri;
   private String aclUri;
-  private String tableLevelManifestETag;
 
   public TableResourceClient(TableEntryClient entry) {
     super(entry.getTableId(), entry.getDataETag(), entry.getSchemaETag());
@@ -96,14 +95,6 @@ public class TableResourceClient extends TableEntryClient implements Serializabl
 
   public void setAclUri(final String aclUri) {
     this.aclUri = aclUri;
-  }
-
-  public String getTableLevelManifestETag() {
-      return tableLevelManifestETag;
-  }
-
-  public void setTableLevelManifestETag(String tableLevelManifestETag) {
-      this.tableLevelManifestETag = tableLevelManifestETag;
   }
 
     /*

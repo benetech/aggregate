@@ -16,16 +16,15 @@
 
 package org.opendatakit.aggregate.client.odktables;
 
-import java.util.ArrayList;
-
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.opendatakit.aggregate.client.exception.PermissionDeniedExceptionClient;
 import org.opendatakit.aggregate.client.exception.RequestFailureException;
 import org.opendatakit.aggregate.client.exception.TableAlreadyExistsExceptionClient;
 import org.opendatakit.common.persistence.client.exception.DatastoreFailureException;
 import org.opendatakit.common.security.client.exception.AccessDeniedException;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import java.util.ArrayList;
 
 /**
  * This will be the TableService for the server. It will act the same way as
@@ -39,7 +38,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("servertableservice")
 public interface ServerTableService extends RemoteService {
 
-  ArrayList<TableEntryClient> getTables() throws AccessDeniedException, RequestFailureException,
+  ArrayList<TableEntryClient> getTables(String officeId) throws AccessDeniedException, RequestFailureException,
       DatastoreFailureException, PermissionDeniedExceptionClient;
 
   TableEntryClient getTable(String tableId) throws AccessDeniedException, RequestFailureException,

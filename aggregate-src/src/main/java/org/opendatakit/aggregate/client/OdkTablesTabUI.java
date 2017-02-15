@@ -75,7 +75,7 @@ public class OdkTablesTabUI extends AggregateTabBase {
       // we don't have an outstanding request -- issue one
       if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
           .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
-        SecureGWT.getServerTableService().getTables(new AsyncCallback<ArrayList<TableEntryClient>>() {
+        SecureGWT.getServerTableService().getTables(currentUser.getOfficeId(), new AsyncCallback<ArrayList<TableEntryClient>>() {
   
           @Override
           public void onFailure(Throwable caught) {
@@ -99,14 +99,8 @@ public class OdkTablesTabUI extends AggregateTabBase {
           @Override
           public void onSuccess(ArrayList<TableEntryClient> tables) {
             AggregateUI.getUI().clearError();
-              ArrayList<TableEntryClient> newTables  = new ArrayList<TableEntryClient>();
-              for(TableEntryClient table : tables) {
-                  if(checkIfAdmin() || checkUser(table))
-                      newTables.add(table);
-              }
-            if ( mTables.size() != newTables.size()) {
-              mTables.clear();
-              mTables.addAll(newTables);
+            if(mTables.size() != tables.size() || !mTables.containsAll(tables)) {
+              mTables = tables;
               notifyListener(true);
             } else {
               notifyListener(false);
@@ -115,14 +109,6 @@ public class OdkTablesTabUI extends AggregateTabBase {
         });
       }
     }
-  }
-
-    private boolean checkIfAdmin() {
-        return (currentUser.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN) && currentUser.getOfficeId() == null);
-    }
-
-  private boolean checkUser(TableEntryClient table ) {
-     return (currentUser.getType() != UserSecurityInfo.UserType.ANONYMOUS && table.getOfficeId().equals(currentUser.getOfficeId()));
   }
   
   private void notifyListener(boolean tableListChanged) {

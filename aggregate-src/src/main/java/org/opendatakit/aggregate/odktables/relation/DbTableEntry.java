@@ -16,9 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.relation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.opendatakit.common.ermodel.Entity;
 import org.opendatakit.common.ermodel.Query;
 import org.opendatakit.common.ermodel.Relation;
@@ -29,6 +26,9 @@ import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tracks the ETags associated with a given TableId. The TableId is the PK for
@@ -128,6 +128,9 @@ public class DbTableEntry extends Relation {
   private static final DataField TARGET_ROW_BATCH_SIZE = new DataField("TARGET_ROW_BATCH_SIZE",
       DataType.INTEGER, true);
 
+  public static final DataField CONNECTED_OFFICE_ID = new DataField("CONNECTED_OFFICE_ID", DataType.STRING,
+          true);
+
   private static final List<DataField> dataFields;
   static {
     dataFields = new ArrayList<DataField>();
@@ -139,6 +142,7 @@ public class DbTableEntry extends Relation {
     dataFields.add(STALE_SCHEMA_ETAG);
     dataFields.add(APRIORI_DATA_SEQUENCE_VALUE);
     dataFields.add(TARGET_ROW_BATCH_SIZE);
+      dataFields.add(CONNECTED_OFFICE_ID);
   }
 
   public static class DbTableEntryEntity {
@@ -226,6 +230,14 @@ public class DbTableEntry extends Relation {
     public void setTargetRowBatchSize(Long value) {
       e.set(TARGET_ROW_BATCH_SIZE, value);
     }
+
+      public String getConnectedOfficeId() {
+          return e.getString(CONNECTED_OFFICE_ID);
+      }
+
+      public void setConnectedOfficeId(String value) {
+          e.set(CONNECTED_OFFICE_ID, value);
+      }
   }
 
   private static DbTableEntry relation = null;

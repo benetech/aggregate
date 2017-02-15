@@ -38,7 +38,6 @@ public class TableEntryClient implements Serializable {
   private String tableId;
   private String dataETag;
   private String schemaETag;
-  private String officeId;
 
   protected TableEntryClient() {
   }
@@ -73,14 +72,6 @@ public class TableEntryClient implements Serializable {
   public void setSchemaETag(String schemaETag) {
     this.schemaETag = schemaETag;
   }
-
-    public String getOfficeId() {
-        return officeId;
-    }
-
-    public void setOfficeId(String officeId) {
-        this.officeId = officeId;
-    }
 
     @Override
   public boolean equals(Object obj) {

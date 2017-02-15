@@ -62,16 +62,12 @@ public class DbTableDefinitions extends Relation {
   public static final DataField DB_TABLE_NAME = new DataField("DB_TABLE_NAME", DataType.STRING,
       false);
 
-    public static final DataField CONNECTED_OFFICE_ID = new DataField("CONNECTED_OFFICE_ID", DataType.STRING,
-            true);
-
   private static final List<DataField> dataFields;
   static {
     dataFields = new ArrayList<DataField>();
     dataFields.add(TABLE_ID);
     dataFields.add(SCHEMA_ETAG);
     dataFields.add(DB_TABLE_NAME);
-      dataFields.add(CONNECTED_OFFICE_ID);
   }
 
   public static class DbTableDefinitionsEntity {
@@ -119,14 +115,6 @@ public class DbTableDefinitions extends Relation {
     public void setDbTableName(String value) {
       e.set(DB_TABLE_NAME, value);
     }
-
-      public String getConnectedOfficeId() {
-          return e.getString(CONNECTED_OFFICE_ID);
-      }
-
-      public void setConnectedOfficeId(String value) {
-          e.set(CONNECTED_OFFICE_ID, value);
-      }
   }
 
   private static DbTableDefinitions relation = null;
@@ -171,23 +159,4 @@ public class DbTableDefinitions extends Relation {
     Entity e = list.get(0);
     return new DbTableDefinitionsEntity(e);
   }
-
-    public static ArrayList<DbTableDefinitionsEntity> getDefinitions(CallingContext cc) throws ODKDatastoreException {
-        Query query = getRelation(cc).query("DbTableDefinitions.getDefinition", cc);
-        ArrayList<DbTableDefinitionsEntity> result = new  ArrayList<DbTableDefinitionsEntity>();
-
-
-        List<Entity> list = query.execute();
-        if (list.isEmpty()) {
-            return null;
-        }
-
-        for(Entity ent : list)
-        {
-            DbTableDefinitionsEntity record = (DbTableDefinitionsEntity) ent;
-            result.add(record);
-        }
-
-        return result;
-    }
 }

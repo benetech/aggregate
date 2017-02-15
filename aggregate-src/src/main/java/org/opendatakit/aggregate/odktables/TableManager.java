@@ -59,6 +59,7 @@ import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
+import org.opendatakit.common.security.spring.RegisteredUsersTable;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.constants.BasicConsts;
 
@@ -115,7 +116,7 @@ public class TableManager {
    * @return a list of all table entries.
    * @throws ODKDatastoreException
    */
-  public WebsafeTables getTables(QueryResumePoint startCursor, int fetchLimit) throws ODKDatastoreException {
+  public WebsafeTables getTables(QueryResumePoint startCursor, int fetchLimit, String officeId) throws ODKDatastoreException {
     List<TableEntry> filteredList = new ArrayList<TableEntry>();
 
     // TODO: properly return exactly fetchLimit results when we are paginating
@@ -128,6 +129,8 @@ public class TableManager {
     // we need the filter to activate the sort...
     query.addFilter(DbTableEntry.getRelation(cc).getDataField(CommonFieldsBase.CREATION_DATE_COLUMN_NAME),
         org.opendatakit.common.persistence.Query.FilterOperation.GREATER_THAN, BasicConsts.EPOCH);
+    if(officeId != null)
+        query.addFilter(DbTableEntry.getRelation(cc).getDataField("CONNECTED_OFFICE_ID"), org.opendatakit.common.persistence.Query.FilterOperation.EQUAL, officeId);
     WebsafeQueryResult result = query.execute(startCursor, fetchLimit);
     List<DbTableEntryEntity> results = new ArrayList<DbTableEntryEntity>();
     for (Entity e : result.entities) {
@@ -180,7 +183,7 @@ public class TableManager {
      * List<Entity> entries = query.execute(); return getTableEntries(entries);
      */
     // List<TableEntry> tables = getTables();
-    return getTables(startCursor, fetchLimit);
+    return getTables(startCursor, fetchLimit, null);
   }
 
   /**
@@ -258,32 +261,6 @@ public class TableManager {
 
     return null;
   }
-
-    public  DbTableDefinitionsEntity getDbTableDefinition(String tableId) throws ODKDatastoreException,
-            PermissionDeniedException, ODKTaskLockException {
-        Validate.notEmpty(tableId);
-        TableEntry entry = null;
-        DbTableDefinitionsEntity definitionEntity = null;
-        OdkTablesLockTemplate propsLock = new OdkTablesLockTemplate(tableId, ODKTablesTaskLockType.TABLES_NON_PERMISSIONS_CHANGES, OdkTablesLockTemplate.DelayStrategy.SHORT, cc);
-        try {
-            propsLock.acquire();
-
-            entry = getTable(tableId);
-            if (entry == null) {
-                return null;
-            }
-            String schemaETag = entry.getSchemaETag();
-            if ( schemaETag == null ) {
-                return null;
-            }
-            definitionEntity = DbTableDefinitions.getDefinition(tableId, schemaETag, cc);
-        } finally {
-            propsLock.release();
-        }
-
-
-        return definitionEntity;
-    }
 
   /**
    * Retrieve the table entry for the given tableId.
@@ -415,6 +392,9 @@ public class TableManager {
 
       tableEntry = creator.newTableEntryEntity(tableId, pendingSchemaETag,
           aprioriDataSequenceValue, cc);
+
+      RegisteredUsersTable user = RegisteredUsersTable.getUserByUri(cc.getCurrentUser().getUriUser(), cc.getDatastore(), cc.getCurrentUser());
+      tableEntry.setConnectedOfficeId(user.getOfficeId());
 
       // write it...
 

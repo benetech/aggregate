@@ -135,7 +135,7 @@ public class OdkTablesImpl implements OdkTables {
   @Override
   public Response /* TableResourceList */ getTables(ServletContext sc, HttpServletRequest req,
       HttpHeaders httpHeaders, UriInfo info, String appId,
-      @QueryParam(CURSOR_PARAMETER) String cursor, @QueryParam(FETCH_LIMIT) String fetchLimit)
+      @QueryParam(CURSOR_PARAMETER) String cursor, @QueryParam(FETCH_LIMIT) String fetchLimit, @QueryParam(OFFICE_ID) String officeId)
       throws AppNameMismatchException, PermissionDeniedException, ODKDatastoreException,
       ODKTaskLockException {
 
@@ -148,7 +148,7 @@ public class OdkTablesImpl implements OdkTables {
     }
 
     TableServiceImpl ts = new TableServiceImpl(sc, req, httpHeaders, info, appId, cc);
-    return ts.getTables(cursor, fetchLimit);
+    return ts.getTables(cursor, fetchLimit, officeId);
   }
 
   @Override

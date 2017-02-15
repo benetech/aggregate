@@ -16,13 +16,13 @@
 
 package org.opendatakit.aggregate.client.odktables;
 
-import java.util.ArrayList;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import java.util.ArrayList;
 
 public interface ServerTableServiceAsync {
 
-  void getTables(AsyncCallback<ArrayList<TableEntryClient>> callback);
+  void getTables(String officeId, AsyncCallback<ArrayList<TableEntryClient>> callback);
 
   void getTable(String tableId, AsyncCallback<TableEntryClient> callback);
 

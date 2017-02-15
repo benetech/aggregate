@@ -169,11 +169,9 @@ public class EntityCreator {
     Validate.notEmpty(dbTableName);
     Validate.notNull(cc);
     DbTableDefinitionsEntity definition = DbTableDefinitions.createNewEntity(cc);
-      RegisteredUsersTable user = RegisteredUsersTable.getUserByUri(cc.getCurrentUser().getUriUser(), cc.getDatastore(), cc.getCurrentUser());
     definition.setTableId(tableId);
     definition.setSchemaETag(schemaETag);
     definition.setDbTableName(dbTableName);
-    definition.setConnectedOfficeId(user.getOfficeId());
     return definition;
   }
 

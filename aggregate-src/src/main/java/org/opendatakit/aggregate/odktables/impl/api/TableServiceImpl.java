@@ -135,7 +135,7 @@ public class TableServiceImpl implements TableService {
 
   @Override
   public Response getTables(@QueryParam(CURSOR_PARAMETER) String cursor,
-      @QueryParam(FETCH_LIMIT) String fetchLimit) throws ODKDatastoreException,
+      @QueryParam(FETCH_LIMIT) String fetchLimit, @QueryParam(OFFICE_ID) String officeId) throws ODKDatastoreException,
       PermissionDeniedException, ODKTaskLockException {
 
     TablesUserPermissions userPermissions = new TablesUserPermissionsImpl(cc);
@@ -145,7 +145,7 @@ public class TableServiceImpl implements TableService {
     int limit = (fetchLimit == null || fetchLimit.length() == 0) ?
     		2000 : Integer.valueOf(fetchLimit);
     WebsafeTables websafeResult = tm.getTables(
-        QueryResumePoint.fromWebsafeCursor(WebUtils.safeDecode(cursor)), limit);
+        QueryResumePoint.fromWebsafeCursor(WebUtils.safeDecode(cursor)), limit, officeId);
     ArrayList<TableResource> resources = new ArrayList<TableResource>();
     for (TableEntry entry : websafeResult.tables) {
       // database cruft will have a null schemaETag -- ignore those
@@ -196,11 +196,7 @@ public class TableServiceImpl implements TableService {
       // cruft)
       throw new TableNotFoundException(ERROR_TABLE_NOT_FOUND + "\n" + tableId);
     }
-    TableResource tableResource = getResource(info, appId, entry);
-
-    TableResourceClient resource = UtilTransforms.transform(tableResource);
-    DbTableDefinitions.DbTableDefinitionsEntity definition = tm.getDbTableDefinition(tableId);
-    resource.setOfficeId(definition.getConnectedOfficeId());
+    TableResource resource = getResource(info, appId, entry);
 
     // set the table-level manifest ETag if known...
     try {

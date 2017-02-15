@@ -16,20 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.api;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import org.opendatakit.aggregate.odktables.exception.AppNameMismatchException;
 import org.opendatakit.aggregate.odktables.exception.FileNotFoundException;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
@@ -44,10 +30,24 @@ import org.opendatakit.aggregate.odktables.rest.entity.TableResourceList;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
+
 public interface TableService {
 
   public static final String CURSOR_PARAMETER = "cursor";
   public static final String FETCH_LIMIT = "fetchLimit";
+  public static final String OFFICE_ID = "officeId";
 
   /**
    *
@@ -58,7 +58,7 @@ public interface TableService {
    * @throws ODKTaskLockException
    * @throws PermissionDeniedException
    */
-  public Response /*TableResourceList*/ getTables(@QueryParam(CURSOR_PARAMETER) String cursor, @QueryParam(FETCH_LIMIT) String fetchLimit) throws ODKDatastoreException, PermissionDeniedException, ODKTaskLockException;
+  public Response /*TableResourceList*/ getTables(@QueryParam(CURSOR_PARAMETER) String cursor, @QueryParam(FETCH_LIMIT) String fetchLimit, @QueryParam(OFFICE_ID) String officeId) throws ODKDatastoreException, PermissionDeniedException, ODKTaskLockException;
 
   /**
    * Get a particular tableId (supplied in implementation constructor)
