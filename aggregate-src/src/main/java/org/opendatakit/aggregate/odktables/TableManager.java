@@ -395,8 +395,10 @@ public class TableManager {
       tableEntry = creator.newTableEntryEntity(tableId, pendingSchemaETag,
           aprioriDataSequenceValue, cc);
 
-      RegisteredUsersTable user = RegisteredUsersTable.getUserByUri(cc.getCurrentUser().getUriUser(), cc.getDatastore(), cc.getCurrentUser());
-      tableEntry.setConnectedOfficeId(user.getOfficeId());
+      // set Regional Office Id for a table
+      if (regionalOfficeId != null && regionalOfficeId.length != 0) {
+          tableEntry.setConnectedOfficeId(regionalOfficeId[0]);
+      }
 
       // write it...
 
@@ -438,7 +440,7 @@ public class TableManager {
        * Write out the table definition
        */
       DbTableDefinitionsEntity tableDefinition = creator.newTableDefinitionEntity(tableId,
-          pendingSchemaETag, tableName, cc, regionalOfficeId);
+          pendingSchemaETag, tableName, cc);
       tableDefinition.put(cc);
 
       /**
