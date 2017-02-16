@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -52,6 +54,8 @@ import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.TestContextFactory;
 
 public class DataManagerTest {
+  private static final Log logger = LogFactory.getLog(DataManagerTest.class.getName());
+
 
   private class MockCurrentUserPermissions implements TablesUserPermissions {
 
@@ -97,18 +101,31 @@ public class DataManagerTest {
 
   @Before
   public void setUp() throws Exception {
+    logger.info("Starting setUp()");
+    logger.info("Getting TestContextFactory calling context");
     this.cc = TestContextFactory.getCallingContext();
+
+    logger.info("Setting up permissions");
 
     userPermissions = new MockCurrentUserPermissions();
 
     this.tm = new TableManager(T.appId, userPermissions, cc);
 
+    logger.info("Creating " + T.tableId + " table");
+
     TableEntry te = tm.createTable(T.tableId, T.columns);
+    
+    logger.info("New DataManager");
 
     this.dm = new DataManager(T.appId, T.tableId, userPermissions, cc);
 
     this.rows = T.rows;
+    
+    logger.info("Clearing rows");
+
     clearRows();
+    logger.info("Completed setUp()");
+
   }
 
   @After
@@ -122,7 +139,7 @@ public class DataManagerTest {
 
   @Test
   public void testGetRowsEmpty() throws ODKDatastoreException, PermissionDeniedException, InconsistentStateException, ODKTaskLockException, BadColumnNameException {
-    WebsafeRows websafeResult = dm.getRows(null, 2000);
+    WebsafeRows websafeResult = dm.getRows(null, 2000, null);
     assertTrue(websafeResult.rows.isEmpty());
   }
 
@@ -172,7 +189,7 @@ public class DataManagerTest {
     for ( Row r : rows ) {
       expectedRows.add(dm.insertOrUpdateRow(r));
     }
-    WebsafeRows websafeResult = dm.getRows(null, 2000);
+    WebsafeRows websafeResult = dm.getRows(null, 2000, null);
     List<Row> actualRows = websafeResult.rows;
     for (int i = 0; i < rows.size(); i++) {
       Row expected = rows.get(i);
@@ -354,7 +371,7 @@ public class DataManagerTest {
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    WebsafeRows websafeResult = dm.getRows(null, 2000);
+    WebsafeRows websafeResult = dm.getRows(null, 2000, null);
     List<Row> rows = websafeResult.rows;
     assertTrue(rows.isEmpty());
   }
@@ -434,7 +451,7 @@ public class DataManagerTest {
 
   @Ignore
   private void clearRows() throws ODKDatastoreException, ODKTaskLockException, PermissionDeniedException, InconsistentStateException, BadColumnNameException, ETagMismatchException {
-    WebsafeRows websafeResult = dm.getRows(null, 2000);
+    WebsafeRows websafeResult = dm.getRows(null, 2000, null);
     List<Row> rows = websafeResult.rows;
     for ( Row old : rows ) {
       dm.deleteRow(old.getRowId(), old.getRowETag());

@@ -120,7 +120,7 @@ public class TableManagerTest {
 
   @Test
   public void testGetTablesEmpty() throws ODKDatastoreException {
-    WebsafeTables result = tm.getTables(null, 2000);
+    WebsafeTables result = tm.getTables(null, 2000, null);
     assertTrue(result.tables.isEmpty());
   }
 
@@ -206,7 +206,7 @@ public class TableManagerTest {
     expected.add(one);
     expected.add(two);
 
-    WebsafeTables result = tm.getTables(null, 2000);
+    WebsafeTables result = tm.getTables(null, 2000, null);
     List<TableEntry> actual = result.tables;
     assertEquals(2, actual.size());
 
