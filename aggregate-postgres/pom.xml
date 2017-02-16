@@ -114,7 +114,6 @@
           <inherited>true</inherited>
           <configuration>
             <argLine>${surefire.argLine}</argLine>
-=
             <classesDirectory>${project.build.directory}/generated-classes/jacoco/classes</classesDirectory>
             <excludes>
               <exclude>**/integration/**</exclude>
