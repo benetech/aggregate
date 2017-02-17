@@ -30,7 +30,7 @@
                               <goal>run</goal>
                             </goals>
                             <configuration>
-                              <target>
+                              <target unless="maven.test.skip">
                                 <exec executable="${postgres.client.executable}" failonerror="false">
                                   <env key="PGPASSWORD" value="${postgres.root.password}" />
                                   <arg line="-U postgres -a -n -w -f &quot;${postgresScriptSourceDirectory}/postgres_teardown.sql&quot;" />
@@ -46,7 +46,7 @@
                               <goal>run</goal>
                             </goals>
                             <configuration>
-                              <target>
+                              <target unless="maven.test.skip">
                                 <exec executable="${postgres.client.executable}" failonerror="false">
                                   <env key="PGPASSWORD" value="${postgres.root.password}" />
                                   <arg line="-U postgres -a -n -w -f &quot;${postgresScriptSourceDirectory}/postgres_teardown.sql&quot;" />
@@ -62,7 +62,7 @@
                               <goal>run</goal>
                             </goals>
                             <configuration>
-                              <target>
+                              <target unless="maven.test.skip">
                                 <exec executable="${postgres.client.executable}" failonerror="true">
                                   <env key="PGPASSWORD" value="${postgres.root.password}" />
                                   <arg line="-U postgres -a -n -w -f &quot;${postgresScriptSourceDirectory}/postgres_setup.sql&quot;" />
@@ -78,7 +78,7 @@
                               <goal>run</goal>
                             </goals>
                             <configuration>
-                              <target>
+                              <target unless="maven.test.skip">
                                 <exec executable="${postgres.client.executable}" failonerror="true">
                                   <env key="PGPASSWORD" value="${postgres.root.password}" />
                                   <arg line="-U postgres -a -n -w -f &quot;${postgresScriptSourceDirectory}/postgres_teardown.sql&quot;" />

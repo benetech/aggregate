@@ -31,7 +31,7 @@
                               <goal>run</goal>
                             </goals>
                             <configuration>
-                              <target>
+                              <target unless="maven.test.skip">
                                 <exec executable="${mysql.client.executable}" failonerror="false">
                                   <arg line="-u root --force -p${mysql.root.password}" />
                                   <redirector input="${mysqlScriptSourceDirectory}/mysql_teardown.sql" />
@@ -47,7 +47,7 @@
                               <goal>run</goal>
                             </goals>
                             <configuration>
-                              <target>
+                              <target unless="maven.test.skip">
                                 <exec executable="${mysql.client.executable}" failonerror="false">
                                   <arg line="-u root --force -p${mysql.root.password}" />
                                   <redirector input="${mysqlScriptSourceDirectory}/mysql_teardown.sql" />
@@ -63,7 +63,7 @@
                               <goal>run</goal>
                             </goals>
                             <configuration>
-                              <target>
+                              <target unless="maven.test.skip">
                                 <exec executable="${mysql.client.executable}" failonerror="true">
                                   <arg line="-u root -p${mysql.root.password}" />
                                   <redirector input="${mysqlScriptSourceDirectory}/mysql_setup.sql" />
@@ -79,7 +79,7 @@
                               <goal>run</goal>
                             </goals>
                             <configuration>
-                              <target>
+                              <target unless="maven.test.skip">
                                 <exec executable="${mysql.client.executable}" failonerror="true">
                                   <arg line="-u root -p${mysql.root.password}" />
                                   <redirector input="${mysqlScriptSourceDirectory}/mysql_teardown.sql" />
