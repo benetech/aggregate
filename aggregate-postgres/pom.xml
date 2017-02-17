@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.opendatakit</groupId>
-    <artifactId>aggregate-postgresql-specific</artifactId>
+        <artifactId>aggregate-postgresql-specific</artifactId>
         <version>1.0.1</version>
-    <relativePath>../postgresql-pom.xml</relativePath>
+        <relativePath>../postgresql-pom.xml</relativePath>
     </parent>
     <artifactId>aggregate-postgres</artifactId>
     <packaging>war</packaging>
@@ -34,16 +34,16 @@
         </dependency>
     </dependencies>
     <build>
-    <testSourceDirectory>${toplevel.directory}/src/it/java</testSourceDirectory>
-    <testResources>
-        <testResource>
-            <directory>${toplevel.directory}/src/it/java</directory>
-            <filtering>true</filtering>
-            <includes>
-                <include>**/*.properties</include>
-            </includes>
-        </testResource>
-    </testResources>
+        <testSourceDirectory>${toplevel.directory}/src/it/java</testSourceDirectory>
+        <testResources>
+            <testResource>
+                <directory>${toplevel.directory}/src/it/java</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -103,57 +103,24 @@
                 </executions>
             </plugin>
             <plugin>
-			<!--  This references the jacoco plugin, configuration is in the parent -->
-			<groupId>org.jacoco</groupId>
-			<artifactId>jacoco-maven-plugin</artifactId>
-        </plugin>
-        <plugin>
-          <!-- This configures the running of odktables integration tests. -->
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>${maven.surefire.plugin.version}</version>
-          <inherited>true</inherited>
-          <configuration>
-            <argLine>${surefire.argLine}</argLine>
-            <classesDirectory>${project.build.directory}/generated-classes/jacoco/classes</classesDirectory>
-            <excludes>
-              <exclude>**/integration/**</exclude>
-            </excludes>
-          </configuration>
-        </plugin>
-        <plugin>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>integration-test</id>
-              </execution>
-              <execution>
-                <id>verify</id>
-              </execution>
-            </executions>
-        </plugin>
-        <plugin>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven2-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>start-container</id>
-              </execution>
-              <execution>
-                <id>stop-container</id>
-              </execution>
-            </executions>
-        </plugin>
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>selenium-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>start-selenium</id>
-              </execution>
-              <execution>
-                <id>stop-selenium</id>
-              </execution>
-            </executions>
+                <!-- This references the jacoco plugin, configuration is 
+                    in the parent -->
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <!-- This configures the running of odktables integration 
+                    tests. -->
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <argLine>${surefire.argLine}</argLine>
+                    <classesDirectory>${project.build.directory}/generated-classes/jacoco/classes</classesDirectory>
+                    <excludes>
+                        <exclude>**/integration/**</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

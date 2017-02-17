@@ -182,7 +182,7 @@
         <dependency>
             <groupId>org.javarosa</groupId>
             <artifactId>javarosa-libraries</artifactId>
-            <version>2016-04-21</version>
+            <version>2016.04.21</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -523,20 +523,19 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-
-        <!-- Test dependencies (mainly for gae) -->
+        <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- <dependency> <groupId>com.google.appengine</groupId> <artifactId>appengine-api-stubs</artifactId> 
-            <version>${gooogle.appengine.sdk.version}</version> <scope>test</scope> </dependency> 
-            <dependency> <groupId>com.google.appengine</groupId> <artifactId>appengine-testing</artifactId> 
-            <version>${gooogle.appengine.sdk.version}</version> <scope>test</scope> </dependency> -->
-
-
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>org.jacoco.agent</artifactId>
+            <version>${jacoco.maven.plugin.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
