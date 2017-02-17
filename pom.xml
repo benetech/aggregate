@@ -118,7 +118,7 @@
         <!-- Provided by OpenDataKit Team -->
         <repository>
             <id>In-project repo for otherwise unavailable libraries</id>
-            <url>${toplevel.directory}local-repository</url>
+            <url>${project.baseUri}../local-repository</url>
         </repository>
         <!-- main repository -->
         <repository>
@@ -167,7 +167,7 @@
         </dependency>
         <dependency>
             <groupId>com.googlecode.gwt-google-maps-v3</groupId>
-            <artifactId>gwt-google-maps-v3</artifactId>
+            <artifactId>gwt-google-maps</artifactId>
             <version>1.0.1</version>
             <type>jar</type>
             <scope>compile</scope>
