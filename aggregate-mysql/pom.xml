@@ -49,16 +49,6 @@
 
     </dependencies>
     <build>
-        <testSourceDirectory>${toplevel.directory}/src/it/java</testSourceDirectory>
-        <testResources>
-            <testResource>
-                <directory>${toplevel.directory}/src/it/java</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/*.properties</include>
-                </includes>
-            </testResource>
-        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
