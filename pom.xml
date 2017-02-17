@@ -75,6 +75,8 @@
                 </property>
             </activation>
             <modules>
+        	<module>odk-postgres-settings</module>
+        	<module>odk-postgres-unit-settings</module>
                 <module>aggregate-postgres</module>
             </modules>
             <build>
@@ -94,6 +96,8 @@
                 </property>
             </activation>
             <modules>
+        	<module>odk-mysql-settings</module>
+        	<module>odk-mysql-unit-settings</module>
                 <module>aggregate-mysql</module>
             </modules>
             <build>
@@ -110,7 +114,6 @@
         <module>aggregate-src</module>
         <module>odk-common-settings</module>
         <module>odk-common-unit-settings</module>
-
         <!-- odk tables client libraries -->
         <module>odk-tables-api</module>
     </modules>
