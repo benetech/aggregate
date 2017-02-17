@@ -182,7 +182,7 @@
         <dependency>
             <groupId>org.javarosa</groupId>
             <artifactId>javarosa-libraries</artifactId>
-            <version>2016.04.21</version>
+            <version>1.0.1</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
