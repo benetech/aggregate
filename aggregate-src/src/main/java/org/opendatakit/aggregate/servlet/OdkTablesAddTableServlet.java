@@ -82,10 +82,10 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
             + "	  	</tr>\n"
             + "	  	<tr>"
             + "	  		<td><label for=\"offices\">Select Regional Office: </label></td>"
-            + "	  		<td><select name=\"" + ServletConsts.OFFICE_ID + "\" id=\"offices\" required>";
+            + "	  		<td>";
             // here goes dynamically loaded list of options for Regional Offices
 
-    private static final String UPLOAD_PAGE_BODY_END = "</select></td>"
+    private static final String UPLOAD_PAGE_BODY_END = "</td>"
             + "	  	</tr>\n"
             + "	  	<tr>"
             + "	  		<td><input id=\"upload_form\" type=\"submit\" name=\"button\" class=\"gwt-Button\" value=\"Upload Form\" /></td>"
@@ -168,16 +168,16 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
             Map<String, byte[]> files = new HashMap<>();
             String definition = null;
             String tableId = null;
-            String regionalOfficeId = null;
+            List<String> regionalOffices = new ArrayList<>();
 
             // unzipping files
 
             for (FileItem item : items) {
 
-                // Retrieve Regional Office ID
+                // Retrieve all Regional Office IDs to which a form definition is going to be assigned to
                 if (item.getFieldName().equals(ServletConsts.OFFICE_ID)) {
-                    regionalOfficeId = item.getString();
-                    logger.info("Form definition would be assigned to office with ID: " + regionalOfficeId);
+                    regionalOffices.add(item.getString());
+                    logger.info("Form definition would be assigned to office with ID: " + item.getString());
                 }
 
                 String fieldName = item.getFieldName();
@@ -214,7 +214,7 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
                 }
             }
 
-            if (definition == null || tableId == null || regionalOfficeId == null) {
+            if (definition == null || tableId == null || regionalOffices.isEmpty()) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, ErrorConsts.NO_DEFINITION_FILE);
                 return;
             }
@@ -222,10 +222,13 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
             List<String> notUploadedFiles = new ArrayList<>();
             List<String> uploadedFiles = new ArrayList<>();
 
-            //adding table
+            //adding tables
             List<Column> columns = parseColumnsFromCsv(definition);
             TableManager tm = new TableManager(appId, userPermissions, cc);
-            tm.createTable(tableId, columns, regionalOfficeId);
+
+            for (String regionalOffice : regionalOffices) {
+                tm.createTable(tableId + "_" + regionalOffice, columns, regionalOffice);
+            }
 
             //uploading files
             for (Map.Entry<String, byte[]> entry : files.entrySet()) {
@@ -241,7 +244,7 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
 
                 ConfigFileChangeDetail outcome = fm.putFile("2", tableId, fi, userPermissions);
 
-                if(outcome==ConfigFileChangeDetail.FILE_NOT_CHANGED) {
+                if (outcome == ConfigFileChangeDetail.FILE_NOT_CHANGED) {
                     notUploadedFiles.add(entry.getKey());
                 } else {
                     uploadedFiles.add(entry.getKey());
@@ -325,7 +328,7 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
     private String setOfficesSelectValues (CallingContext callingContext) {
 
         Datastore datastore = callingContext.getDatastore();
-        String selectValues = null;
+        String selectValues = "";
         try {
             OdkRegionalOfficeTable regionalOfficeTable = OdkRegionalOfficeTable.assertRelation(callingContext);
             Query q = datastore.createQuery(regionalOfficeTable,
@@ -336,7 +339,8 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
             for (CommonFieldsBase cb : l) {
                 OdkRegionalOfficeTable t = (OdkRegionalOfficeTable) cb;
                 RegionalOffice office = new RegionalOffice(t.getUri(), t.getRegionalOfficeName(), t.getRegionalOfficeId());
-                selectValues += "<option value=\""+ office.getOfficeID() +"\">" + office.getName() + "</option>";
+                selectValues += "<input type=\"checkbox\" name=\"" + ServletConsts.OFFICE_ID +
+                        "\" value=\""+ office.getOfficeID() +"\">" + office.getOfficeID() + " (" + office.getName() + ")<br/>";
             }
         } catch (ODKDatastoreException e) {
             e.printStackTrace();
