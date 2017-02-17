@@ -34,7 +34,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
+                                    <target unless="maven.test.skip">
                                         <exec
                                             executable="${postgres.client.executable}"
                                             failonerror="false">
@@ -55,7 +55,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
+                                    <target unless="maven.test.skip">
                                         <exec
                                             executable="${postgres.client.executable}"
                                             failonerror="false">
@@ -76,7 +76,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
+                                    <target unless="maven.test.skip">
                                         <exec
                                             executable="${postgres.client.executable}"
                                             failonerror="true">
@@ -97,7 +97,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
+                                    <target unless="maven.test.skip">
                                         <exec
                                             executable="${postgres.client.executable}"
                                             failonerror="true">
@@ -155,7 +155,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
+                                    <target unless="maven.test.skip">
                                         <exec
                                             executable="${mysql.client.executable}"
                                             failonerror="false">
@@ -176,7 +176,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
+                                    <target unless="maven.test.skip">
                                         <exec
                                             executable="${mysql.client.executable}"
                                             failonerror="false">
@@ -197,7 +197,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
+                                    <target unless="maven.test.skip">
                                         <exec
                                             executable="${mysql.client.executable}"
                                             failonerror="true">
@@ -218,7 +218,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <target>
+                                    <target unless="maven.test.skip">
                                         <exec
                                             executable="${mysql.client.executable}"
                                             failonerror="true">
