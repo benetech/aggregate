@@ -1,6 +1,5 @@
 Configure and Build ODK Aggregate WAR File
 =================================
-[toc]
 
 Prerequisites
 -------------
