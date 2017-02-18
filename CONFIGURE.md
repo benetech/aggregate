@@ -45,10 +45,10 @@ Edit your ~/.m2/settings.xml file, and add the following to your ```<profiles>``
 ```
 
 You can add just the two Postgres lines or the two MySQL lines if you will only be working with one database.  Update the database information as follows:
-```postgres.root.password```: password for Postgres user "postgres"
-```postgres.client.executable```: path to Postgres client
-```mysql.root.password```: password for MySQL user "root"
-```mysql.client.executable```: path to MySQL client
+- ```postgres.root.password```: password for Postgres user "postgres"
+- ```postgres.client.executable```: path to Postgres client
+- ```mysql.root.password```: password for MySQL user "root"
+- ```mysql.client.executable```: path to MySQL client
 
 Third, check out source code
 -----------------------------
