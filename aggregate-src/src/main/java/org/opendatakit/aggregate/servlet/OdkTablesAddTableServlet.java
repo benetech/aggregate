@@ -94,7 +94,8 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
             + "	  </table>\n"
             + "	  </form>"
             + "<p>Form should be in a single zip file with structure that is consistent with requirements for Survey app. <br/>"
-            + "If form of the same name is already on server, you should remove it before upload.</p>";
+            + "Uploading a form with a name that already exists on the server, will result in media files update, "
+            + "if the schema and columns amount match, otherwise it will fail.</p>";
 
     private static final Log logger = LogFactory.getLog(OdkTablesAddTableServlet.class);
 
