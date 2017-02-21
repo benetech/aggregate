@@ -48,7 +48,9 @@ hs_err_pid*
 # ODK Aggregate legacy
 Servers/
 aggregate-mysql/src/
-aggregate-postgres/src/
+aggregate-postgres/src/main/java
+aggregate-postgres/src/main/webapp
+aggregate-postgres/src/test
 bitrock-installer/*.war
 bitrock-installer/files/ODKAggregate.war
 bitrock-installer/files/conf/

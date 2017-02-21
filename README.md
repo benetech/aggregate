@@ -21,6 +21,10 @@ Getting Set Up
 --------------
 See [CONFIGURE.md](CONFIGURE.md).
 
+Docker Set Up
+-------------
+The Dockerfile included in this project fits a specific use case; more details in [DOCKER_README.md](DOCKER_README.md).
+
 Changes from the Original OpenDataKit
 -------------------------------------
 

@@ -9,13 +9,16 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 
 public class EnvPropertyPlaceholderConfigurer extends PropertyPlaceholderConfigurer {
 
-  private static final Log logger = LogFactory.getLog(EnvPropertyPlaceholderConfigurer.class.getName());
+  private static final Log logger = LogFactory
+      .getLog(EnvPropertyPlaceholderConfigurer.class.getName());
 
   @Override
   protected String resolvePlaceholder(String placeholder, Properties props) {
     String envVar = placeholder.replace(".", "_").toUpperCase();
     String result = System.getenv(envVar);
-    logger.info("Checking " + placeholder + " as " + envVar + " and finding " + result);
+    if (envVar.contains("JDBC_URL")) {
+      logger.info("Spot-checking " + placeholder + " as " + envVar + " and finding " + result);
+    }
     return StringUtils.isNotEmpty(result) ? result : super.resolvePlaceholder(placeholder, props);
   }
 }
