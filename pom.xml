@@ -75,8 +75,8 @@
                 </property>
             </activation>
             <modules>
-        	<module>odk-postgres-settings</module>
-        	<module>odk-postgres-unit-settings</module>
+                <module>odk-postgres-settings</module>
+                <module>odk-postgres-unit-settings</module>
                 <module>aggregate-postgres</module>
             </modules>
             <build>
@@ -96,8 +96,8 @@
                 </property>
             </activation>
             <modules>
-        	<module>odk-mysql-settings</module>
-        	<module>odk-mysql-unit-settings</module>
+                <module>odk-mysql-settings</module>
+                <module>odk-mysql-unit-settings</module>
                 <module>aggregate-mysql</module>
             </modules>
             <build>
@@ -1037,4 +1037,23 @@
             </notifier>
         </notifiers>
     </ciManagement>
+<!--
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
+                        <reportSets>
+          <reportSet>
+            <reports>
+              <report>dependencies</report>
+              <report>dependency-convergence</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+-->
 </project>
