@@ -210,6 +210,7 @@ public class DataManager {
             priorLogEntity.getString(DbLogTable.SAVEPOINT_TIMESTAMP),
             priorLogEntity.getString(DbLogTable.SAVEPOINT_CREATOR),
             priorLogEntity.getString(DbLogTable.DEVICE_ID),
+            priorLogEntity.getString(DbLogTable.OFFICE_ID),
             converter.getRowValues(priorLogEntity, columns), columns);
 
         // revert DbTable to the prior row state
@@ -230,7 +231,7 @@ public class DataManager {
    * @throws InconsistentStateException
    * @throws BadColumnNameException
    */
-  public WebsafeRows getRows(QueryResumePoint startCursor, int fetchLimit, String deviceId)
+  public WebsafeRows getRows(QueryResumePoint startCursor, int fetchLimit, String deviceId, String officeId)
       throws ODKDatastoreException, PermissionDeniedException, ODKTaskLockException,
       InconsistentStateException, BadColumnNameException {
 
@@ -272,6 +273,8 @@ public class DataManager {
           org.opendatakit.common.persistence.Query.FilterOperation.GREATER_THAN, BasicConsts.EPOCH);
       if(deviceId != null)
         query.addFilter(table.getDataField("DEVICE_ID"), org.opendatakit.common.persistence.Query.FilterOperation.EQUAL, deviceId);
+      if(officeId != null)
+        query.addFilter(table.getDataField("OFFICE_ID"), org.opendatakit.common.persistence.Query.FilterOperation.EQUAL, officeId);
       result = query.execute(startCursor, fetchLimit);
 
     } finally {
@@ -1036,7 +1039,7 @@ public class DataManager {
               creator.setRowFields(entity, PersistenceUtils.newUri(), dataETagAtModification,
                   userPermissions.getOdkTablesUserId(), false, rowFilterScope, row.getFormId(),
                   row.getLocale(), row.getSavepointType(), row.getSavepointTimestamp(),
-                  row.getSavepointCreator(), rows.getDeviceId(), row.getValues(), columns);
+                  row.getSavepointCreator(), rows.getDeviceId(), rows.getOfficeId(), row.getValues(), columns);
 
             }
 
@@ -1307,7 +1310,7 @@ public class DataManager {
         // update the fields in the DbTable entity...
         creator.setRowFields(entity, PersistenceUtils.newUri(), dataETagAtModification,
             userPermissions.getOdkTablesUserId(), false, rowFilterScope, row.getFormId(), row.getLocale(),
-            row.getSavepointType(), row.getSavepointTimestamp(), row.getSavepointCreator(), null,
+            row.getSavepointType(), row.getSavepointTimestamp(), row.getSavepointCreator(), null, null,
             row.getValues(), columns);
 
         // create log table entry

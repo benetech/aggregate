@@ -226,10 +226,7 @@ public class OdkTablesAddTableServlet extends ServletUtilBase {
             //adding tables
             List<Column> columns = parseColumnsFromCsv(definition);
             TableManager tm = new TableManager(appId, userPermissions, cc);
-
-            for (String regionalOffice : regionalOffices) {
-                tm.createTable(tableId + "_" + regionalOffice, columns, regionalOffice);
-            }
+            tm.createTable(tableId, columns, regionalOffices);
 
             //uploading files
             for (Map.Entry<String, byte[]> entry : files.entrySet()) {

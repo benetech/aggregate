@@ -91,7 +91,7 @@ public class TableAclManagerTest {
     this.tableId = T.tableId;
     this.tm = new TableManager(T.appId, userPermissions, cc);
 
-    TableEntry te = tm.createTable(tableId, T.columns);
+    TableEntry te = tm.createTable(tableId, T.columns, null);
 
     this.scope = new Scope(Scope.Type.USER, T.user);
     this.role = TableRole.FILTERED_READER;

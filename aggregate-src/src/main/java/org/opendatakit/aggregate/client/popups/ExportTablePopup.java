@@ -124,12 +124,12 @@ public class ExportTablePopup extends AbstractPopupBase {
             if (type == ExportTableType.CSV) {
                 if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
                         .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
-                    SecureGWT.getServerDataService().getTableContents(tableId, resumeCursor, getDataCallbackCSV);
+                    SecureGWT.getServerDataService().getTableContents(tableId, resumeCursor, AggregateUI.getUI().getUserInfo().getOfficeId(),getDataCallbackCSV);
                 }
             } else if (type == ExportTableType.JSONFILE) {
                 if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
                         .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
-                    SecureGWT.getServerDataService().getTableContents(tableId, resumeCursor, getDataCallbackJSON);
+                    SecureGWT.getServerDataService().getTableContents(tableId, resumeCursor, AggregateUI.getUI().getUserInfo().getOfficeId(), getDataCallbackJSON);
                 }
             } else {
                 new ExportTablePopup.ErrorDialog().show();

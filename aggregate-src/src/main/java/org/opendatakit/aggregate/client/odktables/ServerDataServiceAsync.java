@@ -16,9 +16,9 @@
 
 package org.opendatakit.aggregate.client.odktables;
 
-import java.util.ArrayList;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import java.util.ArrayList;
 
 /**
  * The async server side.
@@ -39,7 +39,7 @@ public interface ServerDataServiceAsync {
 
   void getFileRowInfoColumnNames(AsyncCallback<ArrayList<String>> callback);
 
-  void getTableContents(String tableId, String resumeCursor, AsyncCallback<TableContentsClient> callback);
+  void getTableContents(String tableId, String resumeCursor, String officeId, AsyncCallback<TableContentsClient> callback);
 
   void getAppLevelFileInfoContents(AsyncCallback<TableContentsForFilesClient> callback);
 

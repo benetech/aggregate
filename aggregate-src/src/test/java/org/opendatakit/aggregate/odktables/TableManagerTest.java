@@ -16,12 +16,7 @@
 
 package org.opendatakit.aggregate.odktables;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -43,7 +38,11 @@ import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.TestContextFactory;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 // TODO: tests here have been updated and if they fail are likely due to config
 // errors as much as real errors.
@@ -127,7 +126,7 @@ public class TableManagerTest {
   @Test
   public void testCreateTable() throws ODKDatastoreException, TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException, ETagMismatchException {
 
-    TableEntry entry = tm.createTable(tableId, T.columns);
+    TableEntry entry = tm.createTable(tableId, T.columns, null);
 
     entry = tm.getTable(tableId);
     assertEquals(tableId, entry.getTableId());
@@ -138,22 +137,22 @@ public class TableManagerTest {
   @Test
   public void testCreateTableIdempotent() throws ODKDatastoreException,
       TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException {
-    tm.createTable(tableId, T.columns);
-    tm.createTable(tableId, T.columns);
+    tm.createTable(tableId, T.columns, null);
+    tm.createTable(tableId, T.columns, null);
   }
 
   @Test(expected = TableAlreadyExistsException.class)
   public void testCreateTableAlreadyExists() throws ODKDatastoreException,
       TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException {
-    tm.createTable(tableId, T.columns);
-    tm.createTable(tableId, T.columns2);
+    tm.createTable(tableId, T.columns, null);
+    tm.createTable(tableId, T.columns2, null);
   }
 
   @Test(expected = TableAlreadyExistsException.class)
   public void testCreateTableAlreadyExistsTransitive() throws ODKDatastoreException,
       TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException {
-    tm.createTable(tableId, T.columns2);
-    tm.createTable(tableId, T.columns);
+    tm.createTable(tableId, T.columns2, null);
+    tm.createTable(tableId, T.columns, null);
   }
 
 //  @Test(expected = IllegalArgumentException.class)
@@ -176,7 +175,7 @@ public class TableManagerTest {
 
   @Test
   public void testGetTable() throws ODKDatastoreException, TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException {
-    TableEntry expected = tm.createTable(tableId, T.columns);
+    TableEntry expected = tm.createTable(tableId, T.columns, null);
     TableEntry actual = tm.getTableNullSafe(tableId);
     assertEquals(expected, actual);
   }
@@ -196,11 +195,11 @@ public class TableManagerTest {
       ODKTaskLockException, TableAlreadyExistsException, PermissionDeniedException, ETagMismatchException {
     List<TableEntry> expected = new ArrayList<TableEntry>();
 
-    TableEntry entry = tm.createTable(tableId, T.columns);
+    TableEntry entry = tm.createTable(tableId, T.columns, null);
     TableEntry one = tm.getTable(tableId);
 
-    TableEntry entry2 = tm.createTable(tableId2, T.columns);
-    tm.createTable(tableId2, T.columns);
+    TableEntry entry2 = tm.createTable(tableId2, T.columns, null);
+    tm.createTable(tableId2, T.columns, null);
     TableEntry two = tm.getTable(tableId2);
 
     expected.add(one);
@@ -219,11 +218,11 @@ public class TableManagerTest {
       TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException, ETagMismatchException {
     List<TableEntry> expected = new ArrayList<TableEntry>();
 
-    TableEntry entry = tm.createTable(tableId, T.columns);
+    TableEntry entry = tm.createTable(tableId, T.columns, null);
     TableEntry one = tm.getTable(tableId);
 
-	 TableEntry entry2 = tm.createTable(tableId2, T.columns);
-    tm.createTable(tableId2, T.columns);
+	 TableEntry entry2 = tm.createTable(tableId2, T.columns, null);
+    tm.createTable(tableId2, T.columns, null);
     TableEntry two = tm.getTable(tableId2);
 
     TableAclManager am = new TableAclManager(T.appId, one.getTableId(), userPermissions, cc);
@@ -243,7 +242,7 @@ public class TableManagerTest {
   public void testDeleteTable() throws ODKDatastoreException, ODKTaskLockException,
       TableAlreadyExistsException, PermissionDeniedException, ETagMismatchException {
 
-    TableEntry entry = tm.createTable(tableId, T.columns);
+    TableEntry entry = tm.createTable(tableId, T.columns, null);
     tm.deleteTable(tableId);
     tm.getTableNullSafe(tableId);
   }

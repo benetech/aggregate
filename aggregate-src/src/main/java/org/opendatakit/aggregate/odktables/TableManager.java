@@ -129,12 +129,11 @@ public class TableManager {
     // we need the filter to activate the sort...
     query.addFilter(DbTableEntry.getRelation(cc).getDataField(CommonFieldsBase.CREATION_DATE_COLUMN_NAME),
         org.opendatakit.common.persistence.Query.FilterOperation.GREATER_THAN, BasicConsts.EPOCH);
-    if(officeId != null)
-        query.addFilter(DbTableEntry.getRelation(cc).getDataField("CONNECTED_OFFICE_ID"), org.opendatakit.common.persistence.Query.FilterOperation.EQUAL, officeId);
     WebsafeQueryResult result = query.execute(startCursor, fetchLimit);
     List<DbTableEntryEntity> results = new ArrayList<DbTableEntryEntity>();
     for (Entity e : result.entities) {
-      results.add(new DbTableEntryEntity(e));
+      if(officeId == null || e.getString("CONNECTED_OFFICE_ID").contains(officeId))
+        results.add(new DbTableEntryEntity(e));
     }
     List<TableEntry> tables = converter.toTableEntries(results);
     for (TableEntry e : tables) {
@@ -297,7 +296,7 @@ public class TableManager {
    *          the unique identifier for the table
    * @param columns
    *          the columns the table should have
-   * @param regionalOfficeId
+   * @param regionalOffices
    *          optional parameter - unique ID of the Regional Office to which a new table is going to be assigned to
    * @return a table entry representing the newly created table
    * @throws TableAlreadyExistsException
@@ -307,7 +306,7 @@ public class TableManager {
    * @throws PermissionDeniedException
    * @throws ODKTaskLockException
    */
-  public TableEntry createTable(String tableId, List<Column> columns, String... regionalOfficeId)
+  public TableEntry createTable(String tableId, List<Column> columns, List<String> regionalOffices)
       throws ODKEntityPersistException, ODKDatastoreException,
       TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException {
     Validate.notNull(tableId);
@@ -396,8 +395,14 @@ public class TableManager {
           aprioriDataSequenceValue, cc);
 
       // set Regional Office Id for a table
-      if (regionalOfficeId != null && regionalOfficeId.length != 0) {
-          tableEntry.setConnectedOfficeId(regionalOfficeId[0]);
+      String offices = "";
+      if (regionalOffices != null) {
+          for(String regionalOffice : regionalOffices)
+          {
+            offices += regionalOffice + ",";
+          }
+          offices = offices.substring(0, offices.length() - 1);
+          tableEntry.setConnectedOfficeId(offices);
       }
 
       // write it...

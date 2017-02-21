@@ -16,12 +16,7 @@
 
 package org.opendatakit.aggregate.server;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.ContextFactory;
@@ -36,8 +31,6 @@ import org.opendatakit.aggregate.odktables.TableManager.WebsafeTables;
 import org.opendatakit.aggregate.odktables.entity.UtilTransforms;
 import org.opendatakit.aggregate.odktables.exception.ETagMismatchException;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
-import org.opendatakit.aggregate.odktables.relation.DbTableDefinitions;
-import org.opendatakit.aggregate.odktables.rest.entity.TableDefinition;
 import org.opendatakit.aggregate.odktables.rest.entity.TableEntry;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissionsImpl;
@@ -50,7 +43,10 @@ import org.opendatakit.common.security.User;
 import org.opendatakit.common.security.client.exception.AccessDeniedException;
 import org.opendatakit.common.web.CallingContext;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ServerTableServiceImpl extends RemoteServiceServlet implements ServerTableService {
 

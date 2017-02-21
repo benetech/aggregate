@@ -209,7 +209,7 @@ public class EntityCreator {
   public void setRowFields(Entity row, String rowETag, String dataETagAtModification,
       String lastUpdateUser, boolean deleted,
       RowFilterScope rowFilterScope, String formId, String locale, String savepointType,
-      String savepointTimestamp, String savepointCreator, String deviceId, ArrayList<DataKeyValue> values, List<DbColumnDefinitionsEntity> columns)
+      String savepointTimestamp, String savepointCreator, String deviceId, String officeId, ArrayList<DataKeyValue> values, List<DbColumnDefinitionsEntity> columns)
       throws BadColumnNameException {
     row.set(DbTable.ROW_ETAG, rowETag);
     row.set(DbTable.DATA_ETAG_AT_MODIFICATION, dataETagAtModification);
@@ -234,6 +234,7 @@ public class EntityCreator {
     row.set(DbTable.SAVEPOINT_TIMESTAMP, savepointTimestamp);
     row.set(DbTable.SAVEPOINT_CREATOR, savepointCreator);
     row.set(DbTable.DEVICE_ID, deviceId);
+    row.set(DbTable.OFFICE_ID, officeId);
 
     for (DataKeyValue kv : values ) {
       String value = kv.value;

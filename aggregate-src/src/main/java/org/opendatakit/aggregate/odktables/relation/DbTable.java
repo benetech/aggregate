@@ -92,6 +92,8 @@ public class DbTable extends Relation {
       TableConstants.SAVEPOINT_CREATOR.toUpperCase(), DataType.STRING, true);
   public static final DataField DEVICE_ID = new DataField(
           "DEVICE_ID", DataType.STRING, true);
+  public static final DataField OFFICE_ID = new DataField(
+          "OFFICE_ID", DataType.STRING, true);
 
   private static final List<DataField> dataFields;
   static {
@@ -113,6 +115,7 @@ public class DbTable extends Relation {
     dataFields.add(SAVEPOINT_TIMESTAMP);
     dataFields.add(SAVEPOINT_CREATOR);
     dataFields.add(DEVICE_ID);
+    dataFields.add(OFFICE_ID);
   }
 
   private static final EntityConverter converter = new EntityConverter();

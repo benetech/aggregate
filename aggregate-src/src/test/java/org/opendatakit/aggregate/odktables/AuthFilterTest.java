@@ -97,7 +97,7 @@ public class AuthFilterTest {
 
     this.tm = new TableManager(T.appId, userPermissions, cc);
 
-    TableEntry te = tm.createTable(tableId, T.columns);
+    TableEntry te = tm.createTable(tableId, T.columns, null);
 
     this.am = new TableAclManager(T.appId, tableId, userPermissions, cc);
     List<Scope> scopes = Lists.newArrayList();

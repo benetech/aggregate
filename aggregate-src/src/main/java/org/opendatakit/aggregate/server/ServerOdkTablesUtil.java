@@ -16,9 +16,6 @@
 
 package org.opendatakit.aggregate.server;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.client.exception.BadColumnNameExceptionClient;
@@ -49,6 +46,9 @@ import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 import org.opendatakit.common.security.client.exception.AccessDeniedException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The idea is that this will house methods for OdkTables that could exist in
@@ -92,7 +92,7 @@ public class ServerOdkTablesUtil {
       for (ColumnClient column : columns) {
         columnsServer.add(UtilTransforms.transform(column));
       }
-      TableEntry entry = tm.createTable(tableId, columnsServer);
+      TableEntry entry = tm.createTable(tableId, columnsServer, null);
       TableEntryClient entryClient = UtilTransforms.transform(entry);
       logger.info(String.format("tableId: %s, definition: %s", tableId, definition));
       return entryClient;

@@ -16,8 +16,9 @@
 
 package org.opendatakit.aggregate.client.table;
 
-import java.util.ArrayList;
-
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import org.opendatakit.aggregate.client.AggregateSubTabBase;
 import org.opendatakit.aggregate.client.AggregateUI;
 import org.opendatakit.aggregate.client.OdkTablesViewTableSubTab;
@@ -29,13 +30,11 @@ import org.opendatakit.aggregate.client.odktables.TableContentsClient;
 import org.opendatakit.aggregate.client.odktables.TableEntryClient;
 import org.opendatakit.aggregate.client.widgets.OdkTablesAdvanceRowsButton;
 import org.opendatakit.aggregate.client.widgets.OdkTablesDeleteRowButton;
-import org.opendatakit.aggregate.constants.common.SubTabs;
 import org.opendatakit.aggregate.constants.common.ODKDefaultColumnNames;
+import org.opendatakit.aggregate.constants.common.SubTabs;
 import org.opendatakit.common.security.common.GrantedAuthorityName;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
+import java.util.ArrayList;
 
 /**
  * Displays the contents of a table.
@@ -176,7 +175,7 @@ public class OdkTablesViewTable extends FlexTable {
   public void nextPage() {
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
         .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES) && hasMore) {
-      SecureGWT.getServerDataService().getTableContents(currentTable.getTableId(), resumeCursor,
+      SecureGWT.getServerDataService().getTableContents(currentTable.getTableId(), resumeCursor, AggregateUI.getUI().getUserInfo().getOfficeId(),
         getDataCallback);
     }
   }
@@ -185,7 +184,7 @@ public class OdkTablesViewTable extends FlexTable {
     // TODO: paginate this
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
         .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
-      SecureGWT.getServerDataService().getTableContents(table.getTableId(), refreshCursor,
+      SecureGWT.getServerDataService().getTableContents(table.getTableId(), refreshCursor, AggregateUI.getUI().getUserInfo().getOfficeId(),
         getDataCallback);
     }
   }

@@ -16,17 +16,7 @@
 
 package org.opendatakit.aggregate.server;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.UriBuilder;
-
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.opendatakit.aggregate.ContextFactory;
 import org.opendatakit.aggregate.client.exception.BadColumnNameExceptionClient;
 import org.opendatakit.aggregate.client.exception.ETagMismatchExceptionClient;
@@ -74,7 +64,15 @@ import org.opendatakit.common.security.client.exception.AccessDeniedException;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.constants.BasicConsts;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.UriBuilder;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * For ODKTables.
@@ -89,7 +87,7 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
 	 */
   private static final long serialVersionUID = -5051558217315955180L;
 
-  private WebsafeRows getRows(String tableId, QueryResumePoint resumePoint) throws AccessDeniedException,
+  private WebsafeRows getRows(String tableId, QueryResumePoint resumePoint, String officeId) throws AccessDeniedException,
       RequestFailureException, DatastoreFailureException, PermissionDeniedExceptionClient,
       EntityNotFoundExceptionClient, BadColumnNameExceptionClient {
     HttpServletRequest req = this.getThreadLocalRequest();
@@ -98,7 +96,7 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
       TablesUserPermissions userPermissions = new TablesUserPermissionsImpl(cc);
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
       DataManager dm = new DataManager(appId, tableId, userPermissions, cc);
-      return dm.getRows(resumePoint, 100, null);
+      return dm.getRows(resumePoint, 100, null, officeId);
     } catch (ODKEntityNotFoundException e) {
       e.printStackTrace();
       throw new EntityNotFoundExceptionClient(e);
@@ -327,13 +325,13 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
   }
 
   @Override
-  public TableContentsClient getTableContents(String tableId, String resumeCursor) throws AccessDeniedException,
+  public TableContentsClient getTableContents(String tableId, String resumeCursor, String officeId) throws AccessDeniedException,
       RequestFailureException, DatastoreFailureException, PermissionDeniedExceptionClient,
       EntityNotFoundExceptionClient, BadColumnNameExceptionClient {
     TableContentsClient tcc = new TableContentsClient();
     
     WebsafeRows websafeResult = getRows(tableId, 
-    		QueryResumePoint.fromWebsafeCursor(resumeCursor));
+    		QueryResumePoint.fromWebsafeCursor(resumeCursor), officeId);
     List<Row> rows = websafeResult.rows;
     tcc.rows = transformRows(rows);
     tcc.columnNames = getColumnNames(tableId);
