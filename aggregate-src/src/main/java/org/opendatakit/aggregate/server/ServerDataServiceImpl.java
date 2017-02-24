@@ -653,9 +653,6 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
       if (table == null || table.getSchemaETag() == null) { // you couldn't find the table
         throw new ODKEntityNotFoundException();
       }
-      if( !filepath.contains(instanceId)) {
-        throw new RequestFailureException("filename does not start with the instanceId");
-      }
 
       DbTableInstanceFiles blobStore = new DbTableInstanceFiles(tableId, cc);
       BlobEntitySet blobEntitySet = blobStore.getBlobEntitySet(instanceId, cc);

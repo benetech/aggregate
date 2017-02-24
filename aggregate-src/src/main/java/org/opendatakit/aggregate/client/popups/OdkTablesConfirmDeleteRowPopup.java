@@ -25,6 +25,7 @@ import org.opendatakit.aggregate.client.widgets.ClosePopupButton;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -43,6 +44,9 @@ public class OdkTablesConfirmDeleteRowPopup extends AbstractPopupBase {
 	  // the ViewTable view that you are interacting with
 	  private OdkTablesViewTable parentView;
 
+	  private final CheckBox filterCheckbox;
+	  private boolean includedFiles;
+
 	  public OdkTablesConfirmDeleteRowPopup(OdkTablesViewTable parent,
 	      String tableId, String rowId, String rowETag) {
 	    super();
@@ -59,9 +63,26 @@ public class OdkTablesConfirmDeleteRowPopup extends AbstractPopupBase {
 	    FlexTable layout = new FlexTable();
 
 	    HTML message = new HTML("Are you sure you want to delete this row?");
+
+		filterCheckbox = new CheckBox("Delete together with instance related files");
+		// set check box default as unchecked
+	    filterCheckbox.setValue(false);
+
+	  	filterCheckbox.addClickHandler(new ClickHandler() {
+		  @Override
+		  public void onClick(ClickEvent event) {
+		  	Object sender = event.getSource();
+		  	if (sender == filterCheckbox) {
+			  // When the filterCheckbox is clicked.
+			  includedFiles = filterCheckbox.getValue();
+		  	}
+		  }
+	  	});
+
 	    layout.setWidget(0, 0, message);
 	    layout.setWidget(0, 1, deleteButton);
-	    layout.setWidget(0, 2, new ClosePopupButton(this));
+		layout.setWidget(0, 2, new ClosePopupButton(this));
+	    layout.setWidget(1, 0, filterCheckbox);
 
 	    setWidget(layout);
 	  }
@@ -88,6 +109,9 @@ public class OdkTablesConfirmDeleteRowPopup extends AbstractPopupBase {
 	      };
 	      // Make the call to the form service.
 	      SecureGWT.getServerDataService().deleteRow(tableId, rowId, rowETag, callback);
+	      if(includedFiles) {
+			SecureGWT.getServerDataService().deleteInstanceFile(tableId, rowId, rowETag, callback);
+		  }
 	      hide();
 	    }
 	  }
