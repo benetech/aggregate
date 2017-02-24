@@ -26,6 +26,7 @@ import org.opendatakit.aggregate.client.exception.EntityNotFoundExceptionClient;
 import org.opendatakit.aggregate.client.odktables.FileSummaryClient;
 import org.opendatakit.aggregate.client.odktables.TableContentsForFilesClient;
 import org.opendatakit.aggregate.client.odktables.TableEntryClient;
+import org.opendatakit.aggregate.client.widgets.OdkTablesDeleteInstanceFileButton;
 import org.opendatakit.aggregate.constants.common.SubTabs;
 import org.opendatakit.common.security.common.GrantedAuthorityName;
 
@@ -49,18 +50,20 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
   // that table's info rows
   private ArrayList<FileSummaryClient> fileSummaries;
 
-  private static final int INSTANCE_ID_COLUMN = 0;
+  private static final int DELETE_COLUMN = 0;
+  private static final String DELETE_HEADING = "Delete";
+  private static final int INSTANCE_ID_COLUMN = 1;
   private static final String INSTANCE_ID_HEADING = "Row ID";
-  private static final int FILENAME_COLUMN = 1;
+  private static final int FILENAME_COLUMN = 2;
   private static final String FILENAME_HEADING = "Filename";
-  private static final int CONTENT_LENGTH_COLUMN = 2;
+  private static final int CONTENT_LENGTH_COLUMN = 3;
   private static final String CONTENT_LENGTH_HEADING = "Size";
-  private static final int CONTENT_TYPE_COLUMN = 3;
+  private static final int CONTENT_TYPE_COLUMN = 4;
   private static final String CONTENT_TYPE_HEADING = "Content Type";
-  private static final int DOWNLOAD_COLUMN = 4;
+  private static final int DOWNLOAD_COLUMN = 5;
   private static final String DOWNLOAD_HEADING = "Download";
 
-  private static final int numColumns = 5;
+  private static final int numColumns = 6;
 
   // this is just the tab that opened the table
   private AggregateSubTabBase basePanel;
@@ -150,6 +153,7 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
 
   private void setColumnHeadings() {
     // create the table headers.
+    setText(0, DELETE_COLUMN, DELETE_HEADING);
     setText(0, INSTANCE_ID_COLUMN, INSTANCE_ID_HEADING);
     setText(0, FILENAME_COLUMN, FILENAME_HEADING);
     setText(0, CONTENT_LENGTH_COLUMN, CONTENT_LENGTH_HEADING);
@@ -181,6 +185,13 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
         FileSummaryClient sum = fileSummaries.get(j);
         String filename = sum.getFilename();
         String instanceId = sum.getInstanceId();
+        OdkTablesDeleteInstanceFileButton deleteButton =
+                new OdkTablesDeleteInstanceFileButton(this.basePanel,
+                        currentTable.getTableId(), instanceId, sum.getDownloadUrl());
+        if ( !AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
+          deleteButton.setEnabled(false);
+        }
+        setWidget(currentRow, DELETE_COLUMN, deleteButton);
         setText(currentRow, INSTANCE_ID_COLUMN, instanceId);
         setText(currentRow, FILENAME_COLUMN, filename);
         getFlexCellFormatter().setStyleName(currentRow, FILENAME_COLUMN, "dataLeft");

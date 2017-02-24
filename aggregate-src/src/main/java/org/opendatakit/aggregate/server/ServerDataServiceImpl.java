@@ -638,7 +638,7 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
   }
 
   @Override
-  public void deleteInstanceFile(String tableId, String rowId, String filepath)
+  public void deleteInstanceFile(String tableId, String instanceId, String filepath)
       throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
       PermissionDeniedExceptionClient, EntityNotFoundExceptionClient {
 
@@ -653,12 +653,16 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
       if (table == null || table.getSchemaETag() == null) { // you couldn't find the table
         throw new ODKEntityNotFoundException();
       }
-      if( !filepath.startsWith(rowId + "/")) {
+      if( !filepath.contains(instanceId)) {
         throw new RequestFailureException("filename does not start with the instanceId");
       }
 
       DbTableInstanceFiles blobStore = new DbTableInstanceFiles(tableId, cc);
-      BlobEntitySet blobEntitySet = blobStore.getBlobEntitySet(filepath, cc);
+      BlobEntitySet blobEntitySet = blobStore.getBlobEntitySet(instanceId, cc);
+
+      if (blobEntitySet.getAttachmentCount(cc) < 1) {
+        return;
+      }
 
       blobEntitySet.remove(cc);
       return;
