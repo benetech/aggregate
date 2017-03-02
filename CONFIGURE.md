@@ -58,11 +58,13 @@ Fourth, compile the source code
 --------------------------------
 First open project and add this dependecy to pom.xml file:
 
+```shell
 <dependency>
     <groupId>mysql</groupId>
     <artifactId>mysql-connector-java</artifactId>
     <version>5.1.17</version>
 </dependency>
+```
 
 In the root directory of the your newly acquired source code type:
 ```shell
@@ -113,11 +115,13 @@ The Tomcat ports used by ODK aggregate are specified in ```odk-common-settings/s
 
 For secure ssl connection add this lines to server.xml file which is in a conf folder of tomcat:
 
+```shell
    <Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
             port="8443" maxThreads="200"
             scheme="https" secure="true" SSLEnabled="true"
             keystoreFile="${user.home}/keystore.jks" keystorePass="password"
             clientAuth="false" sslProtocol="TLS"/>
+```
 
 Once you've restarted Tomcat, you should be able to go to **http://localhost:8080** and log in as ```admin```, password ```aggregate```.
 
