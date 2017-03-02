@@ -108,8 +108,7 @@ Once you've restarted Tomcat, you should be able to go to **http://localhost:808
 
 You are ready to use ODK Aggregate server.
 
-### You may be interested in these FAQs:
+### You may be interested in the FAQ:
 **[Frequently Asked Questions](FAQ.md)**
 
-[How do I enable HTTPS on ODK Aggregate server?](FAQ.md#how-do-i-enable-https-on-odk-aggregate-server)
-[Do I have to keep manually loading my war into Tomcat?](FAQ.md#do-i-have-to-keep-manually-reloading-my-war-into-tomcat)
+- [How do I enable HTTPS on ODK Aggregate server?](FAQ.md#how-do-i-enable-https-on-odk-aggregate-server)
