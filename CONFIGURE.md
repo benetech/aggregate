@@ -56,6 +56,14 @@ Clone the project from git@github.com:benetech/aggregate.git.
 
 Fourth, compile the source code
 --------------------------------
+First open project and add this dependecy to pom.xml file:
+
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>5.1.17</version>
+</dependency>
+
 In the root directory of the your newly acquired source code type:
 ```shell
 mvn install
@@ -102,6 +110,14 @@ Seventh, drop the war into Tomcat
 Download Tomcat and explode it onto your development machine.  Go into the webapps directory and delete the ROOT directory.  Rename the war you created with your mvn install command to ROOT.war, and place it in the webapps directory.  Restart Tomcat.
 
 The Tomcat ports used by ODK aggregate are specified in ```odk-common-settings/src/main/java/resources/security.properties```, and must match those used by Tomcat.  They are currently set to the defaults of 8080 for http and 8443 for https, so you should be able to start up a vanilla Tomcat instance without changing them.  However, make sure nothing else is using those ports!
+
+For secure ssl connection add this lines to server.xml file which is in a conf folder of tomcat:
+
+   <Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
+            port="8443" maxThreads="200"
+            scheme="https" secure="true" SSLEnabled="true"
+            keystoreFile="${user.home}/keystore.jks" keystorePass="password"
+            clientAuth="false" sslProtocol="TLS"/>
 
 Once you've restarted Tomcat, you should be able to go to **http://localhost:8080** and log in as ```admin```, password ```aggregate```.
 
