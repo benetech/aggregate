@@ -48,25 +48,5 @@ mvn install:install-file -Dfile=odk-tomcatutil-1.0.1.jar -DgroupId=org.opendatak
 Even better, put them in your team's Maven repository so that you don't have to deal with all that.
 
 
-## Do I have to keep manually loading my war into Tomcat?
-
-To repeatedly reload your newly compiled war into Tomcat, you can use a shell script like this one.  You would rerun this script after a successful run of ```mvn install```.  You could also add additional environment variable exports to this file for your database parameters.
-
-```shell
-export CATALINA_HOME=~/tomcat/apache-tomcat-8.5.11
-pushd ~/tomcat/apache-tomcat-8.5.11/bin
-echo Shutting down tomcat...
-./shutdown.sh
-echo Deleting logs..
-rm ../logs/*
-echo Copying Postgres war...
-cp ~/aggregate/aggregate-postgres/target/aggregate-postgres-1.0.1.war ~/tomcat/apache-tomcat-8.5.11/webapps/ROOT.war
-echo Sleeping...
-sleep 30
-echo Starting tomcat...
-./startup.sh
-popd
-tail -f ~/tomcat/apache-tomcat-8.5.11/logs/catalina.out
-```
 
 
