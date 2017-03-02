@@ -12,6 +12,7 @@ Recommended:
 - Maven 3.3.3 or above
 - Tomcat 8 or above
 - Java 8
+- MySQL Connector 5.1.41
 
 First, install your database
 -----------------------------
@@ -56,16 +57,6 @@ Clone the project from git@github.com:benetech/aggregate.git.
 
 Fourth, compile the source code
 --------------------------------
-First open project and add this dependecy to pom.xml file:
-
-```shell
-<dependency>
-    <groupId>mysql</groupId>
-    <artifactId>mysql-connector-java</artifactId>
-    <version>5.1.17</version>
-</dependency>
-```
-
 In the root directory of the your newly acquired source code type:
 ```shell
 mvn install
@@ -113,7 +104,32 @@ Download Tomcat and explode it onto your development machine.  Go into the webap
 
 The Tomcat ports used by ODK aggregate are specified in ```odk-common-settings/src/main/java/resources/security.properties```, and must match those used by Tomcat.  They are currently set to the defaults of 8080 for http and 8443 for https, so you should be able to start up a vanilla Tomcat instance without changing them.  However, make sure nothing else is using those ports!
 
-For secure ssl connection add this lines to server.xml file which is in a conf folder of tomcat:
+For secure ssl connection  make steps below.
+
+Modify openssl.cnf file:
+1. Open openssl.cnf file for writing (defalut location: =/etc/ssl/openssl.cnf=).
+2. Find =[ v3_ca ]= and add lines =subjectAltName = @alternate_names= and =keyUsage = digitalSignature, keyEncipherment= below.
+3. Under =[ CA_default ]= section find =# copy_extensions = copy= and uncomment it (remove =#=).
+4. At the end of this file add section (replace =your_ip= with IP address used when building Aggregate):
+
+```shell
+#+BEGIN_EXAMPLE
+[ alternate_names ]
+IP.1 = your_ip
+#+END_EXAMPLE
+```
+
+Creating SSL self signed certificate:
+1. Create a directory for your certificates (ex. =mkdir cert=). Go to this directory (=cd cert=).
+2. Use OpenSSL to generate certificate: =sudo openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout server.key -out server.crt -reqexts v3_req -extensions v3_ca=
+3. When asked for Common Name type IP address used when building Aggregate. Other answers are irrelevant.
+4. Convert certificate to DER format (needed later for Android Emulator): =openssl x509 -in server.crt -outform der -out server.der.crt=
+5. Convert certificate to PCKS12 (for Tomcat): =openssl pkcs12 -export -in server.crt -inkey server.key -out server.p12 -name test_server -caname root_ca=
+6. Use password =password=
+7. Form keystore (use =password= again): =keytool -importkeystore -destkeystore keystore.jks -srckeystore server.p12 -srcstoretype PKCS12 -srcalias test_server -destalias test_server=
+8. Move keystore.jks to home folder
+
+Add this lines to server.xml file which is in a conf folder of tomcat:
 
 ```shell
    <Connector protocol="org.apache.coyote.http11.Http11NioProtocol"
