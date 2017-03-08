@@ -1,289 +1,311 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.opendatakit</groupId>
-		<artifactId>aggregate</artifactId>
-		<version>1.0.2</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-	<artifactId>aggregate-src</artifactId>
-	<packaging>jar</packaging>
-	<name>Common non-test source files</name>
-	<profiles>
-		<profile>
-			<id>postgres</id>
-			<activation>
-				<property>
-					<name>env.DB_PROFILE</name>
-					<value>!mysql</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<!-- Makes sure we start with a clean postgres (no pre-existing database 
-									that we want to create) -->
-								<id>postgresql-teardown-clean</id>
-								<phase>pre-clean</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target unless="maven.test.skip">
-										<exec executable="${postgres.client.executable}"
-											failonerror="false">
-											<env key="PGPASSWORD" value="${postgres.root.password}" />
-											<arg
-												line="-U postgres -a -n -w -f &quot;${postgresScriptSourceDirectory}/postgres_teardown.sql&quot;" />
-										</exec>
-									</target>
-								</configuration>
-							</execution>
-							<execution>
-								<!-- Makes sure we start with a clean postgres (no pre-existing database 
-									that we want to create) -->
-								<id>pre-postgresql-teardown</id>
-								<phase>pre-integration-test</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target unless="maven.test.skip">
-										<exec executable="${postgres.client.executable}"
-											failonerror="false">
-											<env key="PGPASSWORD" value="${postgres.root.password}" />
-											<arg
-												line="-U postgres -a -n -w -f &quot;${postgresScriptSourceDirectory}/postgres_teardown.sql&quot;" />
-										</exec>
-									</target>
-								</configuration>
-							</execution>
-							<execution>
-								<!-- Sets up the postgres database for use in integration testing -->
-								<id>postgresql-setup</id>
-								<phase>test-compile</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target unless="maven.test.skip">
-										<exec executable="${postgres.client.executable}"
-											failonerror="true">
-											<env key="PGPASSWORD" value="${postgres.root.password}" />
-											<arg
-												line="-U postgres -a -n -w -f &quot;${postgresScriptSourceDirectory}/postgres_setup.sql&quot;" />
-										</exec>
-									</target>
-								</configuration>
-							</execution>
-							<execution>
-								<!-- Tears down whatever we set up in the postgres-setup execution -->
-								<id>postgresql-teardown</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target unless="maven.test.skip">
-										<exec executable="${postgres.client.executable}"
-											failonerror="true">
-											<env key="PGPASSWORD" value="${postgres.root.password}" />
-											<arg
-												line="-U postgres -a -n -w -f &quot;${postgresScriptSourceDirectory}/postgres_teardown.sql&quot;" />
-										</exec>
-									</target>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.opendatakit</groupId>
+        <artifactId>aggregate</artifactId>
+        <version>1.0.2</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>aggregate-src</artifactId>
+    <packaging>jar</packaging>
+    <name>Common non-test source files</name>
+    <profiles>
+        <profile>
+            <id>postgres</id>
+            <activation>
+                <property>
+                    <name>env.DB_PROFILE</name>
+                    <value>!mysql</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <!-- Makes sure we start with a clean postgres 
+                                    (no pre-existing database that we want to create) -->
+                                <id>postgresql-teardown-clean</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target unless="maven.test.skip">
+                                        <exec
+                                            executable="${postgres.client.executable}"
+                                            failonerror="false">
+                                            <env key="PGPASSWORD"
+                                                value="${postgres.root.password}" />
+                                            <arg
+                                                line="-U postgres -a -n -w -f &quot;${postgresScriptSourceDirectory}/postgres_teardown.sql&quot;" />
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <!-- Makes sure we start with a clean postgres 
+                                    (no pre-existing database that we want to create) -->
+                                <id>pre-postgresql-teardown</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target unless="maven.test.skip">
+                                        <exec
+                                            executable="${postgres.client.executable}"
+                                            failonerror="false">
+                                            <env key="PGPASSWORD"
+                                                value="${postgres.root.password}" />
+                                            <arg
+                                                line="-U postgres -a -n -w -f &quot;${postgresScriptSourceDirectory}/postgres_teardown.sql&quot;" />
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <!-- Sets up the postgres database for use 
+                                    in integration testing -->
+                                <id>postgresql-setup</id>
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target unless="maven.test.skip">
+                                        <exec
+                                            executable="${postgres.client.executable}"
+                                            failonerror="true">
+                                            <env key="PGPASSWORD"
+                                                value="${postgres.root.password}" />
+                                            <arg
+                                                line="-U postgres -a -n -w -f &quot;${postgresScriptSourceDirectory}/postgres_setup.sql&quot;" />
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <!-- Tears down whatever we set up in the 
+                                    postgres-setup execution -->
+                                <id>postgresql-teardown</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target unless="maven.test.skip">
+                                        <exec
+                                            executable="${postgres.client.executable}"
+                                            failonerror="true">
+                                            <env key="PGPASSWORD"
+                                                value="${postgres.root.password}" />
+                                            <arg
+                                                line="-U postgres -a -n -w -f &quot;${postgresScriptSourceDirectory}/postgres_teardown.sql&quot;" />
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
 
-				</plugins>
-			</build>
-			<dependencies>
-				<dependency>
-					<groupId>org.postgresql</groupId>
-					<artifactId>postgresql</artifactId>
-					<version>9.4.1211.jre7</version>
-				</dependency>
-				<dependency>
-					<groupId>org.opendatakit</groupId>
-					<artifactId>odk-postgres-settings</artifactId>
-					<version>${project.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>org.opendatakit</groupId>
-					<artifactId>odk-postgres-unit-settings</artifactId>
-					<version>${project.version}</version>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<id>mysql</id>
-			<activation>
-				<property>
-					<name>env.DB_PROFILE</name>
-					<value>mysql</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<!-- Makes sure we start with a clean mysql (no pre-existing database 
-									that we want to create) -->
-								<id>mysql-teardown-clean</id>
-								<phase>pre-clean</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target unless="maven.test.skip">
-										<exec executable="${mysql.client.executable}"
-											failonerror="false">
-											<arg line="-u root --force -p${mysql.root.password}" />
-											<redirector
-												input="${mySqlScriptSourceDirectory}/mysql_teardown.sql" />
-										</exec>
-									</target>
-								</configuration>
-							</execution>
-							<execution>
-								<!-- Makes sure we start with a clean mysql (no pre-existing database 
-									that we want to create) -->
-								<id>pre-mysql-teardown</id>
-								<phase>pre-integration-test</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target unless="maven.test.skip">
-										<exec executable="${mysql.client.executable}"
-											failonerror="false">
-											<arg line="-u root --force -p${mysql.root.password}" />
-											<redirector
-												input="${mySqlScriptSourceDirectory}/mysql_teardown.sql" />
-										</exec>
-									</target>
-								</configuration>
-							</execution>
-							<execution>
-								<!-- Sets up the mysql database for use in integration testing -->
-								<id>mysql-setup</id>
-								<phase>test-compile</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target unless="maven.test.skip">
-										<exec executable="${mysql.client.executable}"
-											failonerror="true">
-											<arg line="-u root -p${mysql.root.password}" />
-											<redirector input="${mySqlScriptSourceDirectory}/mysql_setup.sql" />
-										</exec>
-									</target>
-								</configuration>
-							</execution>
-							<execution>
-								<!-- Tears down whatever we set up in the mysql-setup execution -->
-								<id>mysql-teardown</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target unless="maven.test.skip">
-										<exec executable="${mysql.client.executable}"
-											failonerror="true">
-											<arg line="-u root -p${mysql.root.password}" />
-											<redirector
-												input="${mySqlScriptSourceDirectory}/mysql_teardown.sql" />
-										</exec>
-									</target>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-			<dependencies>
-				<dependency>
-					<groupId>mysql</groupId>
-					<artifactId>mysql-connector-java</artifactId>
-					<version>5.1.40</version>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.opendatakit</groupId>
-					<artifactId>odk-mysql-settings</artifactId>
-					<version>${project.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>org.opendatakit</groupId>
-					<artifactId>odk-mysql-unit-settings</artifactId>
-					<version>${project.version}</version>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>
-		</profile>
-	</profiles>
-	<dependencies>
-		<!-- OpenDataKit Siblings -->
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>9.4.1211.jre7</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.opendatakit</groupId>
+                    <artifactId>odk-postgres-settings</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.opendatakit</groupId>
+                    <artifactId>odk-postgres-unit-settings</artifactId>
+                    <version>${project.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>mysql</id>
+            <activation>
+                <property>
+                    <name>env.DB_PROFILE</name>
+                    <value>mysql</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <!-- Makes sure we start with a clean mysql 
+                                    (no pre-existing database that we want to create) -->
+                                <id>mysql-teardown-clean</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target unless="maven.test.skip">
+                                        <exec
+                                            executable="${mysql.client.executable}"
+                                            failonerror="false">
+                                            <arg
+                                                line="-u root --force -p${mysql.root.password}" />
+                                            <redirector
+                                                input="${mySqlScriptSourceDirectory}/mysql_teardown.sql" />
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <!-- Makes sure we start with a clean mysql 
+                                    (no pre-existing database that we want to create) -->
+                                <id>pre-mysql-teardown</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target unless="maven.test.skip">
+                                        <exec
+                                            executable="${mysql.client.executable}"
+                                            failonerror="false">
+                                            <arg
+                                                line="-u root --force -p${mysql.root.password}" />
+                                            <redirector
+                                                input="${mySqlScriptSourceDirectory}/mysql_teardown.sql" />
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <!-- Sets up the mysql database for use in 
+                                    integration testing -->
+                                <id>mysql-setup</id>
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target unless="maven.test.skip">
+                                        <exec
+                                            executable="${mysql.client.executable}"
+                                            failonerror="true">
+                                            <arg
+                                                line="-u root -p${mysql.root.password}" />
+                                            <redirector
+                                                input="${mySqlScriptSourceDirectory}/mysql_setup.sql" />
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <!-- Tears down whatever we set up in the 
+                                    mysql-setup execution -->
+                                <id>mysql-teardown</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target unless="maven.test.skip">
+                                        <exec
+                                            executable="${mysql.client.executable}"
+                                            failonerror="true">
+                                            <arg
+                                                line="-u root -p${mysql.root.password}" />
+                                            <redirector
+                                                input="${mySqlScriptSourceDirectory}/mysql_teardown.sql" />
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                    <version>5.1.40</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.opendatakit</groupId>
+                    <artifactId>odk-mysql-settings</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.opendatakit</groupId>
+                    <artifactId>odk-mysql-unit-settings</artifactId>
+                    <version>${project.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+    <dependencies>
+        <!-- OpenDataKit Siblings -->
 
-		<dependency>
-			<groupId>org.opendatakit</groupId>
-			<artifactId>odk-common-settings</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.opendatakit</groupId>
-			<artifactId>odk-tables-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.opendatakit</groupId>
-			<artifactId>odk-common-unit-settings</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-    <groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>gwt-javascript</id>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- When running tests, use the test configs, not the production ones -->
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven.surefire.plugin.version}</version>
-				<configuration>
-					<argLine>${surefire.argLine}</argLine>
-					<systemPropertyVariables>
-						<test.server.port>${test.server.port}</test.server.port>
-						<test.server.secure.port>${test.server.secure.port}</test.server.secure.port>
-						<test.server.hostname>${test.server.hostname}</test.server.hostname>
-						<test.server.baseUrl>${test.server.baseUrl}</test.server.baseUrl>
-					</systemPropertyVariables>
-					<classpathDependencyExcludes>
-						<classpathDependencyExclude>org.opendatakit:odk-common-settings</classpathDependencyExclude>
-						<classpathDependencyExclude>org.opendatakit:odk-postgres-settings</classpathDependencyExclude>
-						<classpathDependencyExclude>org.opendatakit:odk-mysql-settings</classpathDependencyExclude>
-					</classpathDependencyExcludes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+        <dependency>
+            <groupId>org.opendatakit</groupId>
+            <artifactId>odk-common-settings</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendatakit</groupId>
+            <artifactId>odk-tables-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opendatakit</groupId>
+            <artifactId>odk-common-unit-settings</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>gwt-javascript</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- When running tests, use the test configs, not the production 
+                ones -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+                <configuration>
+                    <argLine>${surefire.argLine}</argLine>
+                    <systemPropertyVariables>
+                        <test.server.port>${test.server.port}</test.server.port>
+                        <test.server.secure.port>${test.server.secure.port}</test.server.secure.port>
+                        <test.server.hostname>${test.server.hostname}</test.server.hostname>
+                        <test.server.baseUrl>${test.server.baseUrl}</test.server.baseUrl>
+                    </systemPropertyVariables>
+                    <classpathDependencyExcludes>
+                        <classpathDependencyExclude>org.opendatakit:odk-common-settings</classpathDependencyExclude>
+                        <classpathDependencyExclude>org.opendatakit:odk-postgres-settings</classpathDependencyExclude>
+                        <classpathDependencyExclude>org.opendatakit:odk-mysql-settings</classpathDependencyExclude>
+                    </classpathDependencyExcludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
