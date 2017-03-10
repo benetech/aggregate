@@ -1,0 +1,122 @@
+/*
+ * Predefined classes for GWT CellTable
+ */
+.cellTableLoading {
+	border: none;
+}
+
+.cellTableWidget {
+	border-collapse: collapse;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #07115A;
+}
+
+.cellTableFirstColumn {
+	
+}
+
+.cellTableLastColumn {
+	
+}
+
+.cellTableFooter {
+	border-top: none;
+	padding: 0px 6px;
+	text-align: left;
+	color: #a1abff;
+	background: #07115A;
+	text-shadow: white 0px 0px 0;
+	overflow: hidden;
+}
+
+.cellTableHeader {
+	border-bottom: none;
+	padding: 0px 6px;
+	text-align: center;
+	background: #07115A;
+	font-weight: bold;
+	color: #a1abff;
+	text-shadow: white 0px 0px 0;
+}
+
+.cellTableCell {
+	padding: 0px 1px 0px 1px;
+	text-align: center;
+}
+
+.cellTableFirstColumnFooter {
+	
+}
+
+.cellTableFirstColumnHeader {
+	
+}
+
+.cellTableLastColumnFooter {
+	
+}
+
+.cellTableLastColumnHeader {
+	
+}
+
+.cellTableSortableHeader {
+	color: #a1abff;
+}
+
+.cellTableSortableHeader:hover {
+	color: white;
+}
+
+.cellTableSortedHeaderAscending {
+	
+}
+
+.cellTableSortedHeaderDescending {
+	
+}
+
+.cellTableEvenRow {
+	background: #dfdfdf;
+}
+
+.cellTableEvenRowCell {
+	
+}
+
+.cellTableOddRow {
+	background: white;
+}
+
+.cellTableOddRowCell {
+	
+}
+
+.cellTableHoveredRow {
+	
+}
+
+.cellTableHoveredRowCell {
+	
+}
+
+.cellTableKeyboardSelectedRow {
+	
+}
+
+.cellTableKeyboardSelectedRowCell {
+	
+}
+
+.cellTableSelectedRow {
+	
+}
+
+.cellTableSelectedRowCell {
+	
+}
+
+.cellTableKeyboardSelectedCell {
+	
+}

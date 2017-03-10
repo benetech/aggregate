@@ -18,6 +18,7 @@ package org.opendatakit.aggregate.odktables.entity;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,7 +74,7 @@ public class UtilTransforms {
     serverRow.setLastUpdateUser(client.getLastUpdateUser());
     serverRow.setRowETag(client.getRowETag());
     serverRow.setRowId(client.getRowId());
-    HashMap<String,String> cvalues = client.getValues();
+    Map<String,String> cvalues = client.getValues();
     serverRow.setValues(Row.convertFromMap(cvalues));
     serverRow.setFormId(client.getFormId());
     serverRow.setLocale(client.getLocale());

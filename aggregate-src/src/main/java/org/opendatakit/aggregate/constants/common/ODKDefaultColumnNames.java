@@ -21,4 +21,8 @@ public class ODKDefaultColumnNames {
     public static final String DATA_ETAG_AT_MODIFICATION = "Changeset Data ETag";
     public static final String LAST_UPDATE_USER = "Last Update By Verified User";
     public static final String CREATED_BY_USER = "Created By Verified User";
+    
+    public static final String[] ORDERED_LIST = {SAVEPOINT_TYPE, FORM_ID, LOCALE, SAVEPOINT_TIMESTAMP, SAVEPOINT_CREATOR, ROW_ID, ROW_ETAG, FILTER_TYPE, FILTER_VALUE,
+        DATA_ETAG_AT_MODIFICATION, LAST_UPDATE_USER, CREATED_BY_USER};
+    
 }

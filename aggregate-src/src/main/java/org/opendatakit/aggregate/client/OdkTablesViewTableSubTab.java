@@ -38,10 +38,11 @@ import com.google.gwt.user.client.ui.ListBox;
  * @author sudar.sam@gmail.com
  *
  */
-public class OdkTablesViewTableSubTab extends AggregateSubTabBase implements TablesChangeNotification {
+public class OdkTablesViewTableSubTab extends AggregateSubTabBase
+    implements TablesChangeNotification {
 
   private OdkTablesTabUI parent;
-  
+
   // this is the panel with the information and the dropdown box
   // that tells you to select a table
   private FlexTable selectTablePanel;
@@ -107,10 +108,10 @@ public class OdkTablesViewTableSubTab extends AggregateSubTabBase implements Tab
       }
     });
 
-    tableData = new OdkTablesViewTable(this);
+    tableData = new OdkTablesViewTable();
     tableAdvanceButton = new OdkTablesAdvanceRowsButton(tableData);
     tableData.setAdvanceButton(tableAdvanceButton);
-    
+
     selectTablePanel = new FlexTable();
     selectTablePanel.getElement().setId("select_table_panel");
     selectTablePanel.setHTML(0, 0, "<h2 id=\"table_name\"> Select a Table </h2>");
@@ -140,7 +141,7 @@ public class OdkTablesViewTableSubTab extends AggregateSubTabBase implements Tab
 
   private boolean updateTableList(ArrayList<TableEntryClient> tables, boolean tableListChanged) {
     boolean realChange = addTablesToListBox(tables, tableListChanged);
-    if ( tables.isEmpty() ) {
+    if (tables.isEmpty()) {
       tableBox.clear();
       setTabToDisplayZero();
     } else {
@@ -171,7 +172,7 @@ public class OdkTablesViewTableSubTab extends AggregateSubTabBase implements Tab
   public void update() {
     parent.update(this);
   }
-  
+
   public boolean addTablesToListBox(ArrayList<TableEntryClient> tables, boolean tableListChanged) {
     if (currentTables.size() == tables.size() && !tableListChanged
         && currentTables.containsAll(tables)) {
@@ -194,7 +195,9 @@ public class OdkTablesViewTableSubTab extends AggregateSubTabBase implements Tab
   }
 
   public void updateContentsForSelectedTable() {
-    tableData.removeAllRows();
+    // Clear table data
+    tableData.setRowCount(0);
+
     // - 1 because you have an extra entry that is the "" holder so
     // that the listbox starts empty.
     if (this.selectedValue == 0) {
@@ -203,7 +206,7 @@ public class OdkTablesViewTableSubTab extends AggregateSubTabBase implements Tab
       // we also want to have no current table.
       currentTable = null;
       // clear the "displaying: " thing.
-      if ( selectTablePanel.getRowCount() > 1 ) {
+      if (selectTablePanel.getRowCount() > 1) {
         selectTablePanel.removeRow(1);
       }
 
@@ -212,9 +215,9 @@ public class OdkTablesViewTableSubTab extends AggregateSubTabBase implements Tab
       tableData.updateDisplay(currentTable);
 
       selectTablePanel.setHTML(1, 0, "<h2 id=\"table_displayed\"> Displaying: </h2>");
-      selectTablePanel.setHTML(1, 1, "<h2 id=\table_name\"> " + currentTable.getTableId()
-          + " </h2>");
-      selectTablePanel.setWidget(1,  2, tableAdvanceButton);
+      selectTablePanel.setHTML(1, 1,
+          "<h2 id=\table_name\"> " + currentTable.getTableId() + " </h2>");
+      selectTablePanel.setWidget(1, 2, tableAdvanceButton);
       add(tableData);
     }
   }
@@ -243,7 +246,9 @@ public class OdkTablesViewTableSubTab extends AggregateSubTabBase implements Tab
     }
     if (!foundTable) {
       selectedValue = 0;
-      tableData.removeAllRows();
+      // Clear table data
+      tableData.setRowCount(0);
+
     }
   }
 
@@ -254,7 +259,7 @@ public class OdkTablesViewTableSubTab extends AggregateSubTabBase implements Tab
   @Override
   public void updateTableSet(boolean tableListChanged) {
     boolean realChange = updateTableList(parent.getTables(), tableListChanged);
-    if ( realChange ) {
+    if (realChange) {
       updateTableData();
     }
   }

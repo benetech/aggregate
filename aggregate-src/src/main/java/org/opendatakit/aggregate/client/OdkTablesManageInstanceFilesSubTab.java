@@ -105,7 +105,7 @@ public class OdkTablesManageInstanceFilesSubTab extends AggregateSubTabBase
 
     selectTablePanel = new FlexTable();
     selectTablePanel.getElement().setId("select_table_panel");
-    selectTablePanel.setHTML(0, 0, "<h2 id=\"table_name\"> Select a Table </h2>");
+    selectTablePanel.setHTML(0, 0, "<h2 id=\"table_name\"> Select a Table 1 </h2>");
     selectTablePanel.setWidget(0, 1, tableBox);
 
     topPanel = new HorizontalPanel();
