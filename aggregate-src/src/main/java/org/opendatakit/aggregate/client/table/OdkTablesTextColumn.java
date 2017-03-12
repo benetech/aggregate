@@ -1,10 +1,8 @@
 package org.opendatakit.aggregate.client.table;
 
-import org.opendatakit.aggregate.client.odktables.RowClient;
-
 import com.google.gwt.user.cellview.client.TextColumn;
 
-public class OdkTablesTextColumn extends TextColumn<RowClient> {
+public class OdkTablesTextColumn extends TextColumn<RowClientWrapper> {
 
   String columnKey;
   
@@ -18,7 +16,7 @@ public class OdkTablesTextColumn extends TextColumn<RowClient> {
   }
 
   @Override
-  public String getValue(RowClient row) {
+  public String getValue(RowClientWrapper row) {
     return row.getValueMapWithDefaults().get(columnKey);
   }
 

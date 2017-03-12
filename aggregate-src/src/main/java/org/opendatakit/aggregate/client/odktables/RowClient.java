@@ -18,11 +18,13 @@ package org.opendatakit.aggregate.client.odktables;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.opendatakit.aggregate.client.util.CollectionUtils;
 import org.opendatakit.aggregate.constants.common.ODKDefaultColumnNames;
 
 
@@ -66,13 +68,6 @@ public class RowClient implements Serializable {
 
   private Map<String,String> values;
   
-  // Lazily-initialized fields that rearrange the data for convenience
-  
-  private transient List<String> valueList;
-  
-  private transient Map<String,String> valueMapWithDefaults;
-  
-  private transient List<String> columnNameList;
 
   /**
    * Construct a row for insertion.
@@ -163,62 +158,7 @@ public class RowClient implements Serializable {
     return this.values;
   }
   
-  public Map<String,String> getValueMapWithDefaults() {
-    if (valueMapWithDefaults == null) {
-      valueMapWithDefaults = new HashMap<String,String>();
-      valueMapWithDefaults.putAll(this.values);
-      valueMapWithDefaults.put(ODKDefaultColumnNames.SAVEPOINT_TYPE, this.getSavepointType());
-      valueMapWithDefaults.put(ODKDefaultColumnNames.FORM_ID, this.getFormId());
-      valueMapWithDefaults.put(ODKDefaultColumnNames.LOCALE, this.getLocale());
-      valueMapWithDefaults.put(ODKDefaultColumnNames.SAVEPOINT_TIMESTAMP, this.getSavepointTimestampIso8601Date());
-      valueMapWithDefaults.put(ODKDefaultColumnNames.SAVEPOINT_CREATOR, this.getSavepointCreator());
-      valueMapWithDefaults.put(ODKDefaultColumnNames.ROW_ID,this.getRowId());
-      valueMapWithDefaults.put(ODKDefaultColumnNames.ROW_ETAG, this.getRowETag());
-      valueMapWithDefaults.put(ODKDefaultColumnNames.FILTER_TYPE, this.getRowFilterScope().getType().name());
-      valueMapWithDefaults.put(ODKDefaultColumnNames.FILTER_VALUE, this.getRowFilterScope().getValue());
-      valueMapWithDefaults.put(ODKDefaultColumnNames.LAST_UPDATE_USER, this.getLastUpdateUser());
-      valueMapWithDefaults.put(ODKDefaultColumnNames.CREATED_BY_USER, this.getCreateUser());
-      valueMapWithDefaults.put(ODKDefaultColumnNames.DATA_ETAG_AT_MODIFICATION, this.getDataETagAtModification());
-    }
-    return valueMapWithDefaults;
-  }
-
-  public List<String> getColumnNameList() {
-    if (columnNameList == null) {
-      columnNameList = new ArrayList<String>();
-      for (String columnName : this.getValues().keySet()) {
-        columnNameList.add(columnName);
-      }
-      for (String defaultColumn : ODKDefaultColumnNames.ORDERED_LIST) {
-        columnNameList.add(defaultColumn);
-      }
-    }
-    return columnNameList;
-  }
-
-  public List<String> getValueList() {
-    if (valueList == null) {
-      valueList = new ArrayList<String>();
-      for (String columnName : this.getValues().keySet()) {
-        valueList.add(this.getValues().get(columnName));
-      }
-      // It would be better to have the order of these determined by
-      // ORDERED_LIST
-      valueList.add(this.getSavepointType());
-      valueList.add(this.getFormId());
-      valueList.add(this.getLocale());
-      valueList.add(this.getSavepointTimestampIso8601Date());
-      valueList.add(this.getSavepointCreator());
-      valueList.add(this.getRowId());
-      valueList.add(this.getRowETag());
-      valueList.add(this.getRowFilterScope().getType().name());
-      valueList.add(this.getRowFilterScope().getValue());
-      valueList.add(this.getLastUpdateUser());
-      valueList.add(this.getCreateUser());
-      valueList.add(this.getDataETagAtModification());
-    }
-    return valueList;
-  }
+  
 
   public String getSavepointType() {
     return this.savepointType;

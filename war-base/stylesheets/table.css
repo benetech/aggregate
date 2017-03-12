@@ -7,11 +7,11 @@
 .dataTable .dataRight {
 	text-align: right;
 }
-.dataTable td {
+.dataTable td, .dataTable tr td {
 	padding: 0px 1px 0px 1px;
 	text-align: center;
 }
-.titleBar td {
+.titleBar td, .dataTable tr th {
 	padding-left: 6px;
 	padding-right: 6px;
 	text-align: center;
@@ -19,6 +19,11 @@
 	color: #a1abff;
 	font-weight: bold;
 }
+
+.dataTable tr th {
+	   text-shadow: unset;
+}
+
 .dataTable {
 	border-collapse: collapse;
 	border-width: 1px;

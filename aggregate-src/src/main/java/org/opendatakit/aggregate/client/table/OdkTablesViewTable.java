@@ -16,6 +16,7 @@
 
 package org.opendatakit.aggregate.client.table;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.opendatakit.aggregate.client.AggregateUI;
@@ -41,13 +42,13 @@ import com.google.gwt.user.client.ui.HTMLPanel;
  * @author sudar.sam@gmail.com
  *
  */
-public class OdkTablesViewTable extends CellTable<RowClient> {
+public class OdkTablesViewTable extends CellTable<RowClientWrapper> {
 
   // the table that we are currently displaying.
   private TableEntryClient currentTable;
 
   // that table's rows
-  private List<RowClient> rows;
+  private List<RowClientWrapper> rows;
 
   // that table's column names
   private List<String> columnNames;
@@ -59,7 +60,7 @@ public class OdkTablesViewTable extends CellTable<RowClient> {
   private OdkTablesAdvanceRowsButton tableAdvanceButton;
 
   // Number of rows for pagination
-  private static final int PAGE_SIZE = 25;
+  private static final int PAGE_SIZE = 4;
 
   // the message to display when there is no data in the table.
   private static String NO_DATA_MESSAGE = "There is no data in this table.";
@@ -72,7 +73,9 @@ public class OdkTablesViewTable extends CellTable<RowClient> {
    */
   public OdkTablesViewTable() {
     // add styling
-    super(PAGE_SIZE, GWT.<CellTableStyleResource> create(CellTableStyleResource.class));
+    //super(PAGE_SIZE, GWT.<CellTableStyleResource> create(CellTableStyleResource.class));
+    super(PAGE_SIZE);
+    this.addStyleName("dataTable");
 
     getElement().setId("form_management_table");
 
@@ -158,10 +161,13 @@ public class OdkTablesViewTable extends CellTable<RowClient> {
         tableAdvanceButton.setEnabled(hasMore);
       }
 
-      rows = tcc.rows;
+      rows = new ArrayList<RowClientWrapper>();
+      for (RowClient row: tcc.rows) {
+        rows.add(new RowClientWrapper(row));
+      }
+   
       setColumnHeadings();
       setRows(rows);
-
     }
   };
 
@@ -205,7 +211,7 @@ public class OdkTablesViewTable extends CellTable<RowClient> {
 
       // make the headings
 
-      for (String columnName : rows.get(0).getColumnNameList()) {
+      for (String columnName : rows.get(0).getSortedColumnNameList()) {
 
         // Create address column.
         OdkTablesTextColumn newColumn = new OdkTablesTextColumn(columnName);
@@ -221,7 +227,7 @@ public class OdkTablesViewTable extends CellTable<RowClient> {
   /*
    * This will set the row values in the listbox.
    */
-  private void setRows(List<RowClient> rows) {
+  private void setRows(List<RowClientWrapper> rows) {
 
     // if there are no columns, then we only want to display the no data
     // message.
