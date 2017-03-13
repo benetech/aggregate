@@ -1,5 +1,10 @@
 FROM 814633283276.dkr.ecr.us-east-1.amazonaws.com/tomcat:8-jdk8
 
+# Control Java heap and metaspace sizes
+ENv MIN_HEAP 256m
+ENV MAX_HEAP 1024m
+ENV MAX_METASPACE 128m
+
 # This Dockerfile runs an insecure instance of ODK aggregate on the default Tomcat ports
 # It is intended to be installed behind an SSL proxy
 
