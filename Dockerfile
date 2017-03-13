@@ -5,6 +5,8 @@ ENv MIN_HEAP 256m
 ENV MAX_HEAP 1024m
 ENV MAX_METASPACE 128m
 
+ENV JAVA_OPTS -server -Xms$MIN_HEAP -Xmx$MAX_HEAP -XX:MaxMetaspaceSize=$MAX_METASPACE -XX:+UseG1GC -Djava.library.path=$CATALINA_HOME/lib:/usr/lib/x86_64-linux-gnu -agentpath:$CATALINA_HOME/lib/libjvmkill.so
+
 # This Dockerfile runs an insecure instance of ODK aggregate on the default Tomcat ports
 # It is intended to be installed behind an SSL proxy
 
