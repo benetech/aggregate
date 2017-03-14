@@ -8,7 +8,7 @@ It is assumed you have working knowledge of Git, Maven, Tomcat, and your databas
 Recommended:
 - One of the following databases:
   - Postgres 9.4 or above
-  - MySQL 5 or above with MySQL Connector 5.1.41
+  - MySQL 5 or above with MySQL Connector 5.1.41 or above
 - Maven 3.3.3 or above
 - Tomcat 8 or above
 - Java 8
