@@ -36,7 +36,7 @@ public class RealmSecurityInfo implements Serializable {
   String superUserEmail;
   String superUsername;
   boolean isSuperUsernamePasswordSet;
-  String changeUserPasswordURL;
+  String changeUserPasswordUrl;
 
   public RealmSecurityInfo() {
   }
@@ -81,11 +81,11 @@ public class RealmSecurityInfo implements Serializable {
     this.realmString = realmString;
   }
 
-  public void setChangeUserPasswordURL(String changeUserPasswordURL) {
-    this.changeUserPasswordURL = changeUserPasswordURL;
+  public void setChangeUserPasswordUrl(String changeUserPasswordUrl) {
+    this.changeUserPasswordUrl = changeUserPasswordUrl;
   }
 
   public String getChangeUserPasswordURL() {
-    return changeUserPasswordURL;
+    return changeUserPasswordUrl;
   }
 }

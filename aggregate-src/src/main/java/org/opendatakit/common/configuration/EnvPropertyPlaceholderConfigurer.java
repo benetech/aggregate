@@ -16,7 +16,7 @@ public class EnvPropertyPlaceholderConfigurer extends PropertyPlaceholderConfigu
   protected String resolvePlaceholder(String placeholder, Properties props) {
     String envVar = placeholder.replace(".", "_").toUpperCase();
     String result = System.getenv(envVar);
-    if (envVar.contains("JDBC_URL")) {
+    if (envVar.contains("JDBC_URL")||envVar.contains("PASSWORD_CHANGE_URL")) {
       logger.info("Spot-checking " + placeholder + " as " + envVar + " and finding " + result);
     }
     return StringUtils.isNotEmpty(result) ? result : super.resolvePlaceholder(placeholder, props);
