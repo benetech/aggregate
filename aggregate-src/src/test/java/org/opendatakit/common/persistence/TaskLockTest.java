@@ -28,7 +28,6 @@ import org.opendatakit.aggregate.constants.TaskLockType;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 import org.opendatakit.common.security.User;
-import org.opendatakit.common.testing.ICommonTestSetup;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.TestContextFactory;
 

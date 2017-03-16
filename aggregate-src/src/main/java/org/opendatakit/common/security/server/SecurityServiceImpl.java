@@ -123,13 +123,13 @@ public class SecurityServiceImpl extends RemoteServiceServlet
     }
 
     // User interface layer uses this URL to submit password changes securely
-    String changePasswordUrl = cc.getUserService().getCurrentRealm().getChangePasswordUrl();
-    logger.info("Retrieved changePasswordUrl " + changePasswordUrl);
-    if (StringUtils.isEmpty(changePasswordUrl)) {
-      r.setChangeUserPasswordUrl(
+    String changePasswordURL = cc.getUserService().getCurrentRealm().getChangePasswordURL();
+    logger.info("Retrieved changePasswordURL " + changePasswordURL);
+    if (StringUtils.isEmpty(changePasswordURL)) {
+      r.setChangeUserPasswordURL(
           cc.getSecureServerURL() + BasicConsts.FORWARDSLASH + UserManagePasswordsServlet.ADDR);
     } else {
-      r.setChangeUserPasswordUrl(changePasswordUrl
+      r.setChangeUserPasswordURL(changePasswordURL
           + BasicConsts.FORWARDSLASH + UserManagePasswordsServlet.ADDR);
     }
     return r;

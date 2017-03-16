@@ -245,7 +245,7 @@
 	        <intercept-url pattern="/logout.html" access="${security.server.channelType}" />
 	        <intercept-url pattern="/multimode_login.html" access="${security.server.channelType}" />
 	        <intercept-url pattern="/relogin.html" access="${security.server.channelType}" />
-		    <intercept-url pattern="/ssl/**" access="${security.server.secureChannelType}"/>
+		    <intercept-url pattern="/ssl/**" access="${security.server.channelType}"/>
             <intercept-url pattern="/local_login.html" access="${security.server.channelType}" />
 	        <intercept-url pattern="/gae/**" access="ANY_CHANNEL" /> <!-- GAE picks the scheme -->
 	        <intercept-url pattern="/remote_api/**" access="ANY_CHANNEL" /> <!-- GAE picks the scheme -->
