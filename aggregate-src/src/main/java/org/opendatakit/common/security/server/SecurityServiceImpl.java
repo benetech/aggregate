@@ -18,7 +18,11 @@ package org.opendatakit.common.security.server;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.ContextFactory;
+import org.opendatakit.aggregate.datamodel.FormDataModel;
 import org.opendatakit.aggregate.servlet.UserManagePasswordsServlet;
 import org.opendatakit.common.persistence.Datastore;
 import org.opendatakit.common.persistence.client.exception.DatastoreFailureException;
@@ -44,13 +48,16 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @author mitchellsundt@gmail.com
  * 
  */
-public class SecurityServiceImpl extends RemoteServiceServlet implements
-    org.opendatakit.common.security.client.security.SecurityService {
+public class SecurityServiceImpl extends RemoteServiceServlet
+    implements org.opendatakit.common.security.client.security.SecurityService {
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = -7360632450727200941L;
+  
+  private static final Log logger = LogFactory.getLog(SecurityServiceImpl.class.getName());
+
 
   @Override
   public UserSecurityInfo getUserInfo() throws AccessDeniedException, DatastoreFailureException {
@@ -91,7 +98,8 @@ public class SecurityServiceImpl extends RemoteServiceServlet implements
   }
 
   @Override
-  public RealmSecurityInfo getRealmInfo(String xsrfString) throws AccessDeniedException, DatastoreFailureException {
+  public RealmSecurityInfo getRealmInfo(String xsrfString)
+      throws AccessDeniedException, DatastoreFailureException {
 
     HttpServletRequest req = this.getThreadLocalRequest();
     CallingContext cc = ContextFactory.getCallingContext(this, req);
@@ -113,9 +121,17 @@ public class SecurityServiceImpl extends RemoteServiceServlet implements
       e.printStackTrace();
       throw new DatastoreFailureException("Unable to access datastore");
     }
+
     // User interface layer uses this URL to submit password changes securely
-    r.setChangeUserPasswordURL(cc.getSecureServerURL() + BasicConsts.FORWARDSLASH
-        + UserManagePasswordsServlet.ADDR);
+    String changePasswordUrl = cc.getUserService().getCurrentRealm().getChangePasswordUrl();
+    logger.info("Retrieved changePasswordUrl " + changePasswordUrl);
+    if (StringUtils.isEmpty(changePasswordUrl)) {
+      r.setChangeUserPasswordUrl(
+          cc.getSecureServerURL() + BasicConsts.FORWARDSLASH + UserManagePasswordsServlet.ADDR);
+    } else {
+      r.setChangeUserPasswordUrl(changePasswordUrl
+          + BasicConsts.FORWARDSLASH + UserManagePasswordsServlet.ADDR);
+    }
     return r;
   }
 }
