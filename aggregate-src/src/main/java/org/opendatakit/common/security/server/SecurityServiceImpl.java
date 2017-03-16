@@ -54,7 +54,7 @@ public class SecurityServiceImpl extends RemoteServiceServlet
   /**
    * 
    */
-  private static final long serialVersionUID = -7360632450727200941L;
+  private static final long serialVersionUID = -7360632450727200942L;
   
   private static final Log logger = LogFactory.getLog(SecurityServiceImpl.class.getName());
 

@@ -29,7 +29,7 @@ public class RealmSecurityInfo implements Serializable {
   /**
    * 
    */
-  private static final long serialVersionUID = -430735053365397828L;
+  private static final long serialVersionUID = -430735053365397829L;
 
   String basicAuthHashEncoding;
   String realmString;
