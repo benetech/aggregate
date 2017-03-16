@@ -48,8 +48,8 @@
 		<property name="port" value="${security.server.port}" />
 		<property name="securePort" value="${security.server.securePort}" />
 		<property name="channelType" value="${security.server.channelType}" />
-		<property name="secureChannelType" value="${security.server.secureChannelType}" />
-        <property name="changePasswordUrl" value="${password.change.url}" />
+		<property name="secureChannelType" value="${security.server.channelType}" />
+        <property name="changePasswordURL" value="${password.change.url}" />
 	</bean>
 
 	<bean id="user_service" class="org.opendatakit.common.security.spring.UserServiceImpl">
