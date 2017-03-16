@@ -37,7 +37,7 @@ public class UserSecurityInfo implements Comparable<UserSecurityInfo>, Serializa
 	/**
    *
    */
-  private static final long serialVersionUID = 758102181896882604L;
+  private static final long serialVersionUID = 758102181896882605L;
 
   public enum UserType implements Serializable {
 		ANONYMOUS,     // not authenticated (anonymous)
