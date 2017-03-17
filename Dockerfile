@@ -1,4 +1,4 @@
-FROM 814633283276.dkr.ecr.us-east-1.amazonaws.com/tomcat:8-jdk8
+FROM tomcat:8-jdk8
 
 # Control Java heap and metaspace sizes
 ENV MIN_HEAP 256m
