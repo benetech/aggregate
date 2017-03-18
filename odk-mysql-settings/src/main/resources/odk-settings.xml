@@ -52,7 +52,7 @@
         <property name="securePort" value="${security.server.securePort}" />
         <property name="channelType" value="${security.server.channelType}" />
         <property name="secureChannelType" value="${security.server.channelType}" />
-        <property name="changePasswordURL" value="${password.change.url}" />
+        <property name="changePasswordURL" value="${external.root.url}" />
     </bean>
 
     <bean id="user_service"

@@ -184,6 +184,7 @@
 					<beans:constructor-arg>
 						<beans:list>
 							<beans:ref bean="channelProcessingFilter"/>
+							<beans:ref bean="externalUrlFilter"/>
 							<beans:ref bean="securityContextPersistenceFilter"/>
 							<beans:ref bean="logoutFilter"/>
 							<beans:ref bean="oauth2ResourceFilter"/>
@@ -207,6 +208,7 @@
 					<beans:constructor-arg>
 						<beans:list>
 							<beans:ref bean="channelProcessingFilter"/>
+							<beans:ref bean="externalUrlFilter"/>
 							<beans:ref bean="securityContextPersistenceFilter"/>
 							<beans:ref bean="logoutFilter"/>
 							<beans:ref bean="oauth2ResourceFilter"/>
@@ -327,6 +329,10 @@
 
 	<beans:bean id="requestCacheAwareFilter"
 		class="org.springframework.security.web.savedrequest.RequestCacheAwareFilter">
+	</beans:bean>
+
+	<beans:bean id="externalUrlFilter"
+		class="org.opendatakit.common.security.spring.ExternalUrlFilter">
 	</beans:bean>
 
 	<!--  <beans:bean id="securityContextHolderAwareFilter"

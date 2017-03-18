@@ -21,7 +21,7 @@ ENV JDBC_URL='jdbc:postgresql://192.168.1.113/odk_db?autoDeserialize=true' \
     JDBC_PASSWORD='odk_db' \
     JDBC_SCHEMA='odk_db' \
     ROOT_WAR_PATH='/usr/local/tomcat/webapps/ROOT.war' \
-    PASSWORD_CHANGE_URL='https://odk-qa.benetech.org'
+    EXTERNAL_ROOT_URL='https://odk-qa.benetech.org'
 
 WORKDIR /usr/local
 
