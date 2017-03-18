@@ -1,4 +1,4 @@
-FROM tomcat:8-jdk8
+FROM tomcat:8-jre8
 
 # Control Java heap and metaspace sizes
 ENV MIN_HEAP 256m
