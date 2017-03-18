@@ -103,4 +103,13 @@ public interface CallingContext {
     * @return the serverURL useful for external links.  
     */
    public String getSecureServerURL();
+   
+   /**
+   * The inward-facing address which may differ from the serverUrl if we have a
+   * proxy server.
+   * 
+   * @return
+   */
+   public String getExternalURL();
+   
 }

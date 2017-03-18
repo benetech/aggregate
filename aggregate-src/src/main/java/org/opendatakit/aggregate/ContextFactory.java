@@ -64,6 +64,7 @@ public class ContextFactory {
   public static final class CallingContextImpl implements CallingContext {
     final String serverUrl;
     final String secureServerUrl;
+    final String externalUrl;
     final String webApplicationBase;
     final ServletContext ctxt;
     final Datastore datastore;
@@ -81,6 +82,7 @@ public class ContextFactory {
       Integer identifiedPort = realm.getPort();
       Integer identifiedSecurePort = realm.getSecurePort();
       String identifiedHostname = realm.getHostname();
+      externalUrl = realm.getExternalURL();
 
       if (identifiedHostname == null || identifiedHostname.length() == 0) {
         identifiedHostname = req.getServerName();
@@ -144,6 +146,7 @@ public class ContextFactory {
       this.datastore = context.getDatastore();
       this.userService = context.getUserService();
       this.asDaemon = context.getAsDaemon();
+      this.externalUrl = context.getExternalURL();
     }
 
     @Override
@@ -181,6 +184,11 @@ public class ContextFactory {
       return serverUrl;
     }
 
+    @Override
+    public String getExternalURL() {
+      return externalUrl;
+    }
+    
     @Override
     public String getSecureServerURL() {
       return secureServerUrl;

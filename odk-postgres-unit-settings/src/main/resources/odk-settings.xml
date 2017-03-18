@@ -50,6 +50,7 @@
 		<property name="channelType" value="${security.server.channelType}" />
 		<property name="secureChannelType" value="${security.server.channelType}" />
         <property name="changePasswordURL" value="${external.root.url}" />
+        <property name="externalURL" value="${external.root.url}" />
 	</bean>
 
 	<bean id="user_service" class="org.opendatakit.common.security.spring.UserServiceImpl">

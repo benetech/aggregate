@@ -69,6 +69,7 @@ public class WatchdogImpl implements Watchdog, InitializingBean {
      boolean asDaemon = true;
      String serverUrl;
      String secureServerUrl;
+     String externalUrl;
 
      CallingContextImpl() {
 
@@ -76,6 +77,7 @@ public class WatchdogImpl implements Watchdog, InitializingBean {
         Integer identifiedPort = realm.getPort();
         Integer identifiedSecurePort = realm.getSecurePort();
         String identifiedHostname = realm.getHostname();
+        externalUrl = realm.getExternalURL();
 
         if ( identifiedHostname == null || identifiedHostname.length() == 0 ) {
            try {
@@ -216,6 +218,11 @@ public class WatchdogImpl implements Watchdog, InitializingBean {
      public String getWebApplicationURL(String servletAddr) {
         return getWebApplicationURL() + BasicConsts.FORWARDSLASH + servletAddr;
      }
+
+    @Override
+    public String getExternalURL() {
+      return externalUrl;
+    }
   }
 
   @Override

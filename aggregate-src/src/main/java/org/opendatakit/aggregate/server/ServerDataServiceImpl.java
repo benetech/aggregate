@@ -16,7 +16,17 @@
 
 package org.opendatakit.aggregate.server;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.UriBuilder;
+
 import org.opendatakit.aggregate.ContextFactory;
 import org.opendatakit.aggregate.client.exception.BadColumnNameExceptionClient;
 import org.opendatakit.aggregate.client.exception.ETagMismatchExceptionClient;
@@ -38,6 +48,7 @@ import org.opendatakit.aggregate.odktables.api.InstanceFileService;
 import org.opendatakit.aggregate.odktables.api.OdkTables;
 import org.opendatakit.aggregate.odktables.api.RealizedTableService;
 import org.opendatakit.aggregate.odktables.api.TableService;
+import org.opendatakit.aggregate.odktables.entity.ManifestUtils;
 import org.opendatakit.aggregate.odktables.entity.UtilTransforms;
 import org.opendatakit.aggregate.odktables.exception.BadColumnNameException;
 import org.opendatakit.aggregate.odktables.exception.ETagMismatchException;
@@ -64,15 +75,7 @@ import org.opendatakit.common.security.client.exception.AccessDeniedException;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.constants.BasicConsts;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.UriBuilder;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * For ODKTables.
@@ -384,10 +387,13 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
         URI getFile = tmp.build(appId, odkClientVersion, entry.getPathToFile());
         String downloadUrl;
         try {
-          downloadUrl = getFile.toURL().toExternalForm() + "?" + FileService.PARAM_AS_ATTACHMENT + "=true";
+          downloadUrl = ManifestUtils.fixInternalUrl(cc.getExternalURL(), getFile) + "?" + FileService.PARAM_AS_ATTACHMENT + "=true";
         } catch (MalformedURLException e) {
           e.printStackTrace();
-          throw new RequestFailureException("Unable to convert to URL");
+          throw new RequestFailureException("Unable to convert to URL (MalformedURLException)");
+        } catch (URISyntaxException e) {
+          e.printStackTrace();
+          throw new RequestFailureException("Unable to convert to URL (URISyntaxException)");
         }
 
         FileSummaryClient sum = new FileSummaryClient(entry.getPathToFile(),
@@ -464,12 +470,14 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
         URI getFile = tmp.build(appId, odkClientVersion, entry.getPathToFile());
         String downloadUrl;
         try {
-          downloadUrl = getFile.toURL().toExternalForm() + "?" + FileService.PARAM_AS_ATTACHMENT + "=true";
+          downloadUrl = ManifestUtils.fixInternalUrl(cc.getExternalURL(), getFile) + "?" + FileService.PARAM_AS_ATTACHMENT + "=true";
         } catch (MalformedURLException e) {
           e.printStackTrace();
-          throw new RequestFailureException("Unable to convert to URL");
+          throw new RequestFailureException("Unable to convert to URL (MalformedURLException)");
+        } catch (URISyntaxException e) {
+          e.printStackTrace();
+          throw new RequestFailureException("Unable to convert to URL (URISyntaxException)");
         }
-
         FileSummaryClient sum = new FileSummaryClient(entry.getPathToFile(),
             blobEntitySet.getContentType(1, cc),
             blobEntitySet.getContentLength(1, cc),
@@ -545,7 +553,7 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
 
         UriBuilder tmp = ub.clone().path(TableService.class, "getRealizedTable").path(RealizedTableService.class,"getInstanceFiles").path(InstanceFileService.class, "getFile");
         URI getFile = tmp.build(appId, tableId, schemaETag, rowId, entry.getUnrootedFilePath());
-        String downloadUrl = getFile.toASCIIString() + "?" + FileService.PARAM_AS_ATTACHMENT + "=true";
+        String downloadUrl = ManifestUtils.fixInternalUrl(cc.getExternalURL(), getFile) + "?" + FileService.PARAM_AS_ATTACHMENT + "=true";
 
         FileSummaryClient sum = new FileSummaryClient(entry.getUnrootedFilePath(),
             entry.getContentType(),
@@ -576,6 +584,12 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
     } catch (PermissionDeniedException e) {
       e.printStackTrace();
       throw new PermissionDeniedExceptionClient(e);
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+      throw new RequestFailureException("Unable to convert to URL (MalformedURLException)");
+    } catch (URISyntaxException e) {
+      e.printStackTrace();
+      throw new RequestFailureException("Unable to convert to URL (URISyntaxException)");
     }
   }
 

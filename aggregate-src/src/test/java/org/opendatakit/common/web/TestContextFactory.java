@@ -45,6 +45,7 @@ public class TestContextFactory {
 	    	final String webApplicationBase;
 	    	final Datastore datastore;
 	    	final UserService userService;
+	    	final String externalUrl;
 	    	boolean asDaemon = true; // otherwise there isn't a current user...
 
 	    	CallingContextImpl() {
@@ -57,6 +58,7 @@ public class TestContextFactory {
 	    	    String port = System.getProperty("test.server.port","8888");
 	    	    String secureport = System.getProperty("test.server.secure.port","8443");
 	    		serverUrl = "http://" + hostname + ":" + port + webApplicationBase;
+	    		externalUrl = serverUrl;
 	    		secureServerUrl = "https://" + hostname + ":" + secureport + webApplicationBase;
 	    		datastore = (Datastore) applicationContext.getBean(DATASTORE_BEAN);
 	    		userService = (UserService) applicationContext.getBean(USER_BEAN);
@@ -116,6 +118,11 @@ public class TestContextFactory {
 	    	public User getCurrentUser() {
 	    		return asDaemon ? userService.getDaemonAccountUser() : userService.getCurrentUser();
 	    	}
+
+      @Override
+      public String getExternalURL() {
+        return externalUrl;
+      }
 	    }
 
 	    /**

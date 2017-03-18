@@ -194,6 +194,12 @@ public class RoleHierarchyImpl implements RoleHierarchy, InitializingBean {
 			public String getSecureServerURL() {
 				throw new IllegalStateException("Undefined");
 			}
+
+      @Override
+      public String getExternalURL() {
+        throw new IllegalStateException("Undefined");
+      }
+
 		};
 		
 		Datastore ds = bootstrapCc.getDatastore();
