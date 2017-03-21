@@ -16,9 +16,14 @@
 
 package org.opendatakit.aggregate.client.table;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
+
 import org.opendatakit.aggregate.client.AggregateSubTabBase;
 import org.opendatakit.aggregate.client.AggregateUI;
 import org.opendatakit.aggregate.client.OdkTablesViewTableSubTab;
@@ -52,7 +57,10 @@ public class OdkTablesViewTable extends FlexTable {
 
   // that table's column names
   private ArrayList<String> columnNames;
-  
+
+  // Column currently being sorted on
+  private String sortColumn;
+
   private String refreshCursor;
   private String resumeCursor;
   private boolean hasMore;
@@ -60,7 +68,7 @@ public class OdkTablesViewTable extends FlexTable {
   private AggregateSubTabBase tableSubTab;
 
   private OdkTablesAdvanceRowsButton tableAdvanceButton;
-  
+
   // this is the number of columns that exist for a table as returned
   // by the server that are NOT user defined.
   private static final int NUMBER_ADMIN_COLUMNS = 13;
@@ -88,22 +96,21 @@ public class OdkTablesViewTable extends FlexTable {
     this.hasMore = false;
   }
 
-  public OdkTablesViewTable(AggregateSubTabBase tableSubTab,
-      TableEntryClient table) {
+  public OdkTablesViewTable(AggregateSubTabBase tableSubTab, TableEntryClient table) {
     this(tableSubTab);
 
     updateDisplay(table);
 
     this.currentTable = table;
   }
-  
+
   public void setAdvanceButton(OdkTablesAdvanceRowsButton tableAdvanceButton) {
     this.tableAdvanceButton = tableAdvanceButton;
-    if ( this.tableAdvanceButton != null ) {
+    if (this.tableAdvanceButton != null) {
       this.tableAdvanceButton.setEnabled(hasMore);
     }
   }
-  
+
   /**
    * This updates the display to show the contents of the table.
    */
@@ -114,13 +121,13 @@ public class OdkTablesViewTable extends FlexTable {
     // Window.alert("in odktablesViewTable.updateDisplay()");
 
     this.currentTable = table;
-    
-    if ( oldTable == null || currentTable == null ||
-         !oldTable.getTableId().equals(currentTable.getTableId()) ) {
+
+    if (oldTable == null || currentTable == null
+        || !oldTable.getTableId().equals(currentTable.getTableId())) {
       this.refreshCursor = null;
       this.resumeCursor = null;
       this.hasMore = false;
-      if ( tableAdvanceButton != null ) {
+      if (tableAdvanceButton != null) {
         this.tableAdvanceButton.setEnabled(hasMore);
       }
     }
@@ -136,16 +143,15 @@ public class OdkTablesViewTable extends FlexTable {
   }
 
   // set up the callback object
-  AsyncCallback<TableContentsClient> getDataCallback =
-      new AsyncCallback<TableContentsClient>() {
+  AsyncCallback<TableContentsClient> getDataCallback = new AsyncCallback<TableContentsClient>() {
     @Override
     public void onFailure(Throwable caught) {
       if (caught instanceof EntityNotFoundExceptionClient) {
         // if this happens it is PROBABLY, but not necessarily, because
         // we've deleted the table.
         // TODO ensure the correct exception makes it here
-        ((OdkTablesViewTableSubTab) AggregateUI.getUI()
-            .getSubTab(SubTabs.VIEWTABLE)).setTabToDisplayZero();
+        ((OdkTablesViewTableSubTab) AggregateUI.getUI().getSubTab(SubTabs.VIEWTABLE))
+            .setTabToDisplayZero();
       } else if (caught instanceof PermissionDeniedExceptionClient) {
         // do nothing, b/c it's probably legitimate that you don't get an
         // error if there are rows you're not allowed to see.
@@ -161,7 +167,7 @@ public class OdkTablesViewTable extends FlexTable {
       refreshCursor = tcc.websafeRefetchCursor;
       resumeCursor = tcc.websafeResumeCursor;
       hasMore = tcc.hasMore;
-      if ( tableAdvanceButton != null ) {
+      if (tableAdvanceButton != null) {
         tableAdvanceButton.setEnabled(hasMore);
       }
       setColumnHeadings(columnNames);
@@ -175,17 +181,17 @@ public class OdkTablesViewTable extends FlexTable {
   public void nextPage() {
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
         .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES) && hasMore) {
-      SecureGWT.getServerDataService().getTableContents(currentTable.getTableId(), resumeCursor, AggregateUI.getUI().getUserInfo().getOfficeId(),
-        getDataCallback);
+      SecureGWT.getServerDataService().getSortedTableContents(currentTable.getTableId(), sortColumn,
+          resumeCursor, AggregateUI.getUI().getUserInfo().getOfficeId(), getDataCallback);
     }
   }
-  
+
   public void updateData(TableEntryClient table) {
     // TODO: paginate this
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
         .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
-      SecureGWT.getServerDataService().getTableContents(table.getTableId(), refreshCursor, AggregateUI.getUI().getUserInfo().getOfficeId(),
-        getDataCallback);
+      SecureGWT.getServerDataService().getSortedTableContents(table.getTableId(), sortColumn,
+          refreshCursor, AggregateUI.getUI().getUserInfo().getOfficeId(), getDataCallback);
     }
   }
 
@@ -238,10 +244,10 @@ public class OdkTablesViewTable extends FlexTable {
    */
 
   /**
-   * This is the method that actually updates the column headings. It is its
-   * own method so that it can be called cleanly in the updateTableData method.
-   * If the code is AFTER the call to SecureGWT, as it was at first, you can
-   * get null pointer exceptions, as the async callback may have not returned.
+   * This is the method that actually updates the column headings. It is its own
+   * method so that it can be called cleanly in the updateTableData method. If
+   * the code is AFTER the call to SecureGWT, as it was at first, you can get
+   * null pointer exceptions, as the async callback may have not returned.
    */
   private void setColumnHeadings(ArrayList<String> columns) {
     this.removeAllRows();
@@ -258,26 +264,57 @@ public class OdkTablesViewTable extends FlexTable {
       for (String name : this.columnNames) {
         // We might have to do checking eventually to ensure metadata columns
         // are only displayed when necessary.
-        setText(0, i, name);
+        setWidget(0, i, getClickableColumnHeading(name));
         i++;
       }
-      setText(0, i++, ODKDefaultColumnNames.SAVEPOINT_TYPE);
-      setText(0, i++, ODKDefaultColumnNames.FORM_ID);
-      setText(0, i++, ODKDefaultColumnNames.LOCALE);
-      setText(0, i++, ODKDefaultColumnNames.SAVEPOINT_TIMESTAMP);
-      setText(0, i++, ODKDefaultColumnNames.SAVEPOINT_CREATOR);
-      setText(0, i++, ODKDefaultColumnNames.ROW_ID);
-      setText(0, i++, ODKDefaultColumnNames.ROW_ETAG);
-      setText(0, i++, ODKDefaultColumnNames.FILTER_TYPE);
-      setText(0, i++, ODKDefaultColumnNames.FILTER_VALUE);
-      setText(0, i++, ODKDefaultColumnNames.LAST_UPDATE_USER);
-      setText(0, i++, ODKDefaultColumnNames.CREATED_BY_USER);
-      setText(0, i++, ODKDefaultColumnNames.DATA_ETAG_AT_MODIFICATION);
-
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.SAVEPOINT_TYPE));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.FORM_ID));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.LOCALE));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.SAVEPOINT_TIMESTAMP));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.SAVEPOINT_CREATOR));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.ROW_ID));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.ROW_ETAG));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.FILTER_TYPE));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.FILTER_VALUE));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.LAST_UPDATE_USER));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.CREATED_BY_USER));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.DATA_ETAG_AT_MODIFICATION));
 
       getRowFormatter().addStyleName(0, "titleBar");
     }
 
+  }
+
+  /** 
+   * Attach code to sort column when heading is clicked.
+   * @param columnName
+   * @return
+   */
+  Label getClickableColumnHeading(String columnName) {
+    Label result = new Label(columnName);
+    result.setStyleName("odkTablesClickableColumnHeading");
+    result.addClickHandler(new ColumnSortHandler(columnName));
+    return result;
+  }
+
+
+  /**
+   * Sort column when heading is clicked.
+   */
+  class ColumnSortHandler implements ClickHandler {
+    final String columnName;
+    
+    public ColumnSortHandler(String columnName) {
+      this.columnName = columnName;
+      
+    }
+    
+    @Override
+    public void onClick(ClickEvent event) {
+      sortColumn = columnName;
+      updateDisplay(currentTable);
+      //updateData(currentTable);      
+    } 
   }
 
   /*
@@ -318,7 +355,8 @@ public class OdkTablesViewTable extends FlexTable {
           // now set the delete button
           OdkTablesDeleteRowButton deleteButton = new OdkTablesDeleteRowButton(this,
               currentTable.getTableId(), row.getRowId(), row.getRowETag());
-          if ( !AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
+          if (!AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
+              .contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
             deleteButton.setEnabled(false);
           }
           setWidget(currentRow, 0, deleteButton);

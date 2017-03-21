@@ -48,3 +48,12 @@
 	border-color: #07115A;
 	width:100%;
 }
+
+.odkTablesClickableColumnHeading {
+	cursor: pointer;
+	cursor: hand;
+}
+
+.odkTablesClickableColumnHeading:hover {
+	color: white;
+}

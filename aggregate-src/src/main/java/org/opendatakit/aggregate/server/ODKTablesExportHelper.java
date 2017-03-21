@@ -43,7 +43,7 @@ public class ODKTablesExportHelper {
     private TableManager tableManager;
     private DataManager dataManager;
     private DataManager.WebsafeRows websafeRows;
-    private ArrayList<String> userDefindedColumnNames;
+    private ArrayList<String> userDefinedColumnNames;
 
     public ODKTablesExportHelper(String tableId, CallingContext callingContext) throws ODKEntityNotFoundException,
             ODKOverQuotaException, ODKDatastoreException, PermissionDeniedException, ODKTaskLockException {
@@ -67,7 +67,7 @@ public class ODKTablesExportHelper {
         if ( entry == null || entry.getSchemaETag() == null ) {
             throw new ODKEntityNotFoundException();
         }
-        this.userDefindedColumnNames = DbColumnDefinitions.queryForDbColumnNames(tableId,
+        this.userDefinedColumnNames = DbColumnDefinitions.queryForDbColumnNames(tableId,
                 entry.getSchemaETag(), callingContext);
     }
 
@@ -85,7 +85,7 @@ public class ODKTablesExportHelper {
             InconsistentStateException, BadColumnNameException {
         // null - fetch data from the beginning
         // 0 - unlimited number of rows
-        this.websafeRows = this.dataManager.getRows(null, 0, null, null);
+        this.websafeRows = this.dataManager.getRows(null, 0, null, null, null);
     }
 
     public String getAppId() {
@@ -103,7 +103,7 @@ public class ODKTablesExportHelper {
      */
 
     public ArrayList<String> getUserDefinedColumnNames() {
-        return this.userDefindedColumnNames;
+        return this.userDefinedColumnNames;
     }
 
     /**
@@ -152,7 +152,7 @@ public class ODKTablesExportHelper {
         // Write column headings
         ArrayList<String> columnHeadings = new ArrayList<String>();
         columnHeadings.add(ODKDefaultColumnNames.DELETE_ROW_HEADING);
-        for ( String columnName : userDefindedColumnNames) {
+        for ( String columnName : userDefinedColumnNames) {
             columnHeadings.add(columnName);
         }
         columnHeadings.add(ODKDefaultColumnNames.SAVEPOINT_TYPE);

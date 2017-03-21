@@ -472,7 +472,7 @@
 		<servlet-name>downloadSubmission</servlet-name>
 		<url-pattern>/view/downloadSubmission</url-pattern>
 	</servlet-mapping>
-
+<!--  
 	<servlet>
 		<servlet-name>worksheet</servlet-name>
 		<servlet-class>org.opendatakit.aggregate.task.gae.servlet.WorksheetServlet</servlet-class>
@@ -544,7 +544,7 @@
 		<servlet-name>watchdog</servlet-name>
 		<url-pattern>/gae/watchdog</url-pattern>
 	</servlet-mapping>
-
+-->
     <servlet>
         <servlet-name>clearSessionAndLoginPage</servlet-name>
         <servlet-class>org.opendatakit.aggregate.servlet.ClearSessionThenLoginServlet</servlet-class>

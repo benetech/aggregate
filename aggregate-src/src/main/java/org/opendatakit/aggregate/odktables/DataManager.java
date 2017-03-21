@@ -27,6 +27,8 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.Expose;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,6 +61,7 @@ import org.opendatakit.common.ermodel.Entity;
 import org.opendatakit.common.ermodel.Query;
 import org.opendatakit.common.ermodel.Query.WebsafeQueryResult;
 import org.opendatakit.common.persistence.CommonFieldsBase;
+import org.opendatakit.common.persistence.DataField;
 import org.opendatakit.common.persistence.PersistenceUtils;
 import org.opendatakit.common.persistence.Query.Direction;
 import org.opendatakit.common.persistence.QueryResumePoint;
@@ -97,7 +100,7 @@ public class DataManager {
     @JsonIgnore
     public final boolean hasMore;
     @JsonIgnore
-    public final boolean hasPrior;
+    public final boolean hasPrior;    
 
     public WebsafeRows(List<Row> rows, String dataETag, 
         String websafeRefetchCursor, String websafeBackwardCursor,
@@ -231,7 +234,7 @@ public class DataManager {
    * @throws InconsistentStateException
    * @throws BadColumnNameException
    */
-  public WebsafeRows getRows(QueryResumePoint startCursor, int fetchLimit, String deviceId, String officeId)
+  public WebsafeRows getRows(QueryResumePoint startCursor, int fetchLimit, String sortColumn, String deviceId,String officeId)
       throws ODKDatastoreException, PermissionDeniedException, ODKTaskLockException,
       InconsistentStateException, BadColumnNameException {
 
@@ -264,8 +267,18 @@ public class DataManager {
 
       revertPendingChanges(entry, columns, table, logTable);
 
+      // Add column sorting
+      DataField columnSort = table.getDataField(CommonFieldsBase.CREATION_DATE_COLUMN_NAME);
+      if (StringUtils.isNotEmpty(sortColumn)) {
+        try {
+          columnSort = table.getDataField(sortColumn.toUpperCase());
+        } catch (IllegalArgumentException e) {
+          logger.error("Invalid column sort request on nonexistent column " + sortColumn, e);
+        }
+      }
+      
       Query query = buildRowsQuery(table);
-      query.addSort(table.getDataField(CommonFieldsBase.CREATION_DATE_COLUMN_NAME),
+      query.addSort(columnSort,
           (startCursor == null || startCursor.isForwardCursor()) ? Direction.ASCENDING
               : Direction.DESCENDING);
       // we need the filter to activate the sort...

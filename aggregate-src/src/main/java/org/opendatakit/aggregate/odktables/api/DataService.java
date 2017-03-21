@@ -45,6 +45,7 @@ public interface DataService {
   public static final String FETCH_LIMIT = "fetchLimit";
   public static final String DEVICE_ID = "deviceId";
   public static final String OFFICE_ID = "officeId";
+  public static final String SORT_COLUMN = "sortColumn";
 
   /**
    * Get all data rows.
@@ -60,7 +61,7 @@ public interface DataService {
    */
   @GET
   @Produces({MediaType.APPLICATION_JSON, ApiConstants.MEDIA_TEXT_XML_UTF8, ApiConstants.MEDIA_APPLICATION_XML_UTF8})
-  public Response /*RowResourceList*/ getRows(@QueryParam(CURSOR_PARAMETER) String cursor, @QueryParam(FETCH_LIMIT) String fetchLimit, @QueryParam(DEVICE_ID) String deviceId, @QueryParam(OFFICE_ID) String officeId) throws ODKDatastoreException, PermissionDeniedException, InconsistentStateException, ODKTaskLockException, BadColumnNameException;
+  public Response /*RowResourceList*/ getRows(@QueryParam(CURSOR_PARAMETER) String cursor, @QueryParam(FETCH_LIMIT) String fetchLimit, @QueryParam(SORT_COLUMN) String sortColumn, @QueryParam(DEVICE_ID) String deviceId, @QueryParam(OFFICE_ID) String officeId) throws ODKDatastoreException, PermissionDeniedException, InconsistentStateException, ODKTaskLockException, BadColumnNameException;
 
   /**
    * API for creating, updating or deleting rows.

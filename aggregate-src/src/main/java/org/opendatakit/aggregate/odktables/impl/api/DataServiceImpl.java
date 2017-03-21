@@ -63,9 +63,13 @@ public class DataServiceImpl implements DataService {
   }
 
   @Override
-  public Response getRows(@QueryParam(CURSOR_PARAMETER) String cursor, @QueryParam(FETCH_LIMIT) String fetchLimit, @QueryParam(DEVICE_ID) String deviceId, @QueryParam(OFFICE_ID) String officeId) throws ODKDatastoreException, PermissionDeniedException, InconsistentStateException, ODKTaskLockException, BadColumnNameException {
+  public Response getRows(@QueryParam(CURSOR_PARAMETER) String cursor,
+      @QueryParam(FETCH_LIMIT) String fetchLimit, @QueryParam(SORT_COLUMN) String sortColumn,
+      @QueryParam(DEVICE_ID) String deviceId, @QueryParam(OFFICE_ID) String officeId)
+      throws ODKDatastoreException, PermissionDeniedException, InconsistentStateException,
+      ODKTaskLockException, BadColumnNameException {
     int limit = (fetchLimit == null || fetchLimit.length() == 0) ? 2000 : Integer.parseInt(fetchLimit);
-    WebsafeRows websafeResult = dm.getRows(QueryResumePoint.fromWebsafeCursor(WebUtils.safeDecode(cursor)), limit, deviceId, officeId);
+    WebsafeRows websafeResult = dm.getRows(QueryResumePoint.fromWebsafeCursor(WebUtils.safeDecode(cursor)), limit, sortColumn, deviceId, officeId);
     RowResourceList rowResourceList = new RowResourceList(getResources(websafeResult.rows),
         websafeResult.dataETag, getTableUri(),
         WebUtils.safeEncode(websafeResult.websafeRefetchCursor),

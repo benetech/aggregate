@@ -40,6 +40,8 @@ public interface ServerDataServiceAsync {
   void getFileRowInfoColumnNames(AsyncCallback<ArrayList<String>> callback);
 
   void getTableContents(String tableId, String resumeCursor, String officeId, AsyncCallback<TableContentsClient> callback);
+  
+  void getSortedTableContents(String tableId, String resumeCursor, String sortColumn, String officeId, AsyncCallback<TableContentsClient> callback);
 
   void getAppLevelFileInfoContents(AsyncCallback<TableContentsForFilesClient> callback);
 

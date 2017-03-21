@@ -16,6 +16,7 @@
 
 package org.opendatakit.aggregate.client.odktables;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.opendatakit.aggregate.client.exception.BadColumnNameExceptionClient;
@@ -62,6 +63,11 @@ public interface ServerDataService extends RemoteService {
   TableContentsClient getTableContents(String tableId, String resumeCursor, String officeId) throws AccessDeniedException,
       RequestFailureException, DatastoreFailureException, PermissionDeniedExceptionClient,
       EntityNotFoundExceptionClient, BadColumnNameExceptionClient;
+  
+  TableContentsClient getSortedTableContents(String tableId, String resumeCursor, String sortColumn,
+      String officeId)
+      throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
+      PermissionDeniedExceptionClient, EntityNotFoundExceptionClient, BadColumnNameExceptionClient;
 
   TableContentsForFilesClient getAppLevelFileInfoContents() throws AccessDeniedException,
       RequestFailureException, DatastoreFailureException, PermissionDeniedExceptionClient,
