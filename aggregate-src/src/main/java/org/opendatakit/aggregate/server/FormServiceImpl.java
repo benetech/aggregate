@@ -16,9 +16,6 @@
 
 package org.opendatakit.aggregate.server;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,7 +48,6 @@ import org.opendatakit.aggregate.form.IForm;
 import org.opendatakit.aggregate.form.MiscTasks;
 import org.opendatakit.aggregate.form.PersistentResults;
 import org.opendatakit.aggregate.form.PersistentResults.ResultFileInfo;
-import org.opendatakit.aggregate.odktables.entity.ManifestUtils;
 import org.opendatakit.aggregate.task.CsvGenerator;
 import org.opendatakit.aggregate.task.JsonFileGenerator;
 import org.opendatakit.aggregate.task.KmlGenerator;
@@ -64,7 +60,7 @@ import org.opendatakit.common.web.CallingContext;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-public class FormServiceImpl extends RemoteServiceServlet implements 
+public class FormServiceImpl extends RemoteServiceServlet implements
     org.opendatakit.aggregate.client.form.FormService {
 
   /**
@@ -72,7 +68,7 @@ public class FormServiceImpl extends RemoteServiceServlet implements
    */
   private static final long serialVersionUID = -193679930586769386L;
   private static final String LIMITATION_MSG = "Picture and Title must be in the submission (top-level) or must be in the same repeat group as the GeoPoint";
-  
+
   @Override
   public ArrayList<FormSummary> getForms() throws RequestFailureException, DatastoreFailureException {
 
@@ -160,8 +156,7 @@ public class FormServiceImpl extends RemoteServiceServlet implements
           if (linkText == null || linkText.length() == 0) {
             linkText = FormTableConsts.DOWNLOAD_LINK_TEXT;
           }
-          String downloadUrl = ManifestUtils.fixInternalUrl(cc.getExternalURL(), new URI(info.downloadUrl));
-          String url = HtmlUtil.createHref(downloadUrl, linkText, false);
+          String url = HtmlUtil.createHref(info.downloadUrl, linkText, false);
           summary.setResultFile(url);
         }
         exports.add(summary);
@@ -178,10 +173,6 @@ public class FormServiceImpl extends RemoteServiceServlet implements
     } catch (ODKDatastoreException e) {
       e.printStackTrace();
       throw new DatastoreFailureException();
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
     }
   }
 
@@ -469,5 +460,6 @@ public class FormServiceImpl extends RemoteServiceServlet implements
       throw new DatastoreFailureException();
     }
   }
+
 
 }
