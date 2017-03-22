@@ -133,7 +133,7 @@ public class DataManagerTest {
 
   @Test
   public void testGetRowsEmpty() throws ODKDatastoreException, PermissionDeniedException, InconsistentStateException, ODKTaskLockException, BadColumnNameException {
-    WebsafeRows websafeResult = dm.getRows(null, 2000, null, null, null);
+    WebsafeRows websafeResult = dm.getRows(null, 2000, null, false, null, null);
     assertTrue(websafeResult.rows.isEmpty());
   }
 
@@ -183,7 +183,7 @@ public class DataManagerTest {
     for ( Row r : rows ) {
       expectedRows.add(dm.insertOrUpdateRow(r));
     }
-    WebsafeRows websafeResult = dm.getRows(null, 2000, null, null, null);
+    WebsafeRows websafeResult = dm.getRows(null, 2000, null, false, null, null);
     List<Row> actualRows = websafeResult.rows;
     for (int i = 0; i < rows.size(); i++) {
       Row expected = rows.get(i);
@@ -365,7 +365,7 @@ public class DataManagerTest {
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    WebsafeRows websafeResult = dm.getRows(null, 2000, null, null, null);
+    WebsafeRows websafeResult = dm.getRows(null, 2000, null, false, null, null);
     List<Row> rows = websafeResult.rows;
     assertTrue(rows.isEmpty());
   }
@@ -445,7 +445,7 @@ public class DataManagerTest {
 
   @Ignore
   private void clearRows() throws ODKDatastoreException, ODKTaskLockException, PermissionDeniedException, InconsistentStateException, BadColumnNameException, ETagMismatchException {
-    WebsafeRows websafeResult = dm.getRows(null, 2000, null, null, null);
+    WebsafeRows websafeResult = dm.getRows(null, 2000, null, false, null, null);
     List<Row> rows = websafeResult.rows;
     for ( Row old : rows ) {
       dm.deleteRow(old.getRowId(), old.getRowETag());

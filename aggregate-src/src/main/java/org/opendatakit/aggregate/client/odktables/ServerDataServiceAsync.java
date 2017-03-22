@@ -41,7 +41,7 @@ public interface ServerDataServiceAsync {
 
   void getTableContents(String tableId, String resumeCursor, String officeId, AsyncCallback<TableContentsClient> callback);
   
-  void getSortedTableContents(String tableId, String resumeCursor, String sortColumn, String officeId, AsyncCallback<TableContentsClient> callback);
+  void getSortedTableContents(String tableId, String resumeCursor, String sortColumn, boolean ascending, String officeId, AsyncCallback<TableContentsClient> callback);
 
   void getAppLevelFileInfoContents(AsyncCallback<TableContentsForFilesClient> callback);
 

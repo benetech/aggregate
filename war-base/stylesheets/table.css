@@ -57,3 +57,25 @@
 .odkTablesClickableColumnHeading:hover {
 	color: white;
 }
+
+.odkTablesClickableColumnHeading {
+    cursor: pointer;
+    cursor: hand;
+}
+
+.odkTablesClickableColumnHeading {
+    cursor: pointer;
+    cursor: hand;
+}
+
+.sortColumnAscending::before {
+	content: "&#9650;" /* ▲ */
+}
+
+.sortColumnDescending::before {
+	content: "&#9660;" /* ▼ */
+}
+
+.sortColumn {
+	color: yellow;
+}

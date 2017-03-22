@@ -60,9 +60,9 @@ public class DbTable extends Relation {
    * This should hold the TableEntry's data ETag at the time the row was modified/created.
    */
   public static final DataField DATA_ETAG_AT_MODIFICATION = new DataField(
-      "_DATA_ETAG_AT_MODIFICATION", DataType.STRING, false);
-  public static final DataField CREATE_USER = new DataField("_CREATE_USER", DataType.STRING, true);
-  public static final DataField LAST_UPDATE_USER = new DataField("_LAST_UPDATE_USER",
+      TableConstants.DATA_ETAG_AT_MODIFICATION.toUpperCase(), DataType.STRING, false);
+  public static final DataField CREATE_USER = new DataField(TableConstants.CREATE_USER.toUpperCase(), DataType.STRING, true);
+  public static final DataField LAST_UPDATE_USER = new DataField(TableConstants.LAST_UPDATE_USER.toUpperCase(),
       DataType.STRING, true);
   public static final DataField DELETED = new DataField("_DELETED", DataType.BOOLEAN, false);
 

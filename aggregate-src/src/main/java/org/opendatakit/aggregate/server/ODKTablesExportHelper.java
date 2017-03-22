@@ -85,7 +85,7 @@ public class ODKTablesExportHelper {
             InconsistentStateException, BadColumnNameException {
         // null - fetch data from the beginning
         // 0 - unlimited number of rows
-        this.websafeRows = this.dataManager.getRows(null, 0, null, null, null);
+        this.websafeRows = this.dataManager.getRows(null, 0, null, false, null, null);
     }
 
     public String getAppId() {

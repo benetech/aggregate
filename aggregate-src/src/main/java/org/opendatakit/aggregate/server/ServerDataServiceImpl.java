@@ -90,7 +90,7 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
 	 */
   private static final long serialVersionUID = -5051558217315955180L;
 
-  private WebsafeRows getRows(String tableId, String sortColumn, QueryResumePoint resumePoint,
+  private WebsafeRows getRows(String tableId, QueryResumePoint resumePoint, String sortColumn, boolean ascending,
       String officeId)
       throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
       PermissionDeniedExceptionClient, EntityNotFoundExceptionClient, BadColumnNameExceptionClient {
@@ -100,7 +100,7 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
       TablesUserPermissions userPermissions = new TablesUserPermissionsImpl(cc);
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
       DataManager dm = new DataManager(appId, tableId, userPermissions, cc);
-      return dm.getRows(resumePoint, 100, sortColumn, null, officeId);
+      return dm.getRows(resumePoint, 100, sortColumn, ascending, null, officeId);
     } catch (ODKEntityNotFoundException e) {
       e.printStackTrace();
       throw new EntityNotFoundExceptionClient(e);
@@ -329,21 +329,22 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
   }
 
   @Override
-  public TableContentsClient getTableContents(String tableId, String resumeCursor, String officeId) throws AccessDeniedException,
-      RequestFailureException, DatastoreFailureException, PermissionDeniedExceptionClient,
-      EntityNotFoundExceptionClient, BadColumnNameExceptionClient {
+  public TableContentsClient getTableContents(String tableId, String resumeCursor, String officeId)
+      throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
+      PermissionDeniedExceptionClient, EntityNotFoundExceptionClient, BadColumnNameExceptionClient {
 
-    return getSortedTableContents(tableId, null, resumeCursor, officeId);
+    return getSortedTableContents(tableId, resumeCursor, null, false, officeId);
   }
-  
+
   @Override
-  public TableContentsClient getSortedTableContents(String tableId, String sortColumn,   String resumeCursor, String officeId) throws AccessDeniedException,
-      RequestFailureException, DatastoreFailureException, PermissionDeniedExceptionClient,
-      EntityNotFoundExceptionClient, BadColumnNameExceptionClient {
+  public TableContentsClient getSortedTableContents(String tableId, String resumeCursor,
+      String sortColumn, boolean ascending, String officeId)
+      throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
+      PermissionDeniedExceptionClient, EntityNotFoundExceptionClient, BadColumnNameExceptionClient {
     TableContentsClient tcc = new TableContentsClient();
-    
-    WebsafeRows websafeResult = getRows(tableId, sortColumn,
-         QueryResumePoint.fromWebsafeCursor(resumeCursor),  officeId);
+
+    WebsafeRows websafeResult = getRows(tableId, QueryResumePoint.fromWebsafeCursor(resumeCursor),
+        sortColumn, ascending, officeId);
     List<Row> rows = websafeResult.rows;
     tcc.rows = transformRows(rows);
     tcc.columnNames = getColumnNames(tableId);

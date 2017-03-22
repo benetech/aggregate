@@ -16,13 +16,7 @@
 
 package org.opendatakit.aggregate.client.table;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
+import java.util.ArrayList;
 
 import org.opendatakit.aggregate.client.AggregateSubTabBase;
 import org.opendatakit.aggregate.client.AggregateUI;
@@ -37,9 +31,13 @@ import org.opendatakit.aggregate.client.widgets.OdkTablesAdvanceRowsButton;
 import org.opendatakit.aggregate.client.widgets.OdkTablesDeleteRowButton;
 import org.opendatakit.aggregate.constants.common.ODKDefaultColumnNames;
 import org.opendatakit.aggregate.constants.common.SubTabs;
+import org.opendatakit.aggregate.odktables.rest.TableConstants;
 import org.opendatakit.common.security.common.GrantedAuthorityName;
 
-import java.util.ArrayList;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * Displays the contents of a table.
@@ -47,7 +45,7 @@ import java.util.ArrayList;
  * @author sudar.sam@gmail.com
  *
  */
-public class OdkTablesViewTable extends FlexTable {
+public class OdkTablesViewTable extends FlexTable implements HasSortColumn {
 
   // the table that we are currently displaying.
   private TableEntryClient currentTable;
@@ -57,9 +55,12 @@ public class OdkTablesViewTable extends FlexTable {
 
   // that table's column names
   private ArrayList<String> columnNames;
+  // Seriously, we can't derive this from the Flextable? Awesome.
+  private int numColumns;
 
   // Column currently being sorted on
   private String sortColumn;
+  private boolean ascending = false;
 
   private String refreshCursor;
   private String resumeCursor;
@@ -109,6 +110,14 @@ public class OdkTablesViewTable extends FlexTable {
     if (this.tableAdvanceButton != null) {
       this.tableAdvanceButton.setEnabled(hasMore);
     }
+  }
+
+  /**
+   * Used by column sorting
+   */
+  public void updateDisplay() {
+
+    updateDisplay(this.currentTable);
   }
 
   /**
@@ -181,8 +190,9 @@ public class OdkTablesViewTable extends FlexTable {
   public void nextPage() {
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
         .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES) && hasMore) {
-      SecureGWT.getServerDataService().getSortedTableContents(currentTable.getTableId(), sortColumn,
-          resumeCursor, AggregateUI.getUI().getUserInfo().getOfficeId(), getDataCallback);
+      SecureGWT.getServerDataService().getSortedTableContents(currentTable.getTableId(),
+          resumeCursor, sortColumn, ascending, AggregateUI.getUI().getUserInfo().getOfficeId(),
+          getDataCallback);
     }
   }
 
@@ -190,58 +200,10 @@ public class OdkTablesViewTable extends FlexTable {
     // TODO: paginate this
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
         .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
-      SecureGWT.getServerDataService().getSortedTableContents(table.getTableId(), sortColumn,
-          refreshCursor, AggregateUI.getUI().getUserInfo().getOfficeId(), getDataCallback);
+      SecureGWT.getServerDataService().getSortedTableContents(table.getTableId(), refreshCursor,
+          sortColumn, ascending, AggregateUI.getUI().getUserInfo().getOfficeId(), getDataCallback);
     }
   }
-
-  /*
-   * public void updateRows(TableEntryClient table) { // set up the callback
-   * object AsyncCallback<List<RowClient>> getRowsCallback = new
-   * AsyncCallback<List<RowClient>>() {
-   *
-   * @Override public void onFailure(Throwable caught) {
-   * AggregateUI.getUI().reportError(caught); }
-   *
-   * @Override public void onSuccess(List<RowClient> rowList) { rows = rowList;
-   * setRows(rows);
-   *
-   * AggregateUI.getUI().getTimer().refreshNow();
-   *
-   * } };
-   *
-   * // otherwise, we need to get the data.
-   * SecureGWT.getServerDataService().getRows(table.getTableId(),
-   * getRowsCallback); }
-   *
-   * /** updates the column names.
-   *
-   * @param table
-   *
-   * public void updateColumns(TableEntryClient table) {
-   *
-   * AsyncCallback<List<String>> columnNamesCallback = new
-   * AsyncCallback<List<String>>() {
-   *
-   * @Override public void onFailure(Throwable caught) {
-   * AggregateUI.getUI().reportError(caught); }
-   *
-   * @Override public void onSuccess(List<String> columns) { columnNames =
-   * columns; setColumnHeadings(columns);
-   *
-   * AggregateUI.getUI().getTimer().refreshNow();
-   *
-   * }
-   *
-   *
-   * };
-   *
-   *
-   * SecureGWT.getServerDataService().getColumnNames(table.getTableId(),
-   * columnNamesCallback);
-   *
-   * }
-   */
 
   /**
    * This is the method that actually updates the column headings. It is its own
@@ -264,57 +226,51 @@ public class OdkTablesViewTable extends FlexTable {
       for (String name : this.columnNames) {
         // We might have to do checking eventually to ensure metadata columns
         // are only displayed when necessary.
-        setWidget(0, i, getClickableColumnHeading(name));
+        setWidget(0, i, getClickableColumnHeading(name, name));
         i++;
       }
-      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.SAVEPOINT_TYPE));
-      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.FORM_ID));
-      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.LOCALE));
-      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.SAVEPOINT_TIMESTAMP));
-      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.SAVEPOINT_CREATOR));
-      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.ROW_ID));
-      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.ROW_ETAG));
-      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.FILTER_TYPE));
-      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.FILTER_VALUE));
-      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.LAST_UPDATE_USER));
-      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.CREATED_BY_USER));
-      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.DATA_ETAG_AT_MODIFICATION));
-
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.SAVEPOINT_TYPE,
+          TableConstants.SAVEPOINT_TYPE));
+      setWidget(0, i++,
+          getClickableColumnHeading(ODKDefaultColumnNames.FORM_ID, TableConstants.FORM_ID));
+      setWidget(0, i++,
+          getClickableColumnHeading(ODKDefaultColumnNames.LOCALE, TableConstants.LOCALE));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.SAVEPOINT_TIMESTAMP,
+          TableConstants.SAVEPOINT_TIMESTAMP));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.SAVEPOINT_CREATOR,
+          TableConstants.SAVEPOINT_CREATOR));
+      setWidget(0, i++,
+          getClickableColumnHeading(ODKDefaultColumnNames.ROW_ID, TableConstants.URI));
+      setWidget(0, i++,
+          getClickableColumnHeading(ODKDefaultColumnNames.ROW_ETAG, TableConstants.ROW_ETAG));
+      setWidget(0, i++,
+          getClickableColumnHeading(ODKDefaultColumnNames.FILTER_TYPE, TableConstants.FILTER_TYPE));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.FILTER_VALUE,
+          TableConstants.FILTER_VALUE));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.LAST_UPDATE_USER,
+          TableConstants.LAST_UPDATE_USER));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.CREATED_BY_USER,
+          TableConstants.CREATE_USER));
+      setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.DATA_ETAG_AT_MODIFICATION,
+          TableConstants.DATA_ETAG_AT_MODIFICATION));
+      numColumns = i + 1;
       getRowFormatter().addStyleName(0, "titleBar");
+
     }
 
   }
 
-  /** 
+  /**
    * Attach code to sort column when heading is clicked.
+   * 
    * @param columnName
    * @return
    */
-  Label getClickableColumnHeading(String columnName) {
-    Label result = new Label(columnName);
+  SortableColumnLabel getClickableColumnHeading(String columnLabel, String columnName) {
+    SortableColumnLabel result = new SortableColumnLabel(columnLabel, columnName);
     result.setStyleName("odkTablesClickableColumnHeading");
-    result.addClickHandler(new ColumnSortHandler(columnName));
+    result.addClickHandler(new ColumnSortHandler(this, result));
     return result;
-  }
-
-
-  /**
-   * Sort column when heading is clicked.
-   */
-  class ColumnSortHandler implements ClickHandler {
-    final String columnName;
-    
-    public ColumnSortHandler(String columnName) {
-      this.columnName = columnName;
-      
-    }
-    
-    @Override
-    public void onClick(ClickEvent event) {
-      sortColumn = columnName;
-      updateDisplay(currentTable);
-      //updateData(currentTable);      
-    } 
   }
 
   /*
@@ -394,4 +350,29 @@ public class OdkTablesViewTable extends FlexTable {
     return currentTable;
   }
 
+  /* Implementing HasSortColumn */
+  @Override
+  public void setSortColumn(String column) {
+    this.sortColumn = column;
+  }
+
+  @Override
+  public String getSortColumn() {
+    return this.sortColumn;
+  }
+
+  @Override
+  public int getNumberColumns() {
+    return this.numColumns;
+  }
+
+  @Override
+  public boolean isAscending() {
+    return ascending;
+  }
+
+  @Override
+  public void setAscending(boolean ascending) {
+    this.ascending = ascending;
+  }
 }

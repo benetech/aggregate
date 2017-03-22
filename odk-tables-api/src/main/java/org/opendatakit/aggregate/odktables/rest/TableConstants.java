@@ -37,6 +37,15 @@ public class TableConstants {
   /**
    * Columns in the User data table.
    */
+  
+  
+  public static final String CREATE_USER = "_create_user";
+  public static final String LAST_UPDATE_USER = "_last_update_user";
+  public static final String DATA_ETAG_AT_MODIFICATION = "_data_etag_at_modification";
+  public static final String URI = "_uri";
+
+
+
 
   /**
    * ID is the primary key, as experienced by the user. There may be

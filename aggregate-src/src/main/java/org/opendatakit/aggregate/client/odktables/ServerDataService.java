@@ -64,7 +64,7 @@ public interface ServerDataService extends RemoteService {
       RequestFailureException, DatastoreFailureException, PermissionDeniedExceptionClient,
       EntityNotFoundExceptionClient, BadColumnNameExceptionClient;
   
-  TableContentsClient getSortedTableContents(String tableId, String resumeCursor, String sortColumn,
+  TableContentsClient getSortedTableContents(String tableId, String resumeCursor, String sortColumn, boolean ascending,
       String officeId)
       throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
       PermissionDeniedExceptionClient, EntityNotFoundExceptionClient, BadColumnNameExceptionClient;
