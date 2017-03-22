@@ -92,11 +92,6 @@ public class SitePreferencesBean {
     public String getSecureServerURL() {
       throw new IllegalStateException("unexpected call");
     }
-
-    @Override
-    public String getExternalURL() {
-      throw new IllegalStateException("unexpected call");
-    }
   };
 
   SitePreferencesBean() {

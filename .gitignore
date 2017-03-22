@@ -44,6 +44,9 @@ hs_err_pid*
 # Log file
 *.log
 
+# Generated version file
+version.txt
+
 ##########
 # ODK Aggregate legacy
 Servers/

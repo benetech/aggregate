@@ -99,7 +99,6 @@ public class WatchdogImpl implements Watchdog, SmartLifecycle, InitializingBean,
     boolean asDaemon = true;
     String serverUrl;
     String secureServerUrl;
-    String externalUrl;
 
     CallingContextImpl() {
 
@@ -238,11 +237,6 @@ public class WatchdogImpl implements Watchdog, SmartLifecycle, InitializingBean,
     @Override
     public String getWebApplicationURL(String servletAddr) {
       return ctxt.getContextPath() + BasicConsts.FORWARDSLASH + servletAddr;
-    }
-
-    @Override
-    public String getExternalURL() {
-      return externalUrl;
     }
   }
 

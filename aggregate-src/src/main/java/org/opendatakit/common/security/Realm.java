@@ -37,9 +37,7 @@ public class Realm implements InitializingBean {
   private String hostname;
   private String realmString;
   private boolean isGaeEnvironment = false;
-  private String changePasswordUrl;
-  private String externalUrl;
-
+  private String changePasswordURL;
 
   public Realm() {
   }
@@ -60,9 +58,7 @@ public class Realm implements InitializingBean {
     log.info("RealmString: " + realmString);
     log.info("isGaeEnvironment: " + (isGaeEnvironment ? "yes" : "no"));
     log.info("java.library.path: " + System.getProperty("java.library.path"));
-    log.info("Change password URL: " + changePasswordUrl);
-    log.info("External URL: " + externalUrl);
-
+    log.info("Change password URL: " + changePasswordURL);
   }
 
   public void setSecureChannelType(String type) {
@@ -126,18 +122,11 @@ public class Realm implements InitializingBean {
   }
 
   public String getChangePasswordURL() {
-    return changePasswordUrl;
+    return changePasswordURL;
   }
 
   public void setChangePasswordURL(String changePasswordURL) {
-    this.changePasswordUrl = changePasswordURL;
+    this.changePasswordURL = changePasswordURL;
   }
 
-  public String getExternalURL() {
-    return externalUrl;
-  }
-
-  public void setExternalURL(String externalUrl) {
-    this.externalUrl = externalUrl;
-  }
 }

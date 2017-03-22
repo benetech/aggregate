@@ -17,7 +17,6 @@ package org.opendatakit.aggregate.odktables.impl.api;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +49,6 @@ import org.opendatakit.aggregate.odktables.api.InstanceFileService;
 import org.opendatakit.aggregate.odktables.api.OdkTables;
 import org.opendatakit.aggregate.odktables.api.RealizedTableService;
 import org.opendatakit.aggregate.odktables.api.TableService;
-import org.opendatakit.aggregate.odktables.entity.ManifestUtils;
 import org.opendatakit.aggregate.odktables.exception.ODKTablesException;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
 import org.opendatakit.aggregate.odktables.relation.DbTableInstanceManifestETags;
@@ -164,11 +162,8 @@ public class InstanceFileServiceImpl implements InstanceFileService {
             .path(RealizedTableService.class, "getInstanceFiles")
             .path(InstanceFileService.class, "getFile")
             .build(appId, tableId, schemaETag, rowId, entry.filename);
-        try {
-          entry.downloadUrl =  ManifestUtils.fixInternalUrl(cc.getExternalURL(), getFile);
-        } catch (URISyntaxException e) {
-          throw new ODKDatastoreException(e);
-        }
+        String locationUrl = getFile.toURL().toExternalForm();
+        entry.downloadUrl = locationUrl;
 
         manifestEntries.add(entry);
       }
