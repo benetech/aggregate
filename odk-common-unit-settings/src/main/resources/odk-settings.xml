@@ -7,45 +7,14 @@
            http://www.springframework.org/schema/task
            http://www.springframework.org/schema/task/spring-task-4.1.xsd">
 
-    <bean
-        class="org.opendatakit.common.configuration.EnvPropertyPlaceholderConfigurer">
-		<property name="locations">
-			<list>
-				<value>classpath:jdbc.properties</value>
-				<value>classpath:security.properties</value>
-				<value>classpath:logging.properties</value>
-			</list>
-		</property>
-        <property name="propertiesArray">
-            <list>
-                <props>
-                    <prop key="winkPropertiesFactory">winkEnvPropertiesFactoryBean</prop>
-                </props>
-            </list>
-        </property>
-	</bean>
-
-    <!-- <bean id="winkEnvPropertiesFactoryBean"
-        class="org.opendatakit.common.configuration.WinkEnvPropertiesFactoryBean">-->
-            <bean id="winkEnvPropertiesFactoryBean"
-        class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        
-        <property name="locations">
-            <list>
-                <value>classpath:wink.properties</value>
-            </list>
-        </property>
-    </bean>
-    
+    <import resource="classpath:odk-property-loader.xml" />
+    <import resource="classpath:odk-jdbc-settings.xml" />
 
     <bean class="org.apache.wink.spring.Registrar">
+    <!--  This is the Spring equivalent to the javax.ws.rs.core.Application.getClasses() method -->
         <property name="classes">
             <set value-type="java.lang.Class">
                 <value>org.opendatakit.aggregate.odktables.impl.api.OdkTablesImpl</value>
-<!--                 <value>org.apache.wink.common.internal.providers.entity.ByteArrayProvider</value> -->
-<!--                 <value>org.apache.wink.common.internal.providers.entity.FileProvider</value> -->
-<!--                 <value>org.apache.wink.common.internal.providers.multipart.BufferedInMultiPartProvider</value> -->
-<!--                 <value>org.apache.wink.common.internal.providers.multipart.OutMultiPartProvider</value> -->
                 <value>org.opendatakit.aggregate.odktables.entity.serialization.SimpleHTMLMessageWriter</value>
                 <value>org.opendatakit.aggregate.odktables.entity.serialization.SimpleJSONMessageReaderWriter</value>
                 <value>org.opendatakit.aggregate.odktables.entity.serialization.SimpleXMLMessageReaderWriter</value>
@@ -72,30 +41,6 @@
             </set>
         </property>
     </bean>
-
-
-	<!--Datasource configuration-->
-	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close" >
-		<property name="driverClassName" value="${jdbc.driverClassName}" />
-		<property name="url" value="${jdbc.url}" />
-        <property name="username" value="${jdbc.username}" />
-        <property name="password" value="${jdbc.password}" />
-		<property name="maxIdle" value="10"/>
-		<property name="minIdle" value="5"/>
-		<property name="maxTotal" value="100"/>
-		<property name="maxConnLifetimeMillis" value="590000"/>
-		<property name="maxWaitMillis" value="30000"/>
-		<property name="validationQuery" value="select 1"/>
-		<property name="validationQueryTimeout" value="1"/>
-		<property name="testOnBorrow" value="true"/>
-	</bean>
-
-	<bean id="datastore"
-		class="org.opendatakit.common.persistence.engine.pgres.DatastoreImpl">
-		<property name="dataSource" ref="dataSource" />
-		<!--		schemaName defaults to the database name.  Override this with: -->
-		<property name="schemaName" value="${jdbc.schema}" />
-	</bean>
 
 	<!--	Website domain information	-->
 	<bean id="realm" class="org.opendatakit.common.security.Realm">
