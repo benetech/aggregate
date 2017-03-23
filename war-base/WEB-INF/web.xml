@@ -4,7 +4,7 @@
 
   	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:odk-settings.xml,/WEB-INF/applicationContext-security.xml</param-value>
+		<param-value>classpath:META-INF/server/wink-core-context.xml,classpath:odk-settings.xml,/WEB-INF/applicationContext-security.xml</param-value>
 	</context-param>
 
 	<security-constraint>
@@ -576,14 +576,6 @@
     <servlet>
         <servlet-name>ODKTables</servlet-name>
 		<servlet-class>org.apache.wink.server.internal.servlet.RestServlet</servlet-class>
-		<init-param>
-			<param-name>javax.ws.rs.Application</param-name>
-			<param-value>org.opendatakit.aggregate.odktables.impl.api.ODKTablesAPIApplication</param-value>
-		</init-param>
-		<init-param>
-		    <param-name>propertiesLocation</param-name>
-		    <param-value>security.properties</param-value>
-		</init-param>
 		<load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>

@@ -7,6 +7,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 
+/** 
+ * Allow the server to override Spring properties with environment variables.
+ * This is useful for quick environment-specific setup in Docker containers, for example.
+ */
 public class EnvPropertyPlaceholderConfigurer extends PropertyPlaceholderConfigurer {
 
   private static final Log logger = LogFactory

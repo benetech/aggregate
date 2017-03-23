@@ -8,6 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.env.Environment;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 public class ManifestUtils {
 
@@ -31,6 +33,11 @@ public class ManifestUtils {
     return fixedUri.toURL().toExternalForm();
   }
   
+  
+  public static String fixInternalUrl(String externalUrlString, String uri) throws URISyntaxException, MalformedURLException  {
+    return fixInternalUrl(externalUrlString, new URI(uri));
+  }
+ 
   public static String fixInternalUrl(String externalUrlString, URI uri)
       throws URISyntaxException, MalformedURLException {
     URI fixedUri = uri;
@@ -38,14 +45,15 @@ public class ManifestUtils {
 
     if (StringUtils.isNotEmpty(externalUrlString)) {
       URI externalUri = new URI(externalUrlString);
-      log.error("externalUrlString " + externalUrlString);
 
       if (StringUtils.isNotBlank(externalUrlString) && !equivalentBaseURI(uri, externalUri)) {
         fixedUri = targetURI(externalUri, uri);
       }
+      log.error("updating " + uri.toString() + " with externalUrlString " + externalUrlString + " to " + fixedUri.toString());
+
     }
     else {
-      log.error("externalUrlString is null!");
+      log.error("externalUrlString is empty or null!");
     }
     return fixedUri.toURL().toExternalForm();
   }

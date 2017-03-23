@@ -62,18 +62,6 @@ public class ServerDiffServiceImpl extends RemoteServiceServlet implements Serve
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
       DataManager dm = new DataManager(appId, tableId, userPermissions, cc);
       // TODO: paginate this
-      // TODO: paginate this
-      // TODO: paginate this
-      // TODO: paginate this
-      // TODO: paginate this
-      // TODO: paginate this
-      // TODO: paginate this
-      // TODO: paginate this
-      // TODO: paginate this
-      // TODO: paginate this
-      // TODO: paginate this
-      // TODO: paginate this
-      // TODO: paginate this
       WebsafeRows websafeRows = dm.getRowsSince(dataETag, null, 2000);
       return transformRows(websafeRows.rows);
     } catch (ODKDatastoreException e) {

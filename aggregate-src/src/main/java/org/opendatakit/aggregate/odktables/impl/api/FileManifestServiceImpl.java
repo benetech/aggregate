@@ -17,7 +17,6 @@ package org.opendatakit.aggregate.odktables.impl.api;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.ws.rs.PathParam;
@@ -34,7 +33,6 @@ import org.opendatakit.aggregate.odktables.FileManifestManager;
 import org.opendatakit.aggregate.odktables.api.FileManifestService;
 import org.opendatakit.aggregate.odktables.api.FileService;
 import org.opendatakit.aggregate.odktables.api.OdkTables;
-import org.opendatakit.aggregate.odktables.entity.ManifestUtils;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
 import org.opendatakit.aggregate.odktables.relation.DbManifestETags;
 import org.opendatakit.aggregate.odktables.relation.DbManifestETags.DbManifestETagEntity;
@@ -53,7 +51,7 @@ import org.opendatakit.common.web.CallingContext;
  *
  * @author sudar.sam@gmail.com
  */
-public class FileManifestServiceImpl implements FileManifestService  {
+public class FileManifestServiceImpl implements FileManifestService {
 
   private final CallingContext cc;
   private final String appId;
@@ -141,13 +139,10 @@ public class FileManifestServiceImpl implements FileManifestService  {
         URI self = ub.clone().path(FileService.class, "getFile").build(appId, odkClientVersion,
             entry.filename);
         try {
-          entry.downloadUrl = ManifestUtils.fixInternalUrl(cc.getExternalURL(), self);
+          entry.downloadUrl = self.toURL().toExternalForm();
         } catch (MalformedURLException e) {
           e.printStackTrace();
           throw new IllegalArgumentException("Unable to convert to URL");
-        } catch (URISyntaxException e) {
-          e.printStackTrace();
-          throw new IllegalArgumentException("Unable to convert to URL (URISyntaxException)");
         }
       }
 
@@ -217,13 +212,10 @@ public class FileManifestServiceImpl implements FileManifestService  {
         URI self = ub.clone().path(FileService.class, "getFile").build(appId, odkClientVersion,
             entry.filename);
         try {
-          entry.downloadUrl =  ManifestUtils.fixInternalUrl(cc.getExternalURL(), self);
+          entry.downloadUrl = self.toURL().toExternalForm();
         } catch (MalformedURLException e) {
           e.printStackTrace();
-          throw new IllegalArgumentException("Unable to convert to URL (MalformedURLException)");
-        } catch (URISyntaxException e) {
-          e.printStackTrace();
-          throw new IllegalArgumentException("Unable to convert to URL (URISyntaxException)");
+          throw new IllegalArgumentException("Unable to convert to URL");
         }
       }
 
@@ -233,5 +225,5 @@ public class FileManifestServiceImpl implements FileManifestService  {
           .header("Access-Control-Allow-Credentials", "true").build();
     }
   }
-  
+
 }
