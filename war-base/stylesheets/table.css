@@ -69,13 +69,13 @@
 }
 
 .sortColumnAscending::before {
-	content: "&#9650;" /* ▲ */
+	content: "\25B2 " /* ▲ */
 }
 
 .sortColumnDescending::before {
-	content: "&#9660;" /* ▼ */
+	content: "\25BC " /* ▼ */
 }
 
 .sortColumn {
-	color: yellow;
+	color: #f5bb30; /* gold, same as selected tabs */
 }

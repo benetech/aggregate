@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Label;
  * @author sudar.sam@gmail.com
  *
  */
-public class OdkTablesViewTable extends FlexTable implements HasSortColumn {
+public class OdkTablesViewTable extends SortableFlexTable {
 
   // the table that we are currently displaying.
   private TableEntryClient currentTable;
@@ -55,12 +55,10 @@ public class OdkTablesViewTable extends FlexTable implements HasSortColumn {
 
   // that table's column names
   private ArrayList<String> columnNames;
-  // Seriously, we can't derive this from the Flextable? Awesome.
-  private int numColumns;
+  
+  // When we are changing out the table contents for an entirely new table (new columns), switch this to true
+  private boolean newTableFlag = true;
 
-  // Column currently being sorted on
-  private String sortColumn;
-  private boolean ascending = false;
 
   private String refreshCursor;
   private String resumeCursor;
@@ -133,12 +131,15 @@ public class OdkTablesViewTable extends FlexTable implements HasSortColumn {
 
     if (oldTable == null || currentTable == null
         || !oldTable.getTableId().equals(currentTable.getTableId())) {
+      this.newTableFlag = true;
       this.refreshCursor = null;
       this.resumeCursor = null;
       this.hasMore = false;
       if (tableAdvanceButton != null) {
         this.tableAdvanceButton.setEnabled(hasMore);
       }
+    } else {
+      this.newTableFlag = false;
     }
 
     if (table == null) {
@@ -172,6 +173,7 @@ public class OdkTablesViewTable extends FlexTable implements HasSortColumn {
 
     @Override
     public void onSuccess(TableContentsClient tcc) {
+      
       columnNames = tcc.columnNames;
       refreshCursor = tcc.websafeRefetchCursor;
       resumeCursor = tcc.websafeResumeCursor;
@@ -179,8 +181,9 @@ public class OdkTablesViewTable extends FlexTable implements HasSortColumn {
       if (tableAdvanceButton != null) {
         tableAdvanceButton.setEnabled(hasMore);
       }
-      setColumnHeadings(columnNames);
-
+      if (newTableFlag) {
+        setColumnHeadings(columnNames);
+      }
       rows = tcc.rows;
       setRows(rows);
 
@@ -191,7 +194,7 @@ public class OdkTablesViewTable extends FlexTable implements HasSortColumn {
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
         .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES) && hasMore) {
       SecureGWT.getServerDataService().getSortedTableContents(currentTable.getTableId(),
-          resumeCursor, sortColumn, ascending, AggregateUI.getUI().getUserInfo().getOfficeId(),
+          resumeCursor, getSortColumn(), isAscending(), AggregateUI.getUI().getUserInfo().getOfficeId(),
           getDataCallback);
     }
   }
@@ -201,7 +204,7 @@ public class OdkTablesViewTable extends FlexTable implements HasSortColumn {
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
         .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
       SecureGWT.getServerDataService().getSortedTableContents(table.getTableId(), refreshCursor,
-          sortColumn, ascending, AggregateUI.getUI().getUserInfo().getOfficeId(), getDataCallback);
+          getSortColumn(), isAscending(), AggregateUI.getUI().getUserInfo().getOfficeId(), getDataCallback);
     }
   }
 
@@ -253,7 +256,7 @@ public class OdkTablesViewTable extends FlexTable implements HasSortColumn {
           TableConstants.CREATE_USER));
       setWidget(0, i++, getClickableColumnHeading(ODKDefaultColumnNames.DATA_ETAG_AT_MODIFICATION,
           TableConstants.DATA_ETAG_AT_MODIFICATION));
-      numColumns = i + 1;
+      setNumberColumns(i);
       getRowFormatter().addStyleName(0, "titleBar");
 
     }
@@ -350,29 +353,5 @@ public class OdkTablesViewTable extends FlexTable implements HasSortColumn {
     return currentTable;
   }
 
-  /* Implementing HasSortColumn */
-  @Override
-  public void setSortColumn(String column) {
-    this.sortColumn = column;
-  }
 
-  @Override
-  public String getSortColumn() {
-    return this.sortColumn;
-  }
-
-  @Override
-  public int getNumberColumns() {
-    return this.numColumns;
-  }
-
-  @Override
-  public boolean isAscending() {
-    return ascending;
-  }
-
-  @Override
-  public void setAscending(boolean ascending) {
-    this.ascending = ascending;
-  }
 }

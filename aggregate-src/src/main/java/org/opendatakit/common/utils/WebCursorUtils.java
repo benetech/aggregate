@@ -42,27 +42,28 @@ public class WebCursorUtils {
   public static final String formatCursorParameter(QueryResumePoint cursor) {
     if (cursor == null)
       return null;
-    Document d = new Document();
-    d.setStandalone(true);
-    d.setEncoding(HtmlConsts.UTF8_ENCODE);
-    Element e = d.createElement(WebCursorUtils.XML_TAG_NAMESPACE, WebUtils.CURSOR_TAG);
-    e.setPrefix(null, WebCursorUtils.XML_TAG_NAMESPACE);
-    d.addChild(0, Node.ELEMENT, e);
+    Document doc = new Document();
+    doc.setStandalone(true);
+    doc.setEncoding(HtmlConsts.UTF8_ENCODE);
+    Element element = doc.createElement(WebCursorUtils.XML_TAG_NAMESPACE, WebUtils.CURSOR_TAG);
+    element.setPrefix(null, WebCursorUtils.XML_TAG_NAMESPACE);
+    doc.addChild(0, Node.ELEMENT, element);
     int idx = 0;
-    Element c = d.createElement(WebCursorUtils.XML_TAG_NAMESPACE, WebUtils.ATTRIBUTE_NAME_TAG);
-    c.addChild(0, Node.TEXT, cursor.getAttributeName());
-    e.addChild(idx++, Node.ELEMENT, c);
-    c = d.createElement(WebCursorUtils.XML_TAG_NAMESPACE, WebUtils.ATTRIBUTE_VALUE_TAG);
-    c.addChild(0, Node.TEXT, cursor.getValue());
-    e.addChild(idx++, Node.ELEMENT, c);
-    c = d.createElement(WebCursorUtils.XML_TAG_NAMESPACE, WebUtils.URI_LAST_RETURNED_VALUE_TAG);
+    Element childElement = doc.createElement(WebCursorUtils.XML_TAG_NAMESPACE, WebUtils.ATTRIBUTE_NAME_TAG);
+    childElement.addChild(0, Node.TEXT, cursor.getAttributeName());
+    element.addChild(idx++, Node.ELEMENT, childElement);
+    childElement = doc.createElement(WebCursorUtils.XML_TAG_NAMESPACE, WebUtils.ATTRIBUTE_VALUE_TAG);
+    String childValue = cursor.getValue() == null ? "" : cursor.getValue();
+    childElement.addChild(0, Node.TEXT, childValue);
+    element.addChild(idx++, Node.ELEMENT, childElement);
+    childElement = doc.createElement(WebCursorUtils.XML_TAG_NAMESPACE, WebUtils.URI_LAST_RETURNED_VALUE_TAG);
     if (cursor.getUriLastReturnedValue() != null) {
-      c.addChild(0, Node.TEXT, cursor.getUriLastReturnedValue());
+      childElement.addChild(0, Node.TEXT, cursor.getUriLastReturnedValue());
     }
-    e.addChild(idx++, Node.ELEMENT, c);
-    c = d.createElement(WebCursorUtils.XML_TAG_NAMESPACE, WebUtils.IS_FORWARD_CURSOR_VALUE_TAG);
-    c.addChild(0, Node.TEXT, Boolean.toString(cursor.isForwardCursor()));
-    e.addChild(idx++, Node.ELEMENT, c);
+    element.addChild(idx++, Node.ELEMENT, childElement);
+    childElement = doc.createElement(WebCursorUtils.XML_TAG_NAMESPACE, WebUtils.IS_FORWARD_CURSOR_VALUE_TAG);
+    childElement.addChild(0, Node.TEXT, Boolean.toString(cursor.isForwardCursor()));
+    element.addChild(idx++, Node.ELEMENT, childElement);
   
     ByteArrayOutputStream ba = new ByteArrayOutputStream();
   
@@ -71,7 +72,7 @@ public class WebCursorUtils {
       serializer.setOutput(ba, HtmlConsts.UTF8_ENCODE);
       // setting the response content type emits the xml header.
       // just write the body here...
-      d.writeChildren(serializer);
+      doc.writeChildren(serializer);
       serializer.flush();
     } catch (IOException e1) {
       e1.printStackTrace();

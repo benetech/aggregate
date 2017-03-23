@@ -27,6 +27,13 @@ public interface HasSortColumn {
    * @return number of columns
    */
   int getNumberColumns();
+  
+  /**
+   * Set the number of columns.
+   * 
+   * @param numColumns number of columns
+   */
+  void setNumberColumns(int numColumns);
 
   /**
    * Returns whether sort is ascending.

@@ -8,11 +8,11 @@ import com.google.gwt.user.client.ui.FlexTable;
  * Sort column when heading is clicked.
  */
 public class ColumnSortHandler implements ClickHandler {
-  final HasSortColumn table;
+  final SortableFlexTable table;
   final SortableColumnLabel sortableColumnLabel;
 
   
-  public ColumnSortHandler(HasSortColumn table, SortableColumnLabel sortableColumnLabel) {
+  public ColumnSortHandler(SortableFlexTable table, SortableColumnLabel sortableColumnLabel) {
     this.table = table; 
     this.sortableColumnLabel = sortableColumnLabel;
   }
@@ -20,26 +20,29 @@ public class ColumnSortHandler implements ClickHandler {
   @Override
   public void onClick(ClickEvent event) {
     int numColumns =  table.getNumberColumns();
-    // Not typesafe, technically this doesn't have to be a FlexTable.  But we know it is.
-    FlexTable flexTable =  (FlexTable)table;
 
     for (int i = 0; i < numColumns; i++) {
-      SortableColumnLabel columnLabel = (SortableColumnLabel) flexTable.getWidget(0, i);
-      columnLabel.removeStyleName("sortColumn");
-      columnLabel.removeStyleName("sortColumnAscending");
-      columnLabel.removeStyleName("sortColumnDescending");
-      columnLabel.setActiveColumn(false);
+      SortableColumnLabel columnLabel = (SortableColumnLabel) table.getWidget(0, i);
+      if (columnLabel != null) {
+        columnLabel.removeStyleName("sortColumn");
+        columnLabel.removeStyleName("sortColumnAscending");
+        columnLabel.removeStyleName("sortColumnDescending");
+        columnLabel.setActiveColumn(false);
+      }
     }
     sortableColumnLabel.setActiveColumn(true);
-    sortableColumnLabel.setAscending(!sortableColumnLabel.isAscending());
+    sortableColumnLabel.addStyleName("sortColumn");
+
+    if (table.getSortColumn().equals(sortableColumnLabel.getDbColumnName())) {
+      sortableColumnLabel.setAscending(!table.isAscending());
+    }
     if (sortableColumnLabel.isAscending()) {
       sortableColumnLabel.addStyleName("sortColumnAscending");
 
     } else {
       sortableColumnLabel.addStyleName("sortColumnDescending");
-
     }
-    table.setAscending(sortableColumnLabel.isActiveColumn());
+    table.setAscending(sortableColumnLabel.isAscending());
     table.setSortColumn(sortableColumnLabel.getDbColumnName());
     table.updateDisplay();
   } 

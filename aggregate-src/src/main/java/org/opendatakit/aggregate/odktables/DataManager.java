@@ -272,7 +272,7 @@ public class DataManager {
 
       // Add column sorting
       DataField columnSort = table.getDataField(CommonFieldsBase.CREATION_DATE_COLUMN_NAME);
-      Direction directionSort = (startCursor != null && startCursor.isForwardCursor()) ? Direction.ASCENDING
+      Direction directionSort = (startCursor == null || startCursor.isForwardCursor()) ? Direction.ASCENDING
           : Direction.DESCENDING;
       if (StringUtils.isNotEmpty(sortColumn)) {
         try {
