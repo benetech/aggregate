@@ -49,6 +49,8 @@ version.txt
 
 ##########
 # ODK Aggregate legacy
+war-base/aggregateui/
+gwt-unitCache/
 Servers/
 aggregate-mysql/src/
 aggregate-postgres/src/main/java
