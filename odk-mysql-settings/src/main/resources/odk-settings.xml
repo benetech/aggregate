@@ -17,6 +17,40 @@
             </list>
         </property>
     </bean>
+    
+        <bean class="org.apache.wink.spring.Registrar">
+        <property name="classes">
+            <set value-type="java.lang.Class">
+                <value>org.opendatakit.aggregate.odktables.impl.api.OdkTablesImpl</value>
+                <value>org.apache.wink.common.internal.providers.entity.ByteArrayProvider</value>
+                <value>org.apache.wink.common.internal.providers.entity.FileProvider</value>
+                <value>org.apache.wink.common.internal.providers.multipart.BufferedInMultiPartProvider</value>
+                <value>org.apache.wink.common.internal.providers.multipart.OutMultiPartProvider</value>
+                <value>org.opendatakit.aggregate.odktables.entity.serialization.SimpleHTMLMessageWriter</value>
+                <value>org.opendatakit.aggregate.odktables.entity.serialization.SimpleJSONMessageReaderWriter</value>
+                <value>org.opendatakit.aggregate.odktables.entity.serialization.SimpleXMLMessageReaderWriter</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.ODKDatastoreExceptionJsonMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.ODKDatastoreExceptionTextXmlMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.ODKDatastoreExceptionApplicationXmlMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.ODKTablesExceptionJsonMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.ODKTablesExceptionTextXmlMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.ODKTablesExceptionApplicationXmlMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.ODKTaskLockExceptionJsonMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.ODKTaskLockExceptionTextXmlMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.ODKTaskLockExceptionApplicationXmlMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.IOExceptionJsonMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.IOExceptionTextXmlMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.IOExceptionApplicationXmlMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.RuntimeExceptionJsonMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.RuntimeExceptionTextXmlMapper</value>
+                <value>org.opendatakit.aggregate.odktables.impl.api.RuntimeExceptionApplicationXmlMapper</value>
+            </set>
+        </property>
+        <property name="instances">
+            <set>
+            </set>
+        </property>
+    </bean>
 
     <!--Datasource configuration -->
     <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource"
