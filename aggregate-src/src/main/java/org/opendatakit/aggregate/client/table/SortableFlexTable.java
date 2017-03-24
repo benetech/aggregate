@@ -9,6 +9,7 @@ public abstract class SortableFlexTable extends FlexTable implements HasSortColu
   // Column currently being sorted on
   private String sortColumn;
   private boolean ascending = true;
+  private boolean updateColumns = true;
 
   /* Implementing HasSortColumn */
   @Override
@@ -41,5 +42,17 @@ public abstract class SortableFlexTable extends FlexTable implements HasSortColu
   public void setAscending(boolean ascending) {
     this.ascending = ascending;
   }
+  
+  @Override
+  public boolean isUpdateColumns() {
+    return updateColumns;
+  }
+
+  @Override
+  public void setUpdateColumns(boolean flag) {
+    this.updateColumns = flag;    
+  }
+  
+  
 
 }

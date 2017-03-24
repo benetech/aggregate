@@ -16,6 +16,13 @@
 
 package org.opendatakit.aggregate.client.table;
 
+import static org.opendatakit.aggregate.client.table.InstanceFileInfoColumnType.CONTENT_LENGTH;
+import static org.opendatakit.aggregate.client.table.InstanceFileInfoColumnType.CONTENT_TYPE;
+import static org.opendatakit.aggregate.client.table.InstanceFileInfoColumnType.DELETE;
+import static org.opendatakit.aggregate.client.table.InstanceFileInfoColumnType.DOWNLOAD;
+import static org.opendatakit.aggregate.client.table.InstanceFileInfoColumnType.FILENAME;
+import static org.opendatakit.aggregate.client.table.InstanceFileInfoColumnType.INSTANCE_ID;
+
 import java.util.ArrayList;
 
 import org.opendatakit.aggregate.client.AggregateSubTabBase;
@@ -32,7 +39,6 @@ import org.opendatakit.common.security.common.GrantedAuthorityName;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -42,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author sudar.sam@gmail.com
  *
  */
-public class OdkTablesViewInstanceFileInfo extends FlexTable {
+public class OdkTablesViewInstanceFileInfo extends SortableFlexTable {
 
   // the table whose info we are currently displaying.
   private TableEntryClient currentTable;
@@ -50,20 +56,8 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
   // that table's info rows
   private ArrayList<FileSummaryClient> fileSummaries;
 
-  private static final int DELETE_COLUMN = 0;
-  private static final String DELETE_HEADING = "Delete";
-  private static final int INSTANCE_ID_COLUMN = 1;
-  private static final String INSTANCE_ID_HEADING = "Row ID";
-  private static final int FILENAME_COLUMN = 2;
-  private static final String FILENAME_HEADING = "Filename";
-  private static final int CONTENT_LENGTH_COLUMN = 3;
-  private static final String CONTENT_LENGTH_HEADING = "Size";
-  private static final int CONTENT_TYPE_COLUMN = 4;
-  private static final String CONTENT_TYPE_HEADING = "Content Type";
-  private static final int DOWNLOAD_COLUMN = 5;
-  private static final String DOWNLOAD_HEADING = "Download";
 
-  private static final int numColumns = 6;
+  private static final int NUMBER_COLUMNS = 6;
 
   // this is just the tab that opened the table
   private AggregateSubTabBase basePanel;
@@ -77,6 +71,7 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
    */
   public OdkTablesViewInstanceFileInfo(AggregateSubTabBase tableSubTab) {
 
+    setNumberColumns(NUMBER_COLUMNS);
     setColumnHeadings();
 
     // add styling
@@ -97,6 +92,12 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
     this.currentTable = table;
   }
 
+  @Override
+  public void updateDisplay() {
+    updateDisplay(this.currentTable);
+  }
+
+  
   /**
    * This updates the display to show the contents of the table.
    */
@@ -104,6 +105,11 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
     @SuppressWarnings("unused")
     TableEntryClient oldTable = this.currentTable;
 
+    if (oldTable == null || table == null || !oldTable.getTableId().equals(table.getTableId())) {
+      setUpdateColumns(true);
+    } else {
+      setUpdateColumns(false);
+    }
     this.currentTable = table;
 
     if (table == null) {
@@ -126,7 +132,7 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
           // we've deleted the table.
           // TODO ensure the correct exception makes it here
           ((OdkTablesManageTableFilesSubTab) AggregateUI.getUI().getSubTab(SubTabs.MANAGE_TABLE_ID_FILES))
-              .setTabToDislpayZero();
+              .setTabToDisplayZero();
         } else {
           AggregateUI.getUI().reportError(caught);
         }
@@ -134,9 +140,11 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
 
       @Override
       public void onSuccess(TableContentsForFilesClient tcc) {
-        removeAllRows();
-        setColumnHeadings();
-        // setColumnHeadings(columnNames);
+        
+        if (isUpdateColumns()) {
+          removeAllRows();
+          setColumnHeadings();
+        }
 
         fileSummaries = tcc.files;
         setRows();
@@ -147,19 +155,36 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
 
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
         .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
-      SecureGWT.getServerDataService().getInstanceFileInfoContents(table.getTableId(), getDataCallback);
+      SecureGWT.getServerDataService().getInstanceFileInfoContents(table.getTableId(), getSortColumn(), isAscending(), getDataCallback);
     }
   }
 
   private void setColumnHeadings() {
     // create the table headers.
-    setText(0, DELETE_COLUMN, DELETE_HEADING);
-    setText(0, INSTANCE_ID_COLUMN, INSTANCE_ID_HEADING);
-    setText(0, FILENAME_COLUMN, FILENAME_HEADING);
-    setText(0, CONTENT_LENGTH_COLUMN, CONTENT_LENGTH_HEADING);
-    setText(0, CONTENT_TYPE_COLUMN, CONTENT_TYPE_HEADING);
-    setText(0, DOWNLOAD_COLUMN, DOWNLOAD_HEADING);
+    setText(0,DELETE.getDisplayColumn(),  DELETE.getDisplayText());
+    setWidget(0, INSTANCE_ID.getDisplayColumn(), getClickableColumnHeading(INSTANCE_ID.getDisplayText(),
+        INSTANCE_ID.getDbColumn()));
+    setWidget(0, FILENAME.getDisplayColumn(), getClickableColumnHeading(FILENAME.getDisplayText(),
+        FILENAME.getDbColumn()));
+    setWidget(0, CONTENT_LENGTH.getDisplayColumn(), getClickableColumnHeading(CONTENT_LENGTH.getDisplayText(),
+        CONTENT_LENGTH.getDbColumn()));
+    setWidget(0, CONTENT_TYPE.getDisplayColumn(), getClickableColumnHeading(CONTENT_TYPE.getDisplayText(),
+        CONTENT_TYPE.getDbColumn()));
+    setText(0, DOWNLOAD.getDisplayColumn(), DOWNLOAD.getDisplayText());
     getRowFormatter().addStyleName(0, "titleBar");
+  }
+  
+  /**
+   * Attach code to sort column when heading is clicked.
+   * 
+   * @param columnName
+   * @return
+   */
+  SortableColumnLabel getClickableColumnHeading(String columnLabel, String columnName) {
+    SortableColumnLabel result = new SortableColumnLabel(columnLabel, columnName);
+    result.setStyleName("odkTablesClickableColumnHeading");
+    result.addClickHandler(new ColumnSortHandler(this, result));
+    return result;
   }
 
   /*
@@ -178,7 +203,7 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
       // make the display fill all the columns you have. this is the total
       // number of
       // user-defined columns +1 for the delete column.
-      this.getFlexCellFormatter().setColSpan(1, 0, numColumns);
+      this.getFlexCellFormatter().setColSpan(1, 0, getNumberColumns());
     } else { // there are rows--display them.
 
       for (int j = 0; j < fileSummaries.size(); j++) {
@@ -191,13 +216,13 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
         if ( !AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
           deleteButton.setEnabled(false);
         }
-        setWidget(currentRow, DELETE_COLUMN, deleteButton);
-        setText(currentRow, INSTANCE_ID_COLUMN, instanceId);
-        setText(currentRow, FILENAME_COLUMN, filename);
-        getFlexCellFormatter().setStyleName(currentRow, FILENAME_COLUMN, "dataLeft");
-        setText(currentRow, CONTENT_LENGTH_COLUMN, sum.getContentLength().toString());
-        getFlexCellFormatter().setStyleName(currentRow, CONTENT_LENGTH_COLUMN, "dataRight");
-        setText(currentRow, CONTENT_TYPE_COLUMN, sum.getContentType());
+        setWidget(currentRow, DELETE.getDisplayColumn(), deleteButton);
+        setText(currentRow, INSTANCE_ID.getDisplayColumn(), instanceId);
+        setText(currentRow, FILENAME.getDisplayColumn(), filename);
+        getFlexCellFormatter().setStyleName(currentRow, FILENAME.getDisplayColumn(), "dataLeft");
+        setText(currentRow, CONTENT_LENGTH.getDisplayColumn(), sum.getContentLength().toString());
+        getFlexCellFormatter().setStyleName(currentRow, CONTENT_LENGTH.getDisplayColumn(), "dataRight");
+        setText(currentRow, CONTENT_TYPE.getDisplayColumn(), sum.getContentType());
         Widget downloadCol;
         if (sum.getDownloadUrl() != null) {
           Anchor downloadLink = new Anchor();
@@ -207,7 +232,7 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
         } else {
           downloadCol = new HTML("");
         }
-        setWidget(currentRow, DOWNLOAD_COLUMN, downloadCol);
+        setWidget(currentRow, DOWNLOAD.getDisplayColumn(), downloadCol);
         if (currentRow % 2 == 0) {
           getRowFormatter().addStyleName(currentRow, "evenTableRow");
         }

@@ -16,7 +16,20 @@
 
 package org.opendatakit.aggregate.server;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import static org.opendatakit.aggregate.server.FileInfoSortType.FILENAME;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.UriBuilder;
+
+import org.apache.commons.lang3.StringUtils;
 import org.opendatakit.aggregate.ContextFactory;
 import org.opendatakit.aggregate.client.exception.BadColumnNameExceptionClient;
 import org.opendatakit.aggregate.client.exception.ETagMismatchExceptionClient;
@@ -64,15 +77,8 @@ import org.opendatakit.common.security.client.exception.AccessDeniedException;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.constants.BasicConsts;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.UriBuilder;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+
 
 /**
  * For ODKTables.
@@ -83,12 +89,12 @@ import java.util.List;
 public class ServerDataServiceImpl extends RemoteServiceServlet implements ServerDataService {
 
   /**
-	 *
-	 */
+   *
+   */
   private static final long serialVersionUID = -5051558217315955180L;
 
-  private WebsafeRows getRows(String tableId, QueryResumePoint resumePoint, String sortColumn, boolean ascending,
-      String officeId)
+  private WebsafeRows getRows(String tableId, QueryResumePoint resumePoint, String sortColumn,
+      boolean ascending, String officeId)
       throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
       PermissionDeniedExceptionClient, EntityNotFoundExceptionClient, BadColumnNameExceptionClient {
     HttpServletRequest req = this.getThreadLocalRequest();
@@ -120,9 +126,9 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
   }
 
   @Override
-  public TableContentsClient getRow(String tableId, String rowId) throws AccessDeniedException,
-      RequestFailureException, DatastoreFailureException, PermissionDeniedExceptionClient,
-      EntityNotFoundExceptionClient, BadColumnNameExceptionClient {
+  public TableContentsClient getRow(String tableId, String rowId)
+      throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
+      PermissionDeniedExceptionClient, EntityNotFoundExceptionClient, BadColumnNameExceptionClient {
     try {
       HttpServletRequest req = this.getThreadLocalRequest();
       CallingContext cc = ContextFactory.getCallingContext(this, req);
@@ -166,8 +172,7 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
   @Override
   public RowClient createOrUpdateRow(String tableId, String rowId, RowClient row)
       throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
-      ETagMismatchExceptionClient, PermissionDeniedExceptionClient,
-      EntityNotFoundExceptionClient {
+      ETagMismatchExceptionClient, PermissionDeniedExceptionClient, EntityNotFoundExceptionClient {
     HttpServletRequest req = this.getThreadLocalRequest();
     CallingContext cc = ContextFactory.getCallingContext(this, req);
     TablesUserPermissions userPermissions;
@@ -192,9 +197,9 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
   }
 
   @Override
-  public void deleteRow(String tableId, String rowId, String rowETag) throws AccessDeniedException,
-      RequestFailureException, DatastoreFailureException, PermissionDeniedExceptionClient,
-      EntityNotFoundExceptionClient, BadColumnNameExceptionClient {
+  public void deleteRow(String tableId, String rowId, String rowETag)
+      throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
+      PermissionDeniedExceptionClient, EntityNotFoundExceptionClient, BadColumnNameExceptionClient {
     HttpServletRequest req = this.getThreadLocalRequest();
     CallingContext cc = ContextFactory.getCallingContext(this, req);
     try { // Must use try so that you can catch the ODK specific errors.
@@ -228,8 +233,8 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
   }
 
   /**
-   * Gets the element_keys of the columns.
-   * The element_names are insufficient for displaying the row contents.
+   * Gets the element_keys of the columns. The element_names are insufficient
+   * for displaying the row contents.
    *
    * @return List<String> of the column names
    * @throws PermissionDeniedExceptionClient
@@ -246,7 +251,7 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
       TableManager tm = new TableManager(appId, userPermissions, cc);
       TableEntry entry = tm.getTable(tableId);
-      if ( entry == null || entry.getSchemaETag() == null ) {
+      if (entry == null || entry.getSchemaETag() == null) {
         throw new ODKEntityNotFoundException();
       }
       ArrayList<String> elementKeys = DbColumnDefinitions.queryForDbColumnNames(tableId,
@@ -359,7 +364,7 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
    * adds the correct filename and returns only the non-deleted rows.
    */
   @Override
-  public TableContentsForFilesClient getAppLevelFileInfoContents()
+  public TableContentsForFilesClient getAppLevelFileInfoContents(String sortColumn, boolean ascending)
       throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
       PermissionDeniedExceptionClient, EntityNotFoundExceptionClient {
     TableContentsForFilesClient tcc = new TableContentsForFilesClient();
@@ -369,12 +374,14 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
       TablesUserPermissions userPermissions = new TablesUserPermissionsImpl(cc);
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
       TableManager tm = new TableManager(appId, userPermissions, cc);
-      List<DbTableFileInfo.DbTableFileInfoEntity> entities = DbTableFileInfo.queryForAllOdkClientVersionsOfAppLevelFiles(cc);
+      List<DbTableFileInfo.DbTableFileInfoEntity> entities = DbTableFileInfo
+          .queryForAllOdkClientVersionsOfAppLevelFiles(cc);
       DbTableFiles dbTableFiles = new DbTableFiles(cc);
 
       UriBuilder ub;
       try {
-        ub = UriBuilder.fromUri(new URI(cc.getServerURL() + BasicConsts.FORWARDSLASH + ServletConsts.ODK_TABLES_SERVLET_BASE_PATH));
+        ub = UriBuilder.fromUri(new URI(cc.getServerURL() + BasicConsts.FORWARDSLASH
+            + ServletConsts.ODK_TABLES_SERVLET_BASE_PATH));
       } catch (URISyntaxException e) {
         e.printStackTrace();
         throw new RequestFailureException(e);
@@ -394,24 +401,32 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
         URI getFile = tmp.build(appId, odkClientVersion, entry.getPathToFile());
         String downloadUrl;
         try {
-          downloadUrl = getFile.toURL().toExternalForm() + "?" + FileService.PARAM_AS_ATTACHMENT + "=true";
+          downloadUrl = getFile.toURL().toExternalForm() + "?" + FileService.PARAM_AS_ATTACHMENT
+              + "=true";
         } catch (MalformedURLException e) {
           e.printStackTrace();
           throw new RequestFailureException("Unable to convert to URL");
         }
 
         FileSummaryClient sum = new FileSummaryClient(entry.getPathToFile(),
-            blobEntitySet.getContentType(1, cc),
-            blobEntitySet.getContentLength(1, cc),
+            blobEntitySet.getContentType(1, cc), blobEntitySet.getContentLength(1, cc),
             entry.getId(), odkClientVersion, "", downloadUrl);
         completedSummaries.add(sum);
       }
-      Collections.sort(completedSummaries, new Comparator<FileSummaryClient>(){
-
-        @Override
-        public int compare(FileSummaryClient arg0, FileSummaryClient arg1) {
-          return arg0.getFilename().compareTo(arg1.getFilename());
-        }});
+      
+      Comparator<FileSummaryClient> columnSorter = FILENAME.getAscendingSort();
+      if (StringUtils.isNotEmpty(sortColumn)) {
+        FileInfoSortType columnType = FileInfoSortType.fromDbColumn(sortColumn);
+        if (columnType != null) {
+          if (ascending) {
+            columnSorter = columnType.getAscendingSort();
+          } else {
+            columnSorter = columnType.getDescendingSort();
+          }
+        }
+      }
+      
+      Collections.sort(completedSummaries, columnSorter);
 
       tcc.files = completedSummaries;
       return tcc;
@@ -435,7 +450,7 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
    * adds the correct filename and returns only the non-deleted rows.
    */
   @Override
-  public TableContentsForFilesClient getTableFileInfoContents(String tableId)
+  public TableContentsForFilesClient getTableFileInfoContents(String tableId, String sortColumn, boolean ascending)
       throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
       PermissionDeniedExceptionClient, EntityNotFoundExceptionClient {
     TableContentsForFilesClient tcc = new TableContentsForFilesClient();
@@ -446,15 +461,18 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
       TableManager tm = new TableManager(appId, userPermissions, cc);
       TableEntry table = tm.getTable(tableId);
-      if (table == null || table.getSchemaETag() == null) { // you couldn't find the table
+      if (table == null || table.getSchemaETag() == null) { // you couldn't find
+                                                            // the table
         throw new ODKEntityNotFoundException();
       }
-      List<DbTableFileInfo.DbTableFileInfoEntity> entities = DbTableFileInfo.queryForAllOdkClientVersionsOfTableIdFiles(table.getTableId(), cc);
+      List<DbTableFileInfo.DbTableFileInfoEntity> entities = DbTableFileInfo
+          .queryForAllOdkClientVersionsOfTableIdFiles(table.getTableId(), cc);
       DbTableFiles dbTableFiles = new DbTableFiles(cc);
 
       UriBuilder ub;
       try {
-        ub = UriBuilder.fromUri(new URI(cc.getServerURL() + BasicConsts.FORWARDSLASH + ServletConsts.ODK_TABLES_SERVLET_BASE_PATH));
+        ub = UriBuilder.fromUri(new URI(cc.getServerURL() + BasicConsts.FORWARDSLASH
+            + ServletConsts.ODK_TABLES_SERVLET_BASE_PATH));
       } catch (URISyntaxException e) {
         e.printStackTrace();
         throw new RequestFailureException(e);
@@ -474,25 +492,32 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
         URI getFile = tmp.build(appId, odkClientVersion, entry.getPathToFile());
         String downloadUrl;
         try {
-          downloadUrl = getFile.toURL().toExternalForm() + "?" + FileService.PARAM_AS_ATTACHMENT + "=true";
+          downloadUrl = getFile.toURL().toExternalForm() + "?" + FileService.PARAM_AS_ATTACHMENT
+              + "=true";
         } catch (MalformedURLException e) {
           e.printStackTrace();
           throw new RequestFailureException("Unable to convert to URL");
         }
 
         FileSummaryClient sum = new FileSummaryClient(entry.getPathToFile(),
-            blobEntitySet.getContentType(1, cc),
-            blobEntitySet.getContentLength(1, cc),
+            blobEntitySet.getContentType(1, cc), blobEntitySet.getContentLength(1, cc),
             entry.getId(), odkClientVersion, tableId, downloadUrl);
         completedSummaries.add(sum);
       }
+      Comparator<FileSummaryClient> columnSorter = FILENAME.getAscendingSort();
+      if (StringUtils.isNotEmpty(sortColumn)) {
+        FileInfoSortType columnType = FileInfoSortType.fromDbColumn(sortColumn);
+        if (columnType != null) {
+          if (ascending) {
+            columnSorter = columnType.getAscendingSort();
+          } else {
+            columnSorter = columnType.getDescendingSort();
+          }
+        }
+      }
+      
+      Collections.sort(completedSummaries, columnSorter);
 
-      Collections.sort(completedSummaries, new Comparator<FileSummaryClient>(){
-
-        @Override
-        public int compare(FileSummaryClient arg0, FileSummaryClient arg1) {
-          return arg0.getFilename().compareTo(arg1.getFilename());
-        }});
 
       tcc.files = completedSummaries;
       return tcc;
@@ -516,9 +541,9 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
    * adds the correct filename and returns only the non-deleted rows.
    */
   @Override
-  public TableContentsForFilesClient getInstanceFileInfoContents(String tableId)
-      throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
-      PermissionDeniedExceptionClient, EntityNotFoundExceptionClient {
+  public TableContentsForFilesClient getInstanceFileInfoContents(String tableId, String sortColumn,
+      boolean ascending) throws AccessDeniedException, RequestFailureException,
+      DatastoreFailureException, PermissionDeniedExceptionClient, EntityNotFoundExceptionClient {
     TableContentsForFilesClient tcc = new TableContentsForFilesClient();
     HttpServletRequest req = this.getThreadLocalRequest();
     CallingContext cc = ContextFactory.getCallingContext(this, req);
@@ -527,7 +552,8 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
       TableManager tm = new TableManager(appId, userPermissions, cc);
       TableEntry table = tm.getTable(tableId);
-      if (table == null || table.getSchemaETag() == null) { // you couldn't find the table
+      if (table == null || table.getSchemaETag() == null) { // you couldn't find
+                                                            // the table
         throw new ODKEntityNotFoundException();
       }
       String schemaETag = table.getSchemaETag();
@@ -537,7 +563,8 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
 
       UriBuilder ub;
       try {
-        ub = UriBuilder.fromUri(new URI(cc.getServerURL() + BasicConsts.FORWARDSLASH + ServletConsts.ODK_TABLES_SERVLET_BASE_PATH));
+        ub = UriBuilder.fromUri(new URI(cc.getServerURL() + BasicConsts.FORWARDSLASH
+            + ServletConsts.ODK_TABLES_SERVLET_BASE_PATH));
       } catch (URISyntaxException e) {
         e.printStackTrace();
         throw new RequestFailureException(e);
@@ -553,24 +580,32 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
         // the rowId is the top-level auri for this record
         String rowId = entry.getTopLevelAuri();
 
-        UriBuilder tmp = ub.clone().path(TableService.class, "getRealizedTable").path(RealizedTableService.class,"getInstanceFiles").path(InstanceFileService.class, "getFile");
+        UriBuilder tmp = ub.clone().path(TableService.class, "getRealizedTable")
+            .path(RealizedTableService.class, "getInstanceFiles")
+            .path(InstanceFileService.class, "getFile");
         URI getFile = tmp.build(appId, tableId, schemaETag, rowId, entry.getUnrootedFilePath());
-        String downloadUrl = getFile.toASCIIString() + "?" + FileService.PARAM_AS_ATTACHMENT + "=true";
+        String downloadUrl = getFile.toASCIIString() + "?" + FileService.PARAM_AS_ATTACHMENT
+            + "=true";
 
         FileSummaryClient sum = new FileSummaryClient(entry.getUnrootedFilePath(),
-            entry.getContentType(),
-            entry.getContentLength(),
-            entry.getUri(), null, tableId, downloadUrl);
+            entry.getContentType(), entry.getContentLength(), entry.getUri(), null, tableId,
+            downloadUrl);
         sum.setInstanceId(entry.getTopLevelAuri());
         completedSummaries.add(sum);
       }
 
-      Collections.sort(completedSummaries, new Comparator<FileSummaryClient>(){
-
-        @Override
-        public int compare(FileSummaryClient arg0, FileSummaryClient arg1) {
-          return arg0.getFilename().compareTo(arg1.getFilename());
-        }});
+      Comparator<FileSummaryClient> columnSorter = FILENAME.getAscendingSort();
+      if (StringUtils.isNotEmpty(sortColumn)) {
+        FileInfoSortType columnType = FileInfoSortType.fromDbColumn(sortColumn);
+        if (columnType != null) {
+          if (ascending) {
+            columnSorter = columnType.getAscendingSort();
+          } else {
+            columnSorter = columnType.getDescendingSort();
+          }
+        }
+      }
+      Collections.sort(completedSummaries, columnSorter);
 
       tcc.files = completedSummaries;
       return tcc;
@@ -590,15 +625,15 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
   }
 
   @Override
-  public void deleteAppLevelFile(String odkClientApiVersion, String filepath) throws AccessDeniedException,
-      RequestFailureException, DatastoreFailureException, PermissionDeniedExceptionClient,
-      EntityNotFoundExceptionClient {
+  public void deleteAppLevelFile(String odkClientApiVersion, String filepath)
+      throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
+      PermissionDeniedExceptionClient, EntityNotFoundExceptionClient {
     HttpServletRequest req = this.getThreadLocalRequest();
     CallingContext cc = ContextFactory.getCallingContext(this, req);
     try {
       TablesUserPermissions userPermissions = new TablesUserPermissionsImpl(cc);
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
-      
+
       FileManager fm = new FileManager(appId, cc);
       fm.deleteFile(odkClientApiVersion, DbTableFileInfo.NO_TABLE_ID, filepath);
       return;
@@ -618,9 +653,9 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
   }
 
   @Override
-  public void deleteTableFile(String odkClientApiVersion, String tableId, String filepath) throws AccessDeniedException,
-      RequestFailureException, DatastoreFailureException, PermissionDeniedExceptionClient,
-      EntityNotFoundExceptionClient {
+  public void deleteTableFile(String odkClientApiVersion, String tableId, String filepath)
+      throws AccessDeniedException, RequestFailureException, DatastoreFailureException,
+      PermissionDeniedExceptionClient, EntityNotFoundExceptionClient {
     HttpServletRequest req = this.getThreadLocalRequest();
     CallingContext cc = ContextFactory.getCallingContext(this, req);
     try {
@@ -660,7 +695,8 @@ public class ServerDataServiceImpl extends RemoteServiceServlet implements Serve
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
       TableManager tm = new TableManager(appId, userPermissions, cc);
       TableEntry table = tm.getTable(tableId);
-      if (table == null || table.getSchemaETag() == null) { // you couldn't find the table
+      if (table == null || table.getSchemaETag() == null) { // you couldn't find
+                                                            // the table
         throw new ODKEntityNotFoundException();
       }
 

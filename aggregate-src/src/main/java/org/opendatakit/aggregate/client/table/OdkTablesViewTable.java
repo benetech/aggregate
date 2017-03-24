@@ -55,9 +55,7 @@ public class OdkTablesViewTable extends SortableFlexTable {
 
   // that table's column names
   private ArrayList<String> columnNames;
-  
-  // When we are changing out the table contents for an entirely new table (new columns), switch this to true
-  private boolean newTableFlag = true;
+
 
 
   private String refreshCursor;
@@ -131,7 +129,7 @@ public class OdkTablesViewTable extends SortableFlexTable {
 
     if (oldTable == null || currentTable == null
         || !oldTable.getTableId().equals(currentTable.getTableId())) {
-      this.newTableFlag = true;
+      setUpdateColumns(true);
       this.refreshCursor = null;
       this.resumeCursor = null;
       this.hasMore = false;
@@ -139,7 +137,7 @@ public class OdkTablesViewTable extends SortableFlexTable {
         this.tableAdvanceButton.setEnabled(hasMore);
       }
     } else {
-      this.newTableFlag = false;
+      setUpdateColumns(false);
     }
 
     if (table == null) {
@@ -181,7 +179,7 @@ public class OdkTablesViewTable extends SortableFlexTable {
       if (tableAdvanceButton != null) {
         tableAdvanceButton.setEnabled(hasMore);
       }
-      if (newTableFlag) {
+      if (isUpdateColumns()) {
         setColumnHeadings(columnNames);
       }
       rows = tcc.rows;

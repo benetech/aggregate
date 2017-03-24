@@ -148,7 +148,7 @@ public class OdkTablesManageTableFilesSubTab extends AggregateSubTabBase impleme
    * Call this to remove any currently displayed data, set the selected table in
    * the list box to zero, and generally reset this page.
    */
-  public void setTabToDislpayZero() {
+  public void setTabToDisplayZero() {
     selectedValue = 0;
     tableBox.setSelectedIndex(0);
     updateContentsForSelectedTable();
@@ -159,7 +159,7 @@ public class OdkTablesManageTableFilesSubTab extends AggregateSubTabBase impleme
     
     if (tables.isEmpty()) {
       tableBox.clear();
-      setTabToDislpayZero();
+      setTabToDisplayZero();
     } else {
       tableBox.setItemSelected(selectedValue, true);
     }

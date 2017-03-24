@@ -43,11 +43,11 @@ public interface ServerDataServiceAsync {
   
   void getSortedTableContents(String tableId, String resumeCursor, String sortColumn, boolean ascending, String officeId, AsyncCallback<TableContentsClient> callback);
 
-  void getAppLevelFileInfoContents(AsyncCallback<TableContentsForFilesClient> callback);
+  void getAppLevelFileInfoContents(String sortColumn, boolean ascending, AsyncCallback<TableContentsForFilesClient> callback);
 
-  void getTableFileInfoContents(String tableId, AsyncCallback<TableContentsForFilesClient> callback);
+  void getTableFileInfoContents(String tableId, String sortColumn, boolean ascending, AsyncCallback<TableContentsForFilesClient> callback);
 
-  void getInstanceFileInfoContents(String tableId, AsyncCallback<TableContentsForFilesClient> callback);
+  void getInstanceFileInfoContents(String tableId, String sortColumn, boolean ascending, AsyncCallback<TableContentsForFilesClient> callback);
 
   void deleteTableFile(String odkClientApiVersion, String tableId, String filepath, AsyncCallback<Void> callback);
 

@@ -49,4 +49,18 @@ public interface HasSortColumn {
    */
   void setAscending(boolean ascending);
 
+  /**
+   * Flag returns true if the columns need updating
+   * 
+   * @return true if columns need updating
+   */
+  boolean isUpdateColumns();
+
+  /**
+   * Set the flag to true if the columns need updating
+   * 
+   * @param ascending set to true if columns need updating
+   */
+  void setUpdateColumns(boolean flag);
+  
 }
