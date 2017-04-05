@@ -78,6 +78,7 @@
 		<intercept-url pattern="/multimode_login.html" access="true" />
 		<intercept-url pattern="/relogin.html" access="true" />
 		<intercept-url pattern="/local_login.html" access="isFullyAuthenticated() and hasAuthority('AUTH_LOCAL')" />
+		<intercept-url pattern="/version.txt" access="true" />
 
 		<!-- grant access to various servlets -->
 		<intercept-url pattern="/formList" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER')" />
