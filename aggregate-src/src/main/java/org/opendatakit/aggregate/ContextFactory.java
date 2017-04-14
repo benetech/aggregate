@@ -23,6 +23,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.opendatakit.aggregate.constants.BeanDefs;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
@@ -110,30 +111,40 @@ public class ContextFactory {
         }
       }
 
-      boolean expectedPort = (identifiedScheme.equalsIgnoreCase("http") && identifiedPort == HtmlConsts.WEB_PORT)
-          || (identifiedScheme.equalsIgnoreCase("https") && identifiedPort == HtmlConsts.SECURE_WEB_PORT);
+      boolean expectedPort = (identifiedScheme.equalsIgnoreCase("http")
+          && identifiedPort == HtmlConsts.WEB_PORT)
+          || (identifiedScheme.equalsIgnoreCase("https")
+              && identifiedPort == HtmlConsts.SECURE_WEB_PORT);
 
-      if (!expectedPort) {
-        serverUrl = identifiedScheme + "://" + identifiedHostname + BasicConsts.COLON
-            + Integer.toString(identifiedPort) + path;
-      } else {
-        serverUrl = identifiedScheme + "://" + identifiedHostname + path;
-      }
+      String result = System.getenv("EXTERNAL_ROOT_URL");
 
-      if (realm.isSslRequired() || !realm.isSslAvailable()) {
-        secureServerUrl = serverUrl;
+      if (StringUtils.isNotEmpty(result)) {
+        serverUrl = result;
+        secureServerUrl = result;
       } else {
-        if (identifiedSecurePort != null && identifiedSecurePort != 0
-            && identifiedSecurePort != HtmlConsts.SECURE_WEB_PORT) {
-          // explicitly name the port
-          secureServerUrl = "https://" + identifiedHostname + BasicConsts.COLON
-              + Integer.toString(identifiedSecurePort) + path;
+        if (!expectedPort) {
+          serverUrl = identifiedScheme + "://" + identifiedHostname + BasicConsts.COLON
+              + Integer.toString(identifiedPort) + path;
         } else {
-          // assume it is the default https port...
-          secureServerUrl = "https://" + identifiedHostname + path;
+          serverUrl = identifiedScheme + "://" + identifiedHostname + path;
+        }
+
+        if (realm.isSslRequired() || !realm.isSslAvailable()) {
+          secureServerUrl = serverUrl;
+        } else {
+          if (identifiedSecurePort != null && identifiedSecurePort != 0
+              && identifiedSecurePort != HtmlConsts.SECURE_WEB_PORT) {
+            // explicitly name the port
+            secureServerUrl = "https://" + identifiedHostname + BasicConsts.COLON
+                + Integer.toString(identifiedSecurePort) + path;
+          } else {
+            // assume it is the default https port...
+            secureServerUrl = "https://" + identifiedHostname + path;
+          }
         }
       }
       webApplicationBase = path;
+
     }
 
     CallingContextImpl(CallingContext context) {
@@ -220,11 +231,13 @@ public class ContextFactory {
     return new CallingContextImpl(context);
   }
 
-  public static TablesUserPermissions getTablesUserPermissions(CallingContext cc) throws PermissionDeniedException, ODKDatastoreException, ODKTaskLockException {
+  public static TablesUserPermissions getTablesUserPermissions(CallingContext cc)
+      throws PermissionDeniedException, ODKDatastoreException, ODKTaskLockException {
     return new TablesUserPermissionsImpl(cc);
- }
+  }
 
- public static String getOdkTablesAppId(CallingContext cc) throws ODKEntityNotFoundException, ODKOverQuotaException {
+  public static String getOdkTablesAppId(CallingContext cc)
+      throws ODKEntityNotFoundException, ODKOverQuotaException {
     return ServerPreferencesProperties.getOdkTablesAppId(cc);
- }
+  }
 }

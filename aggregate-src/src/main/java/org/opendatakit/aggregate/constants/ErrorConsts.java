@@ -79,7 +79,7 @@ public final class ErrorConsts {
   /**
    * Error message if not all information was received
    */
-  public static final String INSUFFIECENT_PARAMS = "Insuffiecent Parameters Received";
+  public static final String INSUFFIECENT_PARAMS = "Insufficient Parameters Received";
   public static final String SUBMISSION_NOT_FOUND =
   "Did NOT find submission matching the provided parameters";
   public static final String NO_STRING_TO_BLOB_CONVERT = "Blob cannot be created from string";
